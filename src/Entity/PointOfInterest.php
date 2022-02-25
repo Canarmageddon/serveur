@@ -30,6 +30,9 @@ class PointOfInterest
     #[ORM\OneToMany(mappedBy: 'pointOfInterest', targetEntity: Document::class)]
     private $documents;
 
+    #[ORM\ManyToOne(targetEntity: Itinerary::class, inversedBy: 'pointsOfInterest')]
+    private $itinerary;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -107,6 +110,18 @@ class PointOfInterest
                 $document->setPointOfInterest(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getItinerary(): ?Itinerary
+    {
+        return $this->itinerary;
+    }
+
+    public function setItinerary(?Itinerary $itinerary): self
+    {
+        $this->itinerary = $itinerary;
 
         return $this;
     }

@@ -39,6 +39,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'creator', targetEntity: PointOfInterest::class)]
     private $pointOfInterests;
 
+    #[ORM\OneToMany(mappedBy: 'creator', targetEntity: Step::class)]
+    private $steps;
+
+    #[ORM\ManyToOne(targetEntity: Trip::class, inversedBy: 'travelers')]
+    private $trip;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -141,6 +147,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct(){
         $this->creationDate = new DateTimeImmutable('now');
         $this->pointOfInterests = new ArrayCollection();
+        $this->steps = new ArrayCollection();
     }
 
     /**
@@ -169,6 +176,48 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $pointOfInterest->setCreator(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Step>
+     */
+    public function getSteps(): Collection
+    {
+        return $this->steps;
+    }
+
+    public function addStep(Step $step): self
+    {
+        if (!$this->steps->contains($step)) {
+            $this->steps[] = $step;
+            $step->setCreator($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStep(Step $step): self
+    {
+        if ($this->steps->removeElement($step)) {
+            // set the owning side to null (unless already changed)
+            if ($step->getCreator() === $this) {
+                $step->setCreator(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getTrip(): ?Trip
+    {
+        return $this->trip;
+    }
+
+    public function setTrip(?Trip $trip): self
+    {
+        $this->trip = $trip;
 
         return $this;
     }
