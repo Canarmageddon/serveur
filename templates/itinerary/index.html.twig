@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Itinerary index{% endblock %}
+
+{% block body %}
+    <h1>Itinerary index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Description</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for itinerary in itineraries %}
+            <tr>
+                <td>{{ itinerary.id }}</td>
+                <td>{{ itinerary.description }}</td>
+                <td>
+                    <a href="{{ path('app_itinerary_show', {'id': itinerary.id}) }}">show</a>
+                    <a href="{{ path('app_itinerary_edit', {'id': itinerary.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_itinerary_new') }}">Create new</a>
+{% endblock %}

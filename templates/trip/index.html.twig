@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Album index{% endblock %}
+{% block title %}Trip index{% endblock %}
 
 {% block body %}
-    <h1>Album index</h1>
+    <h1>Trip index</h1>
 
     <table class="table">
         <thead>
@@ -13,12 +13,12 @@
             </tr>
         </thead>
         <tbody>
-        {% for album in albums %}
+        {% for trip in trips %}
             <tr>
-                <td>{{ album.id }}</td>
+                <td>{{ trip.id }}</td>
                 <td>
-                    <a href="{{ path('app_album_show', {'id': album.id}) }}">show</a>
-                    <a href="{{ path('app_album_edit', {'id': album.id}) }}">edit</a>
+                    <a href="{{ path('app_trip_show', {'id': trip.id}) }}">show</a>
+                    <a href="{{ path('app_trip_edit', {'id': trip.id}) }}">edit</a>
                 </td>
             </tr>
         {% else %}
@@ -29,5 +29,5 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_album_new') }}">Create new</a>
+    <a href="{{ path('app_trip_new') }}">Create new</a>
 {% endblock %}

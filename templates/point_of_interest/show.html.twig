@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}PointOfInterest{% endblock %}
+
+{% block body %}
+    <h1>PointOfInterest</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ point_of_interest.id }}</td>
+            </tr>
+            <tr>
+                <th>CreationDate</th>
+                <td>{{ point_of_interest.creationDate ? point_of_interest.creationDate|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ point_of_interest.description }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_point_of_interest_index') }}">back to list</a>
+
+    <a href="{{ path('app_point_of_interest_edit', {'id': point_of_interest.id}) }}">edit</a>
+
+    {{ include('point_of_interest/_delete_form.html.twig') }}
+{% endblock %}
