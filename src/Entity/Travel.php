@@ -11,19 +11,19 @@ class Travel
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id;
 
     #[ORM\ManyToOne(targetEntity: Location::class, inversedBy: 'travels')]
-    private $start;
+    private ?Location $start;
 
     #[ORM\ManyToOne(targetEntity: Location::class, inversedBy: 'ends')]
-    private $end;
+    private ?Location $end;
 
     #[ORM\Column(type: 'integer')]
-    private $duration;
+    private ?int $duration;
 
     #[ORM\ManyToOne(targetEntity: Itinerary::class, inversedBy: 'travels')]
-    private $itinerary;
+    private ?Itinerary $itinerary;
 
     public function getId(): ?int
     {

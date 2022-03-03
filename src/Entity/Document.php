@@ -6,6 +6,7 @@ use App\Repository\DocumentRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JetBrains\PhpStorm\Pure;
 
 #[ORM\Entity(repositoryClass: DocumentRepository::class)]
 class Document
@@ -13,24 +14,24 @@ class Document
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $name;
+    private ?string $name;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $route;
+    private ?string $route;
 
     #[ORM\ManyToOne(targetEntity: PointOfInterest::class, inversedBy: 'documents')]
-    private $pointOfInterest;
+    private ?PointOfInterest $pointOfInterest;
 
     #[ORM\OneToMany(mappedBy: 'documents', targetEntity: Step::class)]
-    private $steps;
+    private ArrayCollection $steps;
 
     #[ORM\ManyToOne(targetEntity: Itinerary::class, inversedBy: 'documents')]
-    private $itinerary;
+    private ?Itinerary $itinerary;
 
-    public function __construct()
+    #[Pure] public function __construct()
     {
         $this->steps = new ArrayCollection();
     }

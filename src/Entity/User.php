@@ -16,34 +16,43 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
-    private $email;
+    private ?string $email;
 
     #[ORM\Column(type: 'json')]
-    private $roles = [];
+    private array $roles = [];
 
     #[ORM\Column(type: 'string')]
-    private $password;
+    private string $password;
 
     #[ORM\Column(type: 'string', length: 50)]
-    private $firstName;
+    private ?string $firstName;
 
     #[ORM\Column(type: 'string', length: 50)]
-    private $lastName;
+    private ?string $lastName;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    private $creationDate;
+    private DateTimeImmutable $creationDate;
 
     #[ORM\OneToMany(mappedBy: 'creator', targetEntity: PointOfInterest::class)]
-    private $pointOfInterests;
+    private ArrayCollection $pointOfInterests;
 
     #[ORM\OneToMany(mappedBy: 'creator', targetEntity: Step::class)]
-    private $steps;
+    private ArrayCollection $steps;
 
     #[ORM\ManyToOne(targetEntity: Trip::class, inversedBy: 'travelers')]
-    private $trip;
+    private ?Trip $trip;
+
+    #[ORM\OneToMany(mappedBy: 'creator', targetEntity: Picture::class)]
+    private ArrayCollection $pictures;
+
+    #[ORM\OneToMany(mappedBy: 'creator', targetEntity: Task::class)]
+    private ArrayCollection $tasks;
+
+    #[ORM\OneToMany(mappedBy: 'creator', targetEntity: Cost::class)]
+    private $costs;
 
     public function getId(): ?int
     {
@@ -148,6 +157,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->creationDate = new DateTimeImmutable('now');
         $this->pointOfInterests = new ArrayCollection();
         $this->steps = new ArrayCollection();
+        $this->pictures = new ArrayCollection();
+        $this->tasks = new ArrayCollection();
+        $this->costs = new ArrayCollection();
     }
 
     /**
@@ -218,6 +230,96 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setTrip(?Trip $trip): self
     {
         $this->trip = $trip;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Picture>
+     */
+    public function getPictures(): Collection
+    {
+        return $this->pictures;
+    }
+
+    public function addPicture(Picture $picture): self
+    {
+        if (!$this->pictures->contains($picture)) {
+            $this->pictures[] = $picture;
+            $picture->setCreator($this);
+        }
+
+        return $this;
+    }
+
+    public function removePicture(Picture $picture): self
+    {
+        if ($this->pictures->removeElement($picture)) {
+            // set the owning side to null (unless already changed)
+            if ($picture->getCreator() === $this) {
+                $picture->setCreator(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Task>
+     */
+    public function getTasks(): Collection
+    {
+        return $this->tasks;
+    }
+
+    public function addTask(Task $task): self
+    {
+        if (!$this->tasks->contains($task)) {
+            $this->tasks[] = $task;
+            $task->setCreator($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTask(Task $task): self
+    {
+        if ($this->tasks->removeElement($task)) {
+            // set the owning side to null (unless already changed)
+            if ($task->getCreator() === $this) {
+                $task->setCreator(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Cost>
+     */
+    public function getCosts(): Collection
+    {
+        return $this->costs;
+    }
+
+    public function addCost(Cost $cost): self
+    {
+        if (!$this->costs->contains($cost)) {
+            $this->costs[] = $cost;
+            $cost->setCreator($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCost(Cost $cost): self
+    {
+        if ($this->costs->removeElement($cost)) {
+            // set the owning side to null (unless already changed)
+            if ($cost->getCreator() === $this) {
+                $cost->setCreator(null);
+            }
+        }
 
         return $this;
     }

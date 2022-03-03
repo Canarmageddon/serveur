@@ -6,6 +6,7 @@ use App\Repository\ItineraryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JetBrains\PhpStorm\Pure;
 
 #[ORM\Entity(repositoryClass: ItineraryRepository::class)]
 class Itinerary
@@ -13,27 +14,27 @@ class Itinerary
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id;
 
     #[ORM\OneToMany(mappedBy: 'itinerary', targetEntity: PointOfInterest::class)]
-    private $pointsOfInterest;
+    private ArrayCollection $pointsOfInterest;
 
     #[ORM\OneToMany(mappedBy: 'itinerary', targetEntity: Step::class)]
-    private $steps;
+    private ArrayCollection $steps;
 
     #[ORM\OneToMany(mappedBy: 'itinerary', targetEntity: travel::class)]
-    private $travels;
+    private ArrayCollection $travels;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private $description;
+    private ?string $description;
 
     #[ORM\OneToMany(mappedBy: 'itinerary', targetEntity: Document::class)]
-    private $documents;
+    private ArrayCollection $documents;
 
     #[ORM\ManyToOne(targetEntity: Trip::class, inversedBy: 'itineraries')]
-    private $trip;
+    private ?Trip $trip;
 
-    public function __construct()
+    #[Pure] public function __construct()
     {
         $this->pointsOfInterest = new ArrayCollection();
         $this->steps = new ArrayCollection();

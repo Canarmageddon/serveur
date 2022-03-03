@@ -6,6 +6,7 @@ use App\Repository\LocationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JetBrains\PhpStorm\Pure;
 
 #[ORM\Entity(repositoryClass: LocationRepository::class)]
 class Location
@@ -13,38 +14,46 @@ class Location
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id;
 
     #[ORM\Column(type: 'float')]
-    private $latitude;
+    private ?float $latitude;
 
     #[ORM\Column(type: 'float')]
-    private $longitude;
+    private ?float $longitude;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private $name;
+    private ?string $name;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private $type;
+    private ?string $type;
 
     #[ORM\OneToMany(mappedBy: 'location', targetEntity: PointOfInterest::class)]
-    private $pointOfInterests;
+    private ArrayCollection $pointOfInterests;
 
     #[ORM\OneToMany(mappedBy: 'location', targetEntity: Step::class)]
-    private $steps;
+    private ArrayCollection $steps;
 
     #[ORM\OneToMany(mappedBy: 'start', targetEntity: Travel::class)]
-    private $starts;
+    private ArrayCollection $starts;
 
     #[ORM\OneToMany(mappedBy: 'end', targetEntity: Travel::class)]
-    private $ends;
+    private ArrayCollection $ends;
 
-    public function __construct()
+    #[ORM\OneToMany(mappedBy: 'location', targetEntity: Picture::class)]
+    private $pictures;
+
+    #[ORM\OneToMany(mappedBy: 'location', targetEntity: Task::class)]
+    private $tasks;
+
+    #[Pure] public function __construct()
     {
         $this->pointOfInterests = new ArrayCollection();
         $this->steps = new ArrayCollection();
         $this->starts = new ArrayCollection();
         $this->ends = new ArrayCollection();
+        $this->pictures = new ArrayCollection();
+        $this->tasks = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -214,6 +223,66 @@ class Location
             // set the owning side to null (unless already changed)
             if ($end->getEnd() === $this) {
                 $end->setEnd(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Picture>
+     */
+    public function getPictures(): Collection
+    {
+        return $this->pictures;
+    }
+
+    public function addPicture(Picture $picture): self
+    {
+        if (!$this->pictures->contains($picture)) {
+            $this->pictures[] = $picture;
+            $picture->setLocation($this);
+        }
+
+        return $this;
+    }
+
+    public function removePicture(Picture $picture): self
+    {
+        if ($this->pictures->removeElement($picture)) {
+            // set the owning side to null (unless already changed)
+            if ($picture->getLocation() === $this) {
+                $picture->setLocation(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Task>
+     */
+    public function getTasks(): Collection
+    {
+        return $this->tasks;
+    }
+
+    public function addTask(Task $task): self
+    {
+        if (!$this->tasks->contains($task)) {
+            $this->tasks[] = $task;
+            $task->setLocation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTask(Task $task): self
+    {
+        if ($this->tasks->removeElement($task)) {
+            // set the owning side to null (unless already changed)
+            if ($task->getLocation() === $this) {
+                $task->setLocation(null);
             }
         }
 

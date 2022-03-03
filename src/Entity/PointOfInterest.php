@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\PointOfInterestRepository;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -13,25 +14,25 @@ class PointOfInterest
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id;
 
     #[ORM\ManyToOne(targetEntity: Location::class, inversedBy: 'pointOfInterests')]
-    private $location;
+    private ?Location $location;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'pointOfInterests')]
-    private $creator;
+    private ?User $creator;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    private $creationDate;
+    private DateTimeImmutable $creationDate;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private $description;
+    private ?string $description;
 
     #[ORM\OneToMany(mappedBy: 'pointOfInterest', targetEntity: Document::class)]
-    private $documents;
+    private ArrayCollection $documents;
 
     #[ORM\ManyToOne(targetEntity: Itinerary::class, inversedBy: 'pointsOfInterest')]
-    private $itinerary;
+    private ?Itinerary $itinerary;
 
     public function getId(): ?int
     {
@@ -62,7 +63,7 @@ class PointOfInterest
         return $this;
     }
 
-    public function getCreationDate(): ?\DateTimeImmutable
+    public function getCreationDate(): ?DateTimeImmutable
     {
         return $this->creationDate;
     }
