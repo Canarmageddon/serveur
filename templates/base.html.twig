@@ -14,6 +14,60 @@
         {% endblock %}
     </head>
     <body>
-        {% block body %}{% endblock %}
+        <header>
+            <nav class="navbar navbar-expand-lg navbar-light">
+                <div class="container-fluid">
+                    <a class="navbar-brand mb-0 h1" href="{{ path("index") }}">
+{#                        <img src="data:image;base64,{{ imageGeneral.logo.base64 }}" style="width: {{ imageGeneral.logo.imageFor.width }}px; height: {{ imageGeneral.logo.imageFor.height }}px" alt="Alsace Navette">#}
+                        Canarpi
+                    </a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#header-navbar" aria-controls="header-navbar" aria-expanded="false">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="header-navbar">
+                        <ul class="navbar-nav mr-auto">
+                            {% block navItems %}{% endblock %}
+                        </ul>
+                        <div class="ms-auto m-0 p-0 d-inline-flex">
+                            <ul class="navbar-nav">
+                                <li {% block accountActive %} class="nav-item dropdown" {% endblock %}>
+                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fas fa-user"></i>
+                                            Compte
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown2" style="min-width: 0; block-size: fit-content;">
+                                        {% if is_granted("ROLE_USER") %}
+
+{#                                            {% if is_granted("ROLE_ADMIN") %}#}
+{#                                                <a class="dropdown-item" id="admin" href="{{ path("admin") }}">#}
+{#                                                    <i class="fas fa-tools"></i>#}
+{#                                                    Admin</a>#}
+{#                                            {% endif %}#}
+                                            <a class="dropdown-item" href="{{ path("edit_profile") }}">
+                                                <i class="fas fa-user-edit"></i>
+                                                    Voir le profil
+                                            </a>
+                                            <a class="dropdown-item" href="{{ path("security_logout") }}">
+                                                <i class="fas fa-sign-out-alt"></i>
+                                                    Se déconnecter
+                                            </a>
+                                        {% else %}
+                                            <a class="dropdown-item" href="{{ path("security_login") }}">
+                                                <i class="fas fa-sign-in-alt"></i>
+                                                    Se connecter
+                                            </a>
+                                            <a class="dropdown-item" href="{{ path("security_registration") }}">
+                                                <i class="fas fa-user-plus"></i>
+                                                S'inscrire
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </header>
     </body>
 </html>

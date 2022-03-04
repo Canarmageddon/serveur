@@ -22,7 +22,7 @@ class Itinerary
     #[ORM\OneToMany(mappedBy: 'itinerary', targetEntity: Step::class)]
     private ArrayCollection $steps;
 
-    #[ORM\OneToMany(mappedBy: 'itinerary', targetEntity: travel::class)]
+    #[ORM\OneToMany(mappedBy: 'itinerary', targetEntity: Travel::class)]
     private ArrayCollection $travels;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
@@ -108,14 +108,14 @@ class Itinerary
     }
 
     /**
-     * @return Collection<int, travel>
+     * @return Collection<int, Travel>
      */
     public function getTravels(): Collection
     {
         return $this->travels;
     }
 
-    public function addTravel(travel $travel): self
+    public function addTravel(Travel $travel): self
     {
         if (!$this->travels->contains($travel)) {
             $this->travels[] = $travel;
@@ -125,7 +125,7 @@ class Itinerary
         return $this;
     }
 
-    public function removeTravel(travel $travel): self
+    public function removeTravel(Travel $travel): self
     {
         if ($this->travels->removeElement($travel)) {
             // set the owning side to null (unless already changed)

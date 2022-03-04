@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\CostRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CostRepository::class)]
@@ -11,22 +12,22 @@ class Cost
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'costs')]
-    private $creator;
+    private ?User $creator;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    private $creationDate;
+    private ?DateTimeImmutable $creationDate;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $category;
+    private ?string $category;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $beneficiaries;
+    private ?string $beneficiaries;
 
-    #[ORM\ManyToOne(targetEntity: trip::class, inversedBy: 'costs')]
-    private $trip;
+    #[ORM\ManyToOne(targetEntity: Trip::class, inversedBy: 'costs')]
+    private ?Trip $trip;
 
     public function getId(): ?int
     {
@@ -45,12 +46,12 @@ class Cost
         return $this;
     }
 
-    public function getCreationDate(): ?\DateTimeImmutable
+    public function getCreationDate(): ?DateTimeImmutable
     {
         return $this->creationDate;
     }
 
-    public function setCreationDate(\DateTimeImmutable $creationDate): self
+    public function setCreationDate(DateTimeImmutable $creationDate): self
     {
         $this->creationDate = $creationDate;
 
@@ -81,12 +82,12 @@ class Cost
         return $this;
     }
 
-    public function getTrip(): ?trip
+    public function getTrip(): ?Trip
     {
         return $this->trip;
     }
 
-    public function setTrip(?trip $trip): self
+    public function setTrip(?Trip $trip): self
     {
         $this->trip = $trip;
 

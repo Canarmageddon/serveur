@@ -13,7 +13,7 @@ class Travel
     #[ORM\Column(type: 'integer')]
     private ?int $id;
 
-    #[ORM\ManyToOne(targetEntity: Location::class, inversedBy: 'travels')]
+    #[ORM\ManyToOne(targetEntity: Location::class, inversedBy: 'starts')]
     private ?Location $start;
 
     #[ORM\ManyToOne(targetEntity: Location::class, inversedBy: 'ends')]

@@ -30,8 +30,8 @@ class Task
     #[ORM\Column(type: 'datetime')]
     private ?DateTimeInterface $date;
 
-    #[ORM\ManyToOne(targetEntity: location::class, inversedBy: 'tasks')]
-    private ?location $location;
+    #[ORM\ManyToOne(targetEntity: Location::class, inversedBy: 'tasks')]
+    private ?Location $location;
 
     #[ORM\ManyToOne(targetEntity: Trip::class, inversedBy: 'tasks')]
     #[ORM\JoinColumn(nullable: false)]
@@ -102,12 +102,12 @@ class Task
         return $this;
     }
 
-    public function getLocation(): ?location
+    public function getLocation(): ?Location
     {
         return $this->location;
     }
 
-    public function setLocation(?location $location): self
+    public function setLocation(?Location $location): self
     {
         $this->location = $location;
 
