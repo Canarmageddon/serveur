@@ -6,6 +6,7 @@ use App\Repository\AlbumRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: AlbumRepository::class)]
 class Album
@@ -16,9 +17,12 @@ class Album
     private $id;
 
     #[ORM\OneToOne(inversedBy: 'album', targetEntity: Trip::class, cascade: ['persist', 'remove'])]
+    #[Groups(['album'])]
     private $trip;
 
     #[ORM\OneToMany(mappedBy: 'album', targetEntity: Picture::class)]
+    #[Groups(['album'])]
+
     private $pictures;
 
     public function __construct()

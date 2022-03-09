@@ -9,3 +9,11 @@ kernel:
 index:
     path: /
     controller: App\Controller\IndexController::show
+
+api_login_check:
+    path: /api/login_check
+
+api_booking_collection_post:
+    path: /api/submission
+    controller: App\src\Controller\Api\SubmissionControllerForApi.php::submitForm
+    methods: POST

@@ -36,31 +36,32 @@
                                             Compte
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown2" style="min-width: 0; block-size: fit-content;">
-                                        {% if is_granted("ROLE_USER") %}
+{#                                        {% if is_granted("ROLE_USER") %}#}
 
 {#                                            {% if is_granted("ROLE_ADMIN") %}#}
 {#                                                <a class="dropdown-item" id="admin" href="{{ path("admin") }}">#}
 {#                                                    <i class="fas fa-tools"></i>#}
 {#                                                    Admin</a>#}
 {#                                            {% endif %}#}
-                                            <a class="dropdown-item" href="{{ path("edit_profile") }}">
-                                                <i class="fas fa-user-edit"></i>
-                                                    Voir le profil
-                                            </a>
-                                            <a class="dropdown-item" href="{{ path("security_logout") }}">
-                                                <i class="fas fa-sign-out-alt"></i>
-                                                    Se déconnecter
-                                            </a>
-                                        {% else %}
-                                            <a class="dropdown-item" href="{{ path("security_login") }}">
-                                                <i class="fas fa-sign-in-alt"></i>
-                                                    Se connecter
-                                            </a>
-                                            <a class="dropdown-item" href="{{ path("security_registration") }}">
-                                                <i class="fas fa-user-plus"></i>
-                                                S'inscrire
-                                            </a>
-                                        {% endif %}
+
+{#                                            <a class="dropdown-item" href="{{ path("edit_profile") }}">#}
+{#                                                <i class="fas fa-user-edit"></i>#}
+{#                                                    Voir le profil#}
+{#                                            </a>#}
+{#                                            <a class="dropdown-item" href="{{ path("security_logout") }}">#}
+{#                                                <i class="fas fa-sign-out-alt"></i>#}
+{#                                                    Se déconnecter#}
+{#                                            </a>#}
+{#                                        {% else %}#}
+{#                                            <a class="dropdown-item" href="{{ path("security_login") }}">#}
+{#                                                <i class="fas fa-sign-in-alt"></i>#}
+{#                                                    Se connecter#}
+{#                                            </a>#}
+{#                                            <a class="dropdown-item" href="{{ path("security_registration") }}">#}
+{#                                                <i class="fas fa-user-plus"></i>#}
+{#                                                S'inscrire#}
+{#                                            </a>#}
+{#                                        {% endif %}#}
                                     </div>
                                 </li>
                             </ul>

@@ -83,13 +83,6 @@ class Task
         return $this->creationDate;
     }
 
-    public function setCreationDate(DateTimeImmutable $creationDate): self
-    {
-        $this->creationDate = $creationDate;
-
-        return $this;
-    }
-
     public function getDate(): ?DateTimeInterface
     {
         return $this->date;
@@ -124,5 +117,9 @@ class Task
         $this->trip = $trip;
 
         return $this;
+    }
+
+    public function __construct(){
+        $this->creationDate = new DateTimeImmutable('now');
     }
 }

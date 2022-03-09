@@ -54,13 +54,6 @@ class Step
         return $this->creationDate;
     }
 
-    public function setCreationDate(DateTimeImmutable $creationDate): self
-    {
-        $this->creationDate = $creationDate;
-
-        return $this;
-    }
-
     public function getCreator(): ?User
     {
         return $this->creator;
@@ -107,5 +100,9 @@ class Step
         $this->itinerary = $itinerary;
 
         return $this;
+    }
+
+    public function __construct(){
+        $this->creationDate = new DateTimeImmutable('now');
     }
 }

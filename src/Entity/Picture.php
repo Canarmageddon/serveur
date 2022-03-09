@@ -48,13 +48,6 @@ class Picture
         return $this->creationDate;
     }
 
-    public function setCreationDate(DateTimeImmutable $creationDate): self
-    {
-        $this->creationDate = $creationDate;
-
-        return $this;
-    }
-
     public function getLocation(): ?Location
     {
         return $this->location;
@@ -77,5 +70,9 @@ class Picture
         $this->album = $album;
 
         return $this;
+    }
+
+    public function __construct(){
+        $this->creationDate = new DateTimeImmutable('now');
     }
 }

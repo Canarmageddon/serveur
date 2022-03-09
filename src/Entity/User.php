@@ -52,7 +52,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ArrayCollection $tasks;
 
     #[ORM\OneToMany(mappedBy: 'creator', targetEntity: Cost::class)]
-    private $costs;
+    private ArrayCollection $costs;
 
     public function getId(): ?int
     {
