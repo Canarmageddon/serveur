@@ -17,19 +17,22 @@ class Trip
     private ?int $id;
 
     #[ORM\OneToMany(mappedBy: 'trip', targetEntity: Itinerary::class)]
-    private ArrayCollection $itineraries;
+    private Collection $itineraries;
 
     #[ORM\OneToMany(mappedBy: 'trip', targetEntity: User::class)]
-    private ArrayCollection $travelers;
+    private Collection $travelers;
 
     #[ORM\OneToOne(mappedBy: 'trip', targetEntity: Album::class, cascade: ['persist', 'remove'])]
     private ?Album $album;
 
     #[ORM\OneToMany(mappedBy: 'trip', targetEntity: Task::class, orphanRemoval: true)]
-    private ArrayCollection $tasks;
+    private Collection $tasks;
 
     #[ORM\OneToMany(mappedBy: 'trip', targetEntity: Cost::class)]
-    private $costs;
+    private Collection $costs;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    private ?string $name;
 
     #[Pure] public function __construct()
     {
@@ -182,6 +185,18 @@ class Trip
                 $cost->setTrip(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
 
         return $this;
     }

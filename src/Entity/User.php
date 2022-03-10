@@ -37,22 +37,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private DateTimeImmutable $creationDate;
 
     #[ORM\OneToMany(mappedBy: 'creator', targetEntity: PointOfInterest::class)]
-    private ArrayCollection $pointOfInterests;
+    private Collection $pointOfInterests;
 
     #[ORM\OneToMany(mappedBy: 'creator', targetEntity: Step::class)]
-    private ArrayCollection $steps;
+    private Collection $steps;
 
     #[ORM\ManyToOne(targetEntity: Trip::class, inversedBy: 'travelers')]
     private ?Trip $trip;
 
     #[ORM\OneToMany(mappedBy: 'creator', targetEntity: Picture::class)]
-    private ArrayCollection $pictures;
+    private Collection $pictures;
 
     #[ORM\OneToMany(mappedBy: 'creator', targetEntity: Task::class)]
-    private ArrayCollection $tasks;
+    private Collection $tasks;
 
     #[ORM\OneToMany(mappedBy: 'creator', targetEntity: Cost::class)]
-    private ArrayCollection $costs;
+    private Collection $costs;
 
     public function getId(): ?int
     {

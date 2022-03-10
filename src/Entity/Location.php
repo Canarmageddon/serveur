@@ -29,22 +29,22 @@ class Location
     private ?string $type;
 
     #[ORM\OneToMany(mappedBy: 'location', targetEntity: PointOfInterest::class)]
-    private ArrayCollection $pointOfInterests;
+    private Collection $pointOfInterests;
 
     #[ORM\OneToMany(mappedBy: 'location', targetEntity: Step::class)]
-    private ArrayCollection $steps;
+    private Collection $steps;
 
     #[ORM\OneToMany(mappedBy: 'start', targetEntity: Travel::class)]
-    private ArrayCollection $starts;
+    private Collection $starts;
 
     #[ORM\OneToMany(mappedBy: 'end', targetEntity: Travel::class)]
-    private ArrayCollection $ends;
+    private Collection $ends;
 
     #[ORM\OneToMany(mappedBy: 'location', targetEntity: Picture::class)]
-    private $pictures;
+    private Collection $pictures;
 
     #[ORM\OneToMany(mappedBy: 'location', targetEntity: Task::class)]
-    private $tasks;
+    private Collection $tasks;
 
     #[Pure] public function __construct()
     {

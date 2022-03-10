@@ -26,7 +26,7 @@ class Document
     private ?PointOfInterest $pointOfInterest;
 
     #[ORM\OneToMany(mappedBy: 'documents', targetEntity: Step::class)]
-    private ArrayCollection $steps;
+    private Collection $steps;
 
     #[ORM\ManyToOne(targetEntity: Itinerary::class, inversedBy: 'documents')]
     private ?Itinerary $itinerary;

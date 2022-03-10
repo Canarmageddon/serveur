@@ -29,7 +29,7 @@ class PointOfInterest
     private ?string $description;
 
     #[ORM\OneToMany(mappedBy: 'pointOfInterest', targetEntity: Document::class)]
-    private ArrayCollection $documents;
+    private Collection $documents;
 
     #[ORM\ManyToOne(targetEntity: Itinerary::class, inversedBy: 'pointsOfInterest')]
     private ?Itinerary $itinerary;

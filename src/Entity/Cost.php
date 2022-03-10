@@ -30,10 +30,10 @@ class Cost
     private ?Trip $trip;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $label;
+    private ?string $label;
 
     #[ORM\Column(type: 'float')]
-    private $value;
+    private ?float $value;
 
     public function getId(): ?int
     {

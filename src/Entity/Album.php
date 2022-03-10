@@ -18,12 +18,12 @@ class Album
 
     #[ORM\OneToOne(inversedBy: 'album', targetEntity: Trip::class, cascade: ['persist', 'remove'])]
     #[Groups(['album'])]
-    private $trip;
+    private ?Trip $trip;
 
     #[ORM\OneToMany(mappedBy: 'album', targetEntity: Picture::class)]
     #[Groups(['album'])]
 
-    private $pictures;
+    private Collection $pictures;
 
     public function __construct()
     {

@@ -17,19 +17,19 @@ class Itinerary
     private ?int $id;
 
     #[ORM\OneToMany(mappedBy: 'itinerary', targetEntity: PointOfInterest::class)]
-    private ArrayCollection $pointsOfInterest;
+    private Collection $pointsOfInterest;
 
     #[ORM\OneToMany(mappedBy: 'itinerary', targetEntity: Step::class)]
-    private ArrayCollection $steps;
+    private Collection $steps;
 
     #[ORM\OneToMany(mappedBy: 'itinerary', targetEntity: Travel::class)]
-    private ArrayCollection $travels;
+    private Collection $travels;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $description;
 
     #[ORM\OneToMany(mappedBy: 'itinerary', targetEntity: Document::class)]
-    private ArrayCollection $documents;
+    private Collection $documents;
 
     #[ORM\ManyToOne(targetEntity: Trip::class, inversedBy: 'itineraries')]
     private ?Trip $trip;
