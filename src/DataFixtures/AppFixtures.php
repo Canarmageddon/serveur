@@ -9,6 +9,7 @@ use App\Entity\Location;
 use App\Entity\PointOfInterest;
 use App\Entity\Step;
 use App\Entity\Task;
+use App\Entity\ToDoList;
 use App\Entity\Travel;
 use App\Entity\Trip;
 use App\Entity\User;
@@ -58,16 +59,23 @@ class AppFixtures extends Fixture
             $trip->setName('Voyage numéro ' . $a);
             $trip->addTraveler($user);
 
-            /*********** TASKS ***********/
-            for($i = 1 ; $i < 5 ; $i++) {
-                $task = new Task();
-                $task->setName('Tâche ' . $i);
-                $task->setDescription('description tâche ' . $i);
-                $task->setCreator($user);
-                $task->setDate((new DateTime('now'))->modify('+2 days'));
-                $task->setLocation($locations[$i]);
-                $trip->addTask($task);
-                $manager->persist($task);
+            for($tdl = 1 ; $tdl < 4 ; $tdl++){
+                $toDoList = new ToDoList();
+                $toDoList->setName('ToDoList ' . $tdl);
+
+                /*********** TASKS ***********/
+                for($i = 1 ; $i < 5 ; $i++) {
+                    $task = new Task();
+                    $task->setName('Tâche ' . $i);
+                    $task->setDescription('description tâche ' . $i);
+                    $task->setCreator($user);
+                    $task->setDate((new DateTime('now'))->modify('+2 days'));
+                    $toDoList->addTask($task);
+                    $manager->persist($task);
+                }
+
+                $trip->addToDoList($toDoList);
+                $manager->persist($toDoList);
             }
 
             /*********** COSTS ***********/
