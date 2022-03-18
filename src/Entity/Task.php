@@ -30,12 +30,8 @@ class Task
     #[ORM\Column(type: 'datetime')]
     private ?DateTimeInterface $date;
 
-    #[ORM\ManyToOne(targetEntity: Location::class, inversedBy: 'tasks')]
-    private ?Location $location;
-
-    #[ORM\ManyToOne(targetEntity: Trip::class, inversedBy: 'tasks')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Trip $trip;
+    #[ORM\ManyToOne(targetEntity: ToDoList::class, inversedBy: 'tasks')]
+    private $toDoList;
 
     public function getId(): ?int
     {
@@ -95,31 +91,19 @@ class Task
         return $this;
     }
 
-    public function getLocation(): ?Location
-    {
-        return $this->location;
-    }
-
-    public function setLocation(?Location $location): self
-    {
-        $this->location = $location;
-
-        return $this;
-    }
-
-    public function getTrip(): ?Trip
-    {
-        return $this->trip;
-    }
-
-    public function setTrip(?Trip $trip): self
-    {
-        $this->trip = $trip;
-
-        return $this;
-    }
-
     public function __construct(){
         $this->creationDate = new DateTimeImmutable('now');
+    }
+
+    public function getToDoList(): ?ToDoList
+    {
+        return $this->toDoList;
+    }
+
+    public function setToDoList(?ToDoList $toDoList): self
+    {
+        $this->toDoList = $toDoList;
+
+        return $this;
     }
 }

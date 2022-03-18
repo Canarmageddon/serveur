@@ -25,21 +25,21 @@ class Trip
     #[ORM\OneToOne(mappedBy: 'trip', targetEntity: Album::class, cascade: ['persist', 'remove'])]
     private ?Album $album;
 
-    #[ORM\OneToMany(mappedBy: 'trip', targetEntity: Task::class, orphanRemoval: true)]
-    private Collection $tasks;
-
     #[ORM\OneToMany(mappedBy: 'trip', targetEntity: Cost::class)]
     private Collection $costs;
 
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $name;
 
+    #[ORM\OneToMany(mappedBy: 'trip', targetEntity: ToDoList::class)]
+    private $toDoLists;
+
     #[Pure] public function __construct()
     {
         $this->itineraries = new ArrayCollection();
         $this->travelers = new ArrayCollection();
-        $this->tasks = new ArrayCollection();
         $this->costs = new ArrayCollection();
+        $this->toDoLists = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -130,36 +130,6 @@ class Trip
     }
 
     /**
-     * @return Collection<int, Task>
-     */
-    public function getTasks(): Collection
-    {
-        return $this->tasks;
-    }
-
-    public function addTask(Task $task): self
-    {
-        if (!$this->tasks->contains($task)) {
-            $this->tasks[] = $task;
-            $task->setTrip($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTask(Task $task): self
-    {
-        if ($this->tasks->removeElement($task)) {
-            // set the owning side to null (unless already changed)
-            if ($task->getTrip() === $this) {
-                $task->setTrip(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection<int, Cost>
      */
     public function getCosts(): Collection
@@ -197,6 +167,36 @@ class Trip
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ToDoList>
+     */
+    public function getToDoLists(): Collection
+    {
+        return $this->toDoLists;
+    }
+
+    public function addToDoList(ToDoList $toDoList): self
+    {
+        if (!$this->toDoLists->contains($toDoList)) {
+            $this->toDoLists[] = $toDoList;
+            $toDoList->setTrip($this);
+        }
+
+        return $this;
+    }
+
+    public function removeToDoList(ToDoList $toDoList): self
+    {
+        if ($this->toDoLists->removeElement($toDoList)) {
+            // set the owning side to null (unless already changed)
+            if ($toDoList->getTrip() === $this) {
+                $toDoList->setTrip(null);
+            }
+        }
 
         return $this;
     }

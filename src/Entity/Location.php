@@ -46,9 +46,6 @@ class Location
     #[ORM\OneToMany(mappedBy: 'location', targetEntity: Picture::class)]
     private Collection $pictures;
 
-    #[ORM\OneToMany(mappedBy: 'location', targetEntity: Task::class)]
-    private Collection $tasks;
-
     #[Pure] public function __construct()
     {
         $this->pointOfInterests = new ArrayCollection();
@@ -56,7 +53,6 @@ class Location
         $this->starts = new ArrayCollection();
         $this->ends = new ArrayCollection();
         $this->pictures = new ArrayCollection();
-        $this->tasks = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -256,36 +252,6 @@ class Location
             // set the owning side to null (unless already changed)
             if ($picture->getLocation() === $this) {
                 $picture->setLocation(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Task>
-     */
-    public function getTasks(): Collection
-    {
-        return $this->tasks;
-    }
-
-    public function addTask(Task $task): self
-    {
-        if (!$this->tasks->contains($task)) {
-            $this->tasks[] = $task;
-            $task->setLocation($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTask(Task $task): self
-    {
-        if ($this->tasks->removeElement($task)) {
-            // set the owning side to null (unless already changed)
-            if ($task->getLocation() === $this) {
-                $task->setLocation(null);
             }
         }
 
