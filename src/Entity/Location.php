@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: LocationRepository::class)]
 class Location
@@ -17,9 +18,11 @@ class Location
     private ?int $id;
 
     #[ORM\Column(type: 'float')]
+    #[Groups(['pointOfInterest'])]
     private ?float $latitude;
 
     #[ORM\Column(type: 'float')]
+    #[Groups(['pointOfInterest'])]
     private ?float $longitude;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
