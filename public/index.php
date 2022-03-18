@@ -6,6 +6,7 @@ require_once dirname(__DIR__).'/vendor/autoload_runtime.php';
 
 return function (array $context) {
     if ($_SERVER['APP_DEBUG']) {
+
         header('Access-Control-Allow-Origin:'.rtrim($_SERVER['HTTP_REFERER'], '/'));
     } else {
         header('Access-Control-Allow-Origin:server');
