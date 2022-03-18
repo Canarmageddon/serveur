@@ -5,11 +5,13 @@ use App\Kernel;
 require_once dirname(__DIR__).'/vendor/autoload_runtime.php';
 
 return function (array $context) {
-    if ($_SERVER['APP_DEBUG']) {
-        header('Access-Control-Allow-Origin:'.rtrim($_SERVER['HTTP_REFERER'], '/'));
-    } else {
-        header('Access-Control-Allow-Origin:server');
-    }
+        if ($_SERVER['APP_DEBUG']) {
+            if(isset($_SERVER['HTTP_REFERER'])) {
+                header('Access-Control-Allow-Origin:'.rtrim($_SERVER['HTTP_REFERER'], '/'));
+            }
+        } else {
+            header('Access-Control-Allow-Origin:server');
+        }
     header('Access-Control-Allow-Headers:*');
     header('Access-Control-Allow-Credentials:true');
     header('Access-Control-Allow-Headers:X-Requested-With, Content-Type, withCredentials');

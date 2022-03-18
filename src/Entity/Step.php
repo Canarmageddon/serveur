@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\StepRepository;
 use DateTimeImmutable;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: StepRepository::class)]
@@ -31,6 +33,9 @@ class Step
 
     #[ORM\ManyToOne(targetEntity: Itinerary::class, inversedBy: 'steps')]
     private ?Itinerary $itinerary;
+
+    #[ORM\OneToMany(mappedBy: 'step', targetEntity: PointOfInterest::class)]
+    private $pointsOfInterest;
 
     public function getId(): ?int
     {
@@ -104,5 +109,36 @@ class Step
 
     public function __construct(){
         $this->creationDate = new DateTimeImmutable('now');
+        $this->pointsOfInterest = new ArrayCollection();
+    }
+
+    /**
+     * @return Collection<int, PointOfInterest>
+     */
+    public function getPointsOfInterest(): Collection
+    {
+        return $this->pointsOfInterest;
+    }
+
+    public function addPointsOfInterest(PointOfInterest $pointsOfInterest): self
+    {
+        if (!$this->pointsOfInterest->contains($pointsOfInterest)) {
+            $this->pointsOfInterest[] = $pointsOfInterest;
+            $pointsOfInterest->setStep($this);
+        }
+
+        return $this;
+    }
+
+    public function removePointsOfInterest(PointOfInterest $pointsOfInterest): self
+    {
+        if ($this->pointsOfInterest->removeElement($pointsOfInterest)) {
+            // set the owning side to null (unless already changed)
+            if ($pointsOfInterest->getStep() === $this) {
+                $pointsOfInterest->setStep(null);
+            }
+        }
+
+        return $this;
     }
 }

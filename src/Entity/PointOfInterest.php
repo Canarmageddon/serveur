@@ -34,6 +34,9 @@ class PointOfInterest
     #[ORM\ManyToOne(targetEntity: Itinerary::class, inversedBy: 'pointsOfInterest')]
     private ?Itinerary $itinerary;
 
+    #[ORM\ManyToOne(targetEntity: Step::class, inversedBy: 'pointsOfInterest')]
+    private $step;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -123,6 +126,18 @@ class PointOfInterest
     public function setItinerary(?Itinerary $itinerary): self
     {
         $this->itinerary = $itinerary;
+
+        return $this;
+    }
+
+    public function getStep(): ?Step
+    {
+        return $this->step;
+    }
+
+    public function setStep(?Step $step): self
+    {
+        $this->step = $step;
 
         return $this;
     }
