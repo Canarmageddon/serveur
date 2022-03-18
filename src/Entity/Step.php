@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\StepRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: StepRepository::class)]
 class Step
@@ -12,6 +13,7 @@ class Step
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(['step'])]
     private ?int $id;
 
     #[ORM\ManyToOne(targetEntity: Location::class, inversedBy: 'steps')]
