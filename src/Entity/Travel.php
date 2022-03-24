@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\TravelRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: TravelRepository::class)]
 class Travel
@@ -11,18 +12,23 @@ class Travel
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(['travel'])]
     private ?int $id;
 
     #[ORM\ManyToOne(targetEntity: Location::class, inversedBy: 'starts')]
+    #[Groups(['travel'])]
     private ?Location $start;
 
     #[ORM\ManyToOne(targetEntity: Location::class, inversedBy: 'ends')]
+    #[Groups(['travel'])]
     private ?Location $end;
 
     #[ORM\Column(type: 'integer')]
+    #[Groups(['travel'])]
     private ?int $duration;
 
     #[ORM\ManyToOne(targetEntity: Itinerary::class, inversedBy: 'travels')]
+    #[Groups(['travel'])]
     private ?Itinerary $itinerary;
 
     public function getId(): ?int

@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: TripRepository::class)]
 class Trip
@@ -14,24 +15,30 @@ class Trip
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(['trip', 'travel'])]
     private ?int $id;
 
     #[ORM\OneToMany(mappedBy: 'trip', targetEntity: Itinerary::class)]
     private Collection $itineraries;
 
     #[ORM\OneToMany(mappedBy: 'trip', targetEntity: User::class)]
+    #[Groups(['trip'])]
     private Collection $travelers;
 
     #[ORM\OneToOne(mappedBy: 'trip', targetEntity: Album::class, cascade: ['persist', 'remove'])]
+    #[Groups(['trip'])]
     private ?Album $album;
 
     #[ORM\OneToMany(mappedBy: 'trip', targetEntity: Cost::class)]
+    #[Groups(['trip'])]
     private Collection $costs;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['trip', 'travel'])]
     private ?string $name;
 
     #[ORM\OneToMany(mappedBy: 'trip', targetEntity: ToDoList::class)]
+    #[Groups(['trip'])]
     private $toDoLists;
 
     #[Pure] public function __construct()

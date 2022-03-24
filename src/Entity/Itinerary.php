@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ItineraryRepository::class)]
 class Itinerary
@@ -14,6 +15,7 @@ class Itinerary
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(['travel'])]
     private ?int $id;
 
     #[ORM\OneToMany(mappedBy: 'itinerary', targetEntity: PointOfInterest::class)]
@@ -26,12 +28,14 @@ class Itinerary
     private Collection $travels;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups(['travel'])]
     private ?string $description;
 
     #[ORM\OneToMany(mappedBy: 'itinerary', targetEntity: Document::class)]
     private Collection $documents;
 
     #[ORM\ManyToOne(targetEntity: Trip::class, inversedBy: 'itineraries')]
+    #[Groups(['travel'])]
     private ?Trip $trip;
 
     #[Pure] public function __construct()
