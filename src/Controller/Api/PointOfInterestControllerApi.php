@@ -2,12 +2,14 @@
 
 namespace App\Controller\Api;
 
+use App\Entity\Itinerary;
 use App\Repository\PointOfInterestRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Entity\Location;
 use App\Entity\PointOfInterest;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -59,4 +61,22 @@ class PointOfInterestControllerApi
             true
         );
     }
+
+    #[Route('/new/{id}/{latitude}/{longitude}', name: 'api_poi_new', methods: ['GET', 'POST'])]
+    public function new(EntityManagerInterface $entityManager, int $id, float $latitude, float $longitude): Response
+    {
+        $pointOfInterest = new PointOfInterest();
+        $location = new Location();
+        $location->setLatitude($latitude);
+        $location->setLongitude($longitude);
+        $location->addPointOfInterest($pointOfInterest);
+        $itinerary = $entityManager->getRepository(Itinerary::class)->find($id);
+        $itinerary->addPointsOfInterest($pointOfInterest);
+        $entityManager->persist($itinerary);
+        $entityManager->persist($location);
+        $entityManager->persist($pointOfInterest);
+        $entityManager->flush();
+        return new Response('Ajout réussi !');
+    }
+
 }
