@@ -25,4 +25,4 @@ jobs:
       run: rsync -avz -e 'ssh -p 22 -i ~/.ssh/id_rsa' . titch@${{ secrets.SSH_HOST }}:~/server/
     - name: Run containers
       run: |
-          ssh ${{secrets.SSH_USER}}@${{secrets.SSH_HOST}} "cd ~/server && docker-compose up -d"
+          ssh ${{secrets.SSH_USER}}@${{secrets.SSH_HOST}} "cd ~/server && sudo docker-compose up -d"
