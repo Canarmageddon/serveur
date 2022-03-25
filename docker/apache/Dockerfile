@@ -15,5 +15,3 @@ RUN apt-get update && apt-get install -my \
     && docker-php-ext-install pdo_mysql
 
 ENTRYPOINT ["bash", "/startScript/server.sh"]
-
-EXPOSE 8000
