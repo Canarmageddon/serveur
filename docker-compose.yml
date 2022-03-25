@@ -45,3 +45,8 @@ services:
     labels:
       - "traefik.http.routers.backend.rule=Host(`pma.26.muffin.pm`)"
 
+networks:
+  default:
+    external:
+      name: frontweb_default
+
