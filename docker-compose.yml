@@ -48,5 +48,5 @@ services:
 networks:
   default:
     external:
-      name: frontweb_default
+      name: "frontweb_default"
 
