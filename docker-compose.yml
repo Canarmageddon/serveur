@@ -13,7 +13,7 @@ services:
     volumes:
       - ./:/server/
     labels:
-      - "traefik.http.routers.backend.rule=Host(`api.26.muffin.pm`)"
+      - "traefik.http.routers.php.rule=Host(`api.26.muffin.pm`)"
     
   db:
     image: mysql:5.7
