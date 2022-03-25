@@ -7,6 +7,7 @@ use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PointOfInterestRepository::class)]
 class PointOfInterest
@@ -14,25 +15,35 @@ class PointOfInterest
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(['pointOfInterest'])]
     private ?int $id;
 
     #[ORM\ManyToOne(targetEntity: Location::class, inversedBy: 'pointOfInterests')]
+    #[Groups(['pointOfInterest'])]
     private ?Location $location;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'pointOfInterests')]
+    #[Groups(['pointOfInterest'])]
     private ?User $creator;
 
     #[ORM\Column(type: 'datetime_immutable')]
+    #[Groups(['pointOfInterest'])]
     private DateTimeImmutable $creationDate;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups(['pointOfInterest'])]
     private ?string $description;
 
     #[ORM\OneToMany(mappedBy: 'pointOfInterest', targetEntity: Document::class)]
+    #[Groups(['pointOfInterest'])]
     private Collection $documents;
 
     #[ORM\ManyToOne(targetEntity: Itinerary::class, inversedBy: 'pointsOfInterest')]
+    #[Groups(['pointOfInterest'])]
     private ?Itinerary $itinerary;
+
+    #[ORM\ManyToOne(targetEntity: Step::class, inversedBy: 'pointsOfInterest')]
+    private $step;
 
     public function getId(): ?int
     {
@@ -123,6 +134,18 @@ class PointOfInterest
     public function setItinerary(?Itinerary $itinerary): self
     {
         $this->itinerary = $itinerary;
+
+        return $this;
+    }
+
+    public function getStep(): ?Step
+    {
+        return $this->step;
+    }
+
+    public function setStep(?Step $step): self
+    {
+        $this->step = $step;
 
         return $this;
     }

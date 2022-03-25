@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/point/of/interest')]
+#[Route('/point_of_interest')]
 class PointOfInterestController extends AbstractController
 {
     #[Route('/', name: 'app_point_of_interest_index', methods: ['GET'])]
