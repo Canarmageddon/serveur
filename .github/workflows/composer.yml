@@ -15,5 +15,5 @@ jobs:
       run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
     - name: Update db
       run: |
-          ssh ${{secrets.SSH_USER}}@${{secrets.SSH_HOST}} "cd /server && docker-compose exec php composer install"
+          ssh ${{secrets.SSH_USER}}@${{secrets.SSH_HOST}} "cd ~/server && docker-compose exec php composer install"
     
