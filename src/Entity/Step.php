@@ -19,24 +19,31 @@ class Step
     private ?int $id;
 
     #[ORM\ManyToOne(targetEntity: Location::class, inversedBy: 'steps')]
+    #[Groups(['step'])]
     private ?Location $location;
 
     #[ORM\Column(type: 'datetime_immutable')]
+    #[Groups(['step'])]
     private ?DateTimeImmutable $creationDate;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'steps')]
+    #[Groups(['step'])]
     private ?User $creator;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups(['step'])]
     private ?string $description;
 
     #[ORM\ManyToOne(targetEntity: Document::class, inversedBy: 'steps')]
+    #[Groups(['step'])]
     private ?Document $documents;
 
     #[ORM\ManyToOne(targetEntity: Itinerary::class, inversedBy: 'steps')]
+    #[Groups(['step'])]
     private ?Itinerary $itinerary;
 
     #[ORM\OneToMany(mappedBy: 'step', targetEntity: PointOfInterest::class)]
+    #[Groups(['step'])]
     private $pointsOfInterest;
 
     public function getId(): ?int
