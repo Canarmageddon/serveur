@@ -26,9 +26,11 @@ class Location
     private ?float $longitude;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups(['pointOfInterest', "step", "travel"])]
     private ?string $name;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups(['pointOfInterest', "step", "travel"])]
     private ?string $type;
 
     #[ORM\OneToMany(mappedBy: 'location', targetEntity: PointOfInterest::class)]
