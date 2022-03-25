@@ -1,0 +1,28 @@
+name: server
+
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ dev_api ]
+  pull_request:
+    branches: [ dev_api ]
+
+  workflow_dispatch:
+
+jobs:
+  deploy-back:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup SSH connection
+      uses: webfactory/ssh-agent@v0.5.1
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+    - name: Adding Known Hosts
+      run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+    - name: Fetch with rsync
+      run: rsync -avz -e 'ssh -p 22 -i ~/.ssh/id_rsa' . titch@${{ secrets.SSH_HOST }}:~/server/
+    - name: Run containers
+      run: |
+          ssh ${{secrets.SSH_USER}}@${{secrets.SSH_HOST}} "cd ~/server && sudo docker-compose up -d"
