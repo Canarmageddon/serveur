@@ -6,16 +6,16 @@ services:
     build:
       context: .
       dockerfile: ./docker/apache/Dockerfile
-    ports:
-      - '8000:8000'
     depends_on:
       - db
     volumes:
       - ./:/server/
     labels:
+      - "traefik.enable=true"
       - "traefik.http.routers.php.rule=Host(`api.26.muffin.pm`)"
       - "traefik.docker.network=frontend_default"
-      - "traefik.port=8000"
+      - "traefik.http.routers.php.entrypoints=web"
+      - "traefik.http.services.php.loadbalancer.server.port=8000"
     
   db:
     image: mysql:5.7
@@ -29,7 +29,9 @@ services:
     ports:
       - '3306:3306'
     volumes:
-      - ~/datadir/mysql:/var/lib/mysql
+      - /datadir/mysql:/var/lib/mysql
+    labels:
+      - "traefik.enable=false"
     
 
   phpmyadmin:
@@ -42,12 +44,12 @@ services:
       PMA_PORT: 3306
       PMA_ARBITRARY: 1
     restart: always
-    ports:
-      - 8081:8081
     labels:
-      - "traefik.http.routers.backend.rule=Host(`26.muffin.pm`)"
+      - "traefik.enable=true"
+      - "traefik.http.routers.pma.rule=Host(`api.26.muffin.pm`)"
       - "traefik.docker.network=frontend_default"
-      - "traefik.port=8081"
+      - "traefik.http.routers.pma.entrypoints=entrypma"
+      - "traefik.http.services.pma.loadbalancer.server.port=80"
 
 networks:
   default:
