@@ -31,6 +31,8 @@ services:
       - '3306:3306'
     volumes:
       - /datadir/mysql:/var/lib/mysql
+    labels:
+      - "traefik.enable=false"
     
 
   phpmyadmin:
