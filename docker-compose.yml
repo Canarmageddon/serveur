@@ -15,7 +15,6 @@ services:
     labels:
       - "traefik.http.routers.php.rule=Host(`api.26.muffin.pm`)"
       - "traefik.docker.network=frontend_default"
-      - "traefik.port=8000"
     
   db:
     image: mysql:5.7
@@ -44,10 +43,6 @@ services:
     restart: always
     ports:
       - 8081:8081
-    labels:
-      - "traefik.http.routers.backend.rule=Host(`26.muffin.pm`)"
-      - "traefik.docker.network=frontend_default"
-      - "traefik.port=8081"
 
 networks:
   default:
