@@ -6,8 +6,6 @@ services:
     build:
       context: .
       dockerfile: ./docker/apache/Dockerfile
-    ports:
-      - '8000:8000'
     depends_on:
       - db
     volumes:
@@ -45,8 +43,6 @@ services:
       PMA_PORT: 3306
       PMA_ARBITRARY: 1
     restart: always
-    ports:
-      - 8081:8081
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.pma.rule=Host(`api.26.muffin.pm/db`)"
