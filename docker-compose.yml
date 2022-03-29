@@ -51,7 +51,7 @@ services:
       - "traefik.http.routers.pma.rule=Host(`api.26.muffin.pm`)"
       - "traefik.docker.network=frontend_default"
       - "traefik.http.routers.pma.entrypoints=entrypma"
-      - "traefik.http.services.pma.loadbalancer.server.port=8080"
+      - "traefik.http.services.pma.loadbalancer.server.port=8081"
 
 networks:
   default:
