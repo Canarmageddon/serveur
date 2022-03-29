@@ -44,6 +44,8 @@ services:
       PMA_PORT: 3306
       PMA_ARBITRARY: 1
     restart: always
+    ports:
+      - "8080:8081"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.pma.rule=Host(`api.26.muffin.pm`)"
