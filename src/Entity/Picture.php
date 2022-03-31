@@ -2,28 +2,41 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\PictureRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PictureRepository::class)]
+#[ApiResource(
+    collectionOperations: ['get' => ['normalization_context' => ['groups' => 'picture:list']]],
+    itemOperations: ['get' => ['normalization_context' => ['groups' => 'picture:item']]],
+    order: ['album' => 'ASC'],
+    paginationEnabled: false,
+)]
 class Picture
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(['picture:list', 'picture:item'])]
     private ?int $id;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'pictures')]
+    #[Groups(['picture:list', 'picture:item'])]
     private ?User $creator;
 
     #[ORM\Column(type: 'datetime_immutable')]
+    #[Groups(['picture:list', 'picture:item'])]
     private ?DateTimeImmutable $creationDate;
 
     #[ORM\ManyToOne(targetEntity: Location::class, inversedBy: 'pictures')]
+    #[Groups(['picture:list', 'picture:item'])]
     private ?Location $location;
 
     #[ORM\ManyToOne(targetEntity: Album::class, inversedBy: 'pictures')]
+    #[Groups(['picture:list', 'picture:item'])]
     private ?Album $album;
 
     public function getId(): ?int

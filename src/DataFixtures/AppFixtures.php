@@ -4,7 +4,6 @@ namespace App\DataFixtures;
 
 use App\Entity\Album;
 use App\Entity\Cost;
-use App\Entity\Itinerary;
 use App\Entity\Location;
 use App\Entity\PointOfInterest;
 use App\Entity\Step;
@@ -14,7 +13,6 @@ use App\Entity\Travel;
 use App\Entity\Trip;
 use App\Entity\User;
 use DateTime;
-use DateTimeInterface;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
@@ -38,8 +36,8 @@ class AppFixtures extends Fixture
 
         $user = new User();
         $user->setEmail('root');
-        $user->setFirstName('root');
-        $user->setLastName('root');
+        $user->setFirstName('Jean-Michel');
+        $user->setLastName('Crapeau');
         $user->setPassword('root');
         $user->setRoles((array)'ROLE_ADMIN');
         $manager->persist($user);
@@ -79,6 +77,7 @@ class AppFixtures extends Fixture
             }
 
             /*********** COSTS ***********/
+
             for($i = 1; $i < 6; $i++)
             {
                 $cost = new Cost();
@@ -91,40 +90,33 @@ class AppFixtures extends Fixture
                 $manager->persist($cost);
             }
 
-            /*********** ITINERARY ***********/
+            /*********** MAP ELEMENTS ***********/
 
-            for($i = 0 ; $i < 3 ; $i++) {
-                $itinerary = new Itinerary();
-                $itinerary->setDescription('Itinéraire ' . $i);
-                for($j = 0 ; $j < 7; $j++) {
-                    $pointOfInterest = new PointOfInterest();
-                    $pointOfInterest->setDescription('Point of Interest ' . $j);
-                    $pointOfInterest->setCreator($user);
-                    $pointOfInterest->setLocation($locations[$j]);
-                    $itinerary->addPointsOfInterest($pointOfInterest);
-                    $manager->persist($pointOfInterest);
-                }
+            for($j = 0 ; $j < 7; $j++) {
+                $pointOfInterest = new PointOfInterest();
+                $pointOfInterest->setDescription('Point of Interest ' . $j);
+                $pointOfInterest->setCreator($user);
+                $pointOfInterest->setLocation($locations[$j]);
+                $trip->addPointsOfInterest($pointOfInterest);
+                $manager->persist($pointOfInterest);
+            }
 
-                for($j = 0 ; $j < 4; $j++) {
-                    $step = new Step();
-                    $step->setDescription('Step ' . $j);
-                    $step->setCreator($user);
-                    $step->setLocation($locations[$j + 7]);
-                    $itinerary->addStep($step);
-                    $manager->persist($step);
-                }
+            for($j = 0 ; $j < 4; $j++) {
+                $step = new Step();
+                $step->setDescription('Step ' . $j);
+                $step->setCreator($user);
+                $step->setLocation($locations[$j + 7]);
+                $trip->addStep($step);
+                $manager->persist($step);
+            }
 
-                for($j = 0 ; $j < 3; $j++) {
-                    $travel = new Travel();
-                    $travel->setStart($locations[$j +7]);
-                    $travel->setEnd($locations[$j +8]);
-                    $travel->setDuration(3600 * ($i+1));
-                    $itinerary->addTravel($travel);
-                    $manager->persist($travel);
-                }
-
-                $trip->addItinerary($itinerary);
-                $manager->persist($itinerary);
+            for($j = 0 ; $j < 3; $j++) {
+                $travel = new Travel();
+                $travel->setStart($locations[$j +7]);
+                $travel->setEnd($locations[$j +8]);
+                $travel->setDuration(3600 * ($i+1));
+                $trip->addTravel($travel);
+                $manager->persist($travel);
             }
 
             $manager->persist($trip);

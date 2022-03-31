@@ -2,28 +2,41 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\TravelRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: TravelRepository::class)]
+#[ApiResource(
+    collectionOperations: ['get' => ['normalization_context' => ['groups' => 'travel:list']]],
+    itemOperations: ['get' => ['normalization_context' => ['groups' => 'travel:item']]],
+    order: ['trip' => 'ASC'],
+    paginationEnabled: false,
+)]
 class Travel
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(['travel:list', 'travel:item'])]
     private ?int $id;
 
     #[ORM\ManyToOne(targetEntity: Location::class, inversedBy: 'starts')]
+    #[Groups(['travel:list', 'travel:item'])]
     private ?Location $start;
 
     #[ORM\ManyToOne(targetEntity: Location::class, inversedBy: 'ends')]
+    #[Groups(['travel:list', 'travel:item'])]
     private ?Location $end;
 
     #[ORM\Column(type: 'integer')]
+    #[Groups(['travel:list', 'travel:item'])]
     private ?int $duration;
 
-    #[ORM\ManyToOne(targetEntity: Itinerary::class, inversedBy: 'travels')]
-    private ?Itinerary $itinerary;
+    #[ORM\ManyToOne(targetEntity: Trip::class, inversedBy: 'travels')]
+    #[Groups(['travel:list', 'travel:item'])]
+    private ?Trip $trip;
 
     public function getId(): ?int
     {
@@ -66,14 +79,14 @@ class Travel
         return $this;
     }
 
-    public function getItinerary(): ?Itinerary
+    public function getTrip(): ?Trip
     {
-        return $this->itinerary;
+        return $this->trip;
     }
 
-    public function setItinerary(?Itinerary $itinerary): self
+    public function setTrip(?Trip $trip): self
     {
-        $this->itinerary = $itinerary;
+        $this->trip = $trip;
 
         return $this;
     }

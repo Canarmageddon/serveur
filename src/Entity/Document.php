@@ -2,34 +2,44 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\DocumentRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: DocumentRepository::class)]
+#[ApiResource(
+    collectionOperations: ['get' => ['normalization_context' => ['groups' => 'document:list']]],
+    itemOperations: ['get' => ['normalization_context' => ['groups' => 'document:item']]],
+    order: ['name' => 'ASC'],
+    paginationEnabled: false,
+)]
 class Document
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(['document:list', 'document:item'])]
     private ?int $id;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['document:list', 'document:item'])]
     private ?string $name;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['document:list', 'document:item'])]
     private ?string $route;
 
     #[ORM\ManyToOne(targetEntity: PointOfInterest::class, inversedBy: 'documents')]
+    #[Groups(['document:list', 'document:item'])]
     private ?PointOfInterest $pointOfInterest;
 
     #[ORM\OneToMany(mappedBy: 'documents', targetEntity: Step::class)]
+    #[Groups(['document:list', 'document:item'])]
     private Collection $steps;
-
-    #[ORM\ManyToOne(targetEntity: Itinerary::class, inversedBy: 'documents')]
-    private ?Itinerary $itinerary;
 
     #[Pure] public function __construct()
     {
@@ -103,18 +113,6 @@ class Document
                 $step->setDocuments(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getItinerary(): ?Itinerary
-    {
-        return $this->itinerary;
-    }
-
-    public function setItinerary(?Itinerary $itinerary): self
-    {
-        $this->itinerary = $itinerary;
 
         return $this;
     }

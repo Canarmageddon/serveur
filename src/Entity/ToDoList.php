@@ -2,27 +2,39 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\ToDoListRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ToDoListRepository::class)]
+#[ApiResource(
+    collectionOperations: ['get' => ['normalization_context' => ['groups' => 'toDoList:list']]],
+    itemOperations: ['get' => ['normalization_context' => ['groups' => 'toDoList:item']]],
+    order: ['trip' => 'ASC'],
+    paginationEnabled: false,
+)]
 class ToDoList
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(['toDoList:list', 'toDoList:item'])]
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $name;
+    #[Groups(['toDoList:list', 'toDoList:item'])]
+    private ?string $name;
 
     #[ORM\OneToMany(mappedBy: 'toDoList', targetEntity: Task::class)]
-    private $tasks;
+    #[Groups(['toDoList:list', 'toDoList:item'])]
+    private Collection $tasks;
 
     #[ORM\ManyToOne(targetEntity: Trip::class, inversedBy: 'toDoLists')]
-    private $trip;
+    #[Groups(['toDoList:list', 'toDoList:item'])]
+    private ?Trip $trip;
 
     public function __construct()
     {

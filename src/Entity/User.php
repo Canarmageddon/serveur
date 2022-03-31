@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\UserRepository;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -9,49 +10,68 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ApiResource(
+    collectionOperations: ['get' => ['normalization_context' => ['groups' => 'user:list']]],
+    itemOperations: ['get' => ['normalization_context' => ['groups' => 'user:item']]],
+    order: ['creationDate' => 'ASC'],
+    paginationEnabled: false,
+)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(['user:list', 'user:item'])]
     private ?int $id;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
+    #[Groups(['user:list', 'user:item'])]
     private ?string $email;
 
     #[ORM\Column(type: 'json')]
+    #[Groups(['user:list', 'user:item'])]
     private array $roles = [];
 
     #[ORM\Column(type: 'string')]
     private string $password;
 
     #[ORM\Column(type: 'string', length: 50)]
+    #[Groups(['user:list', 'user:item'])]
     private ?string $firstName;
 
     #[ORM\Column(type: 'string', length: 50)]
+    #[Groups(['user:list', 'user:item'])]
     private ?string $lastName;
 
     #[ORM\Column(type: 'datetime_immutable')]
+    #[Groups(['user:list', 'user:item'])]
     private DateTimeImmutable $creationDate;
 
     #[ORM\OneToMany(mappedBy: 'creator', targetEntity: PointOfInterest::class)]
+    #[Groups(['user:list', 'user:item'])]
     private Collection $pointOfInterests;
 
     #[ORM\OneToMany(mappedBy: 'creator', targetEntity: Step::class)]
+    #[Groups(['user:list', 'user:item'])]
     private Collection $steps;
 
     #[ORM\ManyToOne(targetEntity: Trip::class, inversedBy: 'travelers')]
+    #[Groups(['user:list', 'user:item'])]
     private ?Trip $trip;
 
     #[ORM\OneToMany(mappedBy: 'creator', targetEntity: Picture::class)]
+    #[Groups(['user:list', 'user:item'])]
     private Collection $pictures;
 
     #[ORM\OneToMany(mappedBy: 'creator', targetEntity: Task::class)]
+    #[Groups(['user:list', 'user:item'])]
     private Collection $tasks;
 
     #[ORM\OneToMany(mappedBy: 'creator', targetEntity: Cost::class)]
+    #[Groups(['user:list', 'user:item'])]
     private Collection $costs;
 
     public function getId(): ?int
@@ -322,5 +342,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->getFirstName() . ' ' . $this->getLastName();
     }
 }
