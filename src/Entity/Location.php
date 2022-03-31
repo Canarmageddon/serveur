@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\LocationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -10,40 +11,54 @@ use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: LocationRepository::class)]
+#[ApiResource(
+    collectionOperations: ['get' => ['normalization_context' => ['groups' => 'location:list']]],
+    itemOperations: ['get' => ['normalization_context' => ['groups' => 'location:item']]],
+    order: ['name' => 'ASC'],
+    paginationEnabled: false,
+)]
 class Location
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(['location:list', 'location:item'])]
     private ?int $id;
 
     #[ORM\Column(type: 'float')]
-    #[Groups(['pointOfInterest'])]
+    #[Groups(['location:list', 'location:item', 'pointOfInterest:collection'])]
     private ?float $latitude;
 
     #[ORM\Column(type: 'float')]
-    #[Groups(['pointOfInterest'])]
+    #[Groups(['location:list', 'location:item'])]
     private ?float $longitude;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups(['location:list', 'location:item'])]
     private ?string $name;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups(['location:list', 'location:item'])]
     private ?string $type;
 
     #[ORM\OneToMany(mappedBy: 'location', targetEntity: PointOfInterest::class)]
+    #[Groups(['location:list', 'location:item'])]
     private Collection $pointOfInterests;
 
     #[ORM\OneToMany(mappedBy: 'location', targetEntity: Step::class)]
+    #[Groups(['location:list', 'location:item'])]
     private Collection $steps;
 
     #[ORM\OneToMany(mappedBy: 'start', targetEntity: Travel::class)]
+    #[Groups(['location:list', 'location:item'])]
     private Collection $starts;
 
     #[ORM\OneToMany(mappedBy: 'end', targetEntity: Travel::class)]
+    #[Groups(['location:list', 'location:item'])]
     private Collection $ends;
 
     #[ORM\OneToMany(mappedBy: 'location', targetEntity: Picture::class)]
+    #[Groups(['location:list', 'location:item'])]
     private Collection $pictures;
 
     #[Pure] public function __construct()

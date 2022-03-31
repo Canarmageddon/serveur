@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\StepRepository;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -10,34 +11,47 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: StepRepository::class)]
+#[ApiResource(
+    collectionOperations: ['get' => ['normalization_context' => ['groups' => 'step:list']]],
+    itemOperations: ['get' => ['normalization_context' => ['groups' => 'step:item']]],
+    order: ['trip' => 'ASC'],
+    paginationEnabled: false,
+)]
 class Step
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(['step'])]
+    #[Groups(['step:list', 'step:item'])]
     private ?int $id;
 
     #[ORM\ManyToOne(targetEntity: Location::class, inversedBy: 'steps')]
+    #[Groups(['step:list', 'step:item'])]
     private ?Location $location;
 
     #[ORM\Column(type: 'datetime_immutable')]
+    #[Groups(['step:list', 'step:item'])]
     private ?DateTimeImmutable $creationDate;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'steps')]
+    #[Groups(['step:list', 'step:item'])]
     private ?User $creator;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups(['step:list', 'step:item'])]
     private ?string $description;
 
     #[ORM\ManyToOne(targetEntity: Document::class, inversedBy: 'steps')]
+    #[Groups(['step:list', 'step:item'])]
     private ?Document $documents;
 
-    #[ORM\ManyToOne(targetEntity: Itinerary::class, inversedBy: 'steps')]
-    private ?Itinerary $itinerary;
-
     #[ORM\OneToMany(mappedBy: 'step', targetEntity: PointOfInterest::class)]
-    private $pointsOfInterest;
+    #[Groups(['step:list', 'step:item'])]
+    private Collection $pointsOfInterest;
+
+    #[ORM\ManyToOne(targetEntity: Trip::class, inversedBy: 'steps')]
+    #[Groups(['step:list', 'step:item'])]
+    private ?Trip $trip;
 
     public function getId(): ?int
     {
@@ -97,14 +111,14 @@ class Step
         return $this;
     }
 
-    public function getItinerary(): ?Itinerary
+    public function getTrip(): ?Trip
     {
-        return $this->itinerary;
+        return $this->trip;
     }
 
-    public function setItinerary(?Itinerary $itinerary): self
+    public function setTrip(?Trip $trip): self
     {
-        $this->itinerary = $itinerary;
+        $this->trip = $trip;
 
         return $this;
     }

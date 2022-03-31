@@ -2,36 +2,51 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\TaskRepository;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: TaskRepository::class)]
+#[ApiResource(
+    collectionOperations: ['get' => ['normalization_context' => ['groups' => 'task:list']]],
+    itemOperations: ['get' => ['normalization_context' => ['groups' => 'task:item']]],
+    order: ['creationDate' => 'ASC'],
+    paginationEnabled: false,
+)]
 class Task
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(['task:list', 'task:item'])]
     private ?int $id;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['task:list', 'task:item'])]
     private ?string $name;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['task:list', 'task:item'])]
     private ?string $description;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'tasks')]
+    #[Groups(['task:list', 'task:item'])]
     private ?User $creator;
 
     #[ORM\Column(type: 'datetime_immutable')]
+    #[Groups(['task:list', 'task:item'])]
     private ?DateTimeImmutable $creationDate;
 
     #[ORM\Column(type: 'datetime')]
+    #[Groups(['task:list', 'task:item'])]
     private ?DateTimeInterface $date;
 
     #[ORM\ManyToOne(targetEntity: ToDoList::class, inversedBy: 'tasks')]
-    private $toDoList;
+    #[Groups(['task:list', 'task:item'])]
+    private ?ToDoList $toDoList;
 
     public function getId(): ?int
     {

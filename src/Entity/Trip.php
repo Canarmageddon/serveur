@@ -2,79 +2,74 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\TripRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: TripRepository::class)]
+#[ApiResource(
+    collectionOperations: ['get' => ['normalization_context' => ['groups' => 'trip:list']]],
+    itemOperations: ['get' => ['normalization_context' => ['groups' => 'trip:item']]],
+    order: ['name' => 'ASC'],
+    paginationEnabled: false,
+)]
 class Trip
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(['trip:list', 'trip:item'])]
     private ?int $id;
 
-    #[ORM\OneToMany(mappedBy: 'trip', targetEntity: Itinerary::class)]
-    private Collection $itineraries;
-
     #[ORM\OneToMany(mappedBy: 'trip', targetEntity: User::class)]
+    #[Groups(['trip:list', 'trip:item'])]
     private Collection $travelers;
 
     #[ORM\OneToOne(mappedBy: 'trip', targetEntity: Album::class, cascade: ['persist', 'remove'])]
+    #[Groups(['trip:list', 'trip:item'])]
     private ?Album $album;
 
     #[ORM\OneToMany(mappedBy: 'trip', targetEntity: Cost::class)]
+    #[Groups(['trip:list', 'trip:item'])]
     private Collection $costs;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['trip:list', 'trip:item'])]
     private ?string $name;
 
     #[ORM\OneToMany(mappedBy: 'trip', targetEntity: ToDoList::class)]
-    private $toDoLists;
+    #[Groups(['trip:list', 'trip:item'])]
+    private Collection $toDoLists;
+
+    #[ORM\OneToMany(mappedBy: 'trip', targetEntity: PointOfInterest::class)]
+    #[Groups(['trip:list', 'trip:item'])]
+    private Collection $pointsOfInterest;
+
+    #[ORM\OneToMany(mappedBy: 'trip', targetEntity: Step::class)]
+    #[Groups(['trip:list', 'trip:item'])]
+    private Collection $steps;
+
+    #[ORM\OneToMany(mappedBy: 'trip', targetEntity: Travel::class)]
+    #[Groups(['trip:list', 'trip:item'])]
+    private Collection $travels;
 
     #[Pure] public function __construct()
     {
-        $this->itineraries = new ArrayCollection();
         $this->travelers = new ArrayCollection();
         $this->costs = new ArrayCollection();
         $this->toDoLists = new ArrayCollection();
+        $this->pointsOfInterest = new ArrayCollection();
+        $this->steps = new ArrayCollection();
+        $this->travels = new ArrayCollection();
     }
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    /**
-     * @return Collection<int, Itinerary>
-     */
-    public function getItineraries(): Collection
-    {
-        return $this->itineraries;
-    }
-
-    public function addItinerary(Itinerary $itinerary): self
-    {
-        if (!$this->itineraries->contains($itinerary)) {
-            $this->itineraries[] = $itinerary;
-            $itinerary->setTrip($this);
-        }
-
-        return $this;
-    }
-
-    public function removeItinerary(Itinerary $itinerary): self
-    {
-        if ($this->itineraries->removeElement($itinerary)) {
-            // set the owning side to null (unless already changed)
-            if ($itinerary->getTrip() === $this) {
-                $itinerary->setTrip(null);
-            }
-        }
-
-        return $this;
     }
 
     /**
@@ -195,6 +190,96 @@ class Trip
             // set the owning side to null (unless already changed)
             if ($toDoList->getTrip() === $this) {
                 $toDoList->setTrip(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PointOfInterest>
+     */
+    public function getPointsOfInterest(): Collection
+    {
+        return $this->pointsOfInterest;
+    }
+
+    public function addPointsOfInterest(PointOfInterest $pointsOfInterest): self
+    {
+        if (!$this->pointsOfInterest->contains($pointsOfInterest)) {
+            $this->pointsOfInterest[] = $pointsOfInterest;
+            $pointsOfInterest->setTrip($this);
+        }
+
+        return $this;
+    }
+
+    public function removePointsOfInterest(PointOfInterest $pointsOfInterest): self
+    {
+        if ($this->pointsOfInterest->removeElement($pointsOfInterest)) {
+            // set the owning side to null (unless already changed)
+            if ($pointsOfInterest->getTrip() === $this) {
+                $pointsOfInterest->setTrip(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Step>
+     */
+    public function getSteps(): Collection
+    {
+        return $this->steps;
+    }
+
+    public function addStep(Step $step): self
+    {
+        if (!$this->steps->contains($step)) {
+            $this->steps[] = $step;
+            $step->setTrip($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStep(Step $step): self
+    {
+        if ($this->steps->removeElement($step)) {
+            // set the owning side to null (unless already changed)
+            if ($step->getTrip() === $this) {
+                $step->setTrip(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Travel>
+     */
+    public function getTravels(): Collection
+    {
+        return $this->travels;
+    }
+
+    public function addTravel(Travel $travel): self
+    {
+        if (!$this->travels->contains($travel)) {
+            $this->travels[] = $travel;
+            $travel->setTrip($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTravel(Travel $travel): self
+    {
+        if ($this->travels->removeElement($travel)) {
+            // set the owning side to null (unless already changed)
+            if ($travel->getTrip() === $this) {
+                $travel->setTrip(null);
             }
         }
 

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\PointOfInterestRepository;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -10,24 +11,30 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PointOfInterestRepository::class)]
+#[ApiResource(
+    collectionOperations: ['get' => ['normalization_context' => ['groups' => 'pointOfInterest:list']]],
+    itemOperations: ['get' => ['normalization_context' => ['groups' => 'pointOfInterest:item']]],
+    order: ['trip' => 'ASC'],
+    paginationEnabled: false,
+)]
 class PointOfInterest
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(['pointOfInterest'])]
+    #[Groups(['pointOfInterest:list', 'pointOfInterest:item'])]
     private ?int $id;
 
     #[ORM\ManyToOne(targetEntity: Location::class, inversedBy: 'pointOfInterests')]
-    #[Groups(['pointOfInterest'])]
+    #[Groups(['pointOfInterest:list', 'pointOfInterest:item'])]
     private ?Location $location;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'pointOfInterests')]
-    #[Groups(['pointOfInterest'])]
+    #[Groups(['pointOfInterest:list', 'pointOfInterest:item'])]
     private ?User $creator;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    #[Groups(['pointOfInterest'])]
+    #[Groups(['pointOfInterest:list', 'pointOfInterest:item'])]
     private DateTimeImmutable $creationDate;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
@@ -35,15 +42,16 @@ class PointOfInterest
     private ?string $description;
 
     #[ORM\OneToMany(mappedBy: 'pointOfInterest', targetEntity: Document::class)]
-    #[Groups(['pointOfInterest'])]
+    #[Groups(['pointOfInterest:list', 'pointOfInterest:item'])]
     private Collection $documents;
 
-    #[ORM\ManyToOne(targetEntity: Itinerary::class, inversedBy: 'pointsOfInterest')]
-    #[Groups(['pointOfInterest'])]
-    private ?Itinerary $itinerary;
-
     #[ORM\ManyToOne(targetEntity: Step::class, inversedBy: 'pointsOfInterest')]
-    private $step;
+    #[Groups(['pointOfInterest:list', 'pointOfInterest:item'])]
+    private ?Step $step;
+
+    #[ORM\ManyToOne(targetEntity: Trip::class, inversedBy: 'pointsOfInterest')]
+    #[Groups(['pointOfInterest:list', 'pointOfInterest:item'])]
+    private ?Trip $trip;
 
     public function getId(): ?int
     {
@@ -126,18 +134,6 @@ class PointOfInterest
         return $this;
     }
 
-    public function getItinerary(): ?Itinerary
-    {
-        return $this->itinerary;
-    }
-
-    public function setItinerary(?Itinerary $itinerary): self
-    {
-        $this->itinerary = $itinerary;
-
-        return $this;
-    }
-
     public function getStep(): ?Step
     {
         return $this->step;
@@ -146,6 +142,18 @@ class PointOfInterest
     public function setStep(?Step $step): self
     {
         $this->step = $step;
+
+        return $this;
+    }
+
+    public function getTrip(): ?Trip
+    {
+        return $this->trip;
+    }
+
+    public function setTrip(?Trip $trip): self
+    {
+        $this->trip = $trip;
 
         return $this;
     }

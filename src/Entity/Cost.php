@@ -2,37 +2,53 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\CostRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CostRepository::class)]
+#[ApiResource(
+    collectionOperations: ['get' => ['normalization_context' => ['groups' => 'cost:list']]],
+    itemOperations: ['get' => ['normalization_context' => ['groups' => 'cost:item']]],
+    order: ['creationDate' => 'DESC', 'trip' => 'ASC'],
+    paginationEnabled: false,
+)]
 class Cost
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(['cost:list', 'cost:item'])]
     private ?int $id;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'costs')]
+    #[Groups(['cost:list', 'cost:item'])]
     private ?User $creator;
 
     #[ORM\Column(type: 'datetime_immutable')]
+    #[Groups(['cost:list', 'cost:item'])]
     private ?DateTimeImmutable $creationDate;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['cost:list', 'cost:item'])]
     private ?string $category;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['cost:list', 'cost:item'])]
     private ?string $beneficiaries;
 
     #[ORM\ManyToOne(targetEntity: Trip::class, inversedBy: 'costs')]
+    #[Groups(['cost:list', 'cost:item'])]
     private ?Trip $trip;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['cost:list', 'cost:item'])]
     private ?string $label;
 
     #[ORM\Column(type: 'float')]
+    #[Groups(['cost:list', 'cost:item'])]
     private ?float $value;
 
     public function getId(): ?int
