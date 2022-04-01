@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: AlbumRepository::class)]
+
 #[ApiResource(
     collectionOperations: ['get' => ['normalization_context' => ['groups' => 'album:list']]],
     itemOperations: ['get' => ['normalization_context' => ['groups' => 'album:item']]],
