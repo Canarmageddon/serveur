@@ -22,27 +22,27 @@ class Step
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(['step:list', 'step:item'])]
+    #[Groups(['step:list', 'step:item', 'trip:list', 'trip:item'])]
     private ?int $id;
 
     #[ORM\ManyToOne(targetEntity: Location::class, inversedBy: 'steps')]
-    #[Groups(['step:list', 'step:item'])]
+    #[Groups(['step:list', 'step:item', 'trip:list', 'trip:item'])]
     private ?Location $location;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    #[Groups(['step:list', 'step:item'])]
+    #[Groups(['step:list', 'step:item', 'trip:list', 'trip:item'])]
     private ?DateTimeImmutable $creationDate;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'steps')]
-    #[Groups(['step:list', 'step:item'])]
+    #[Groups(['step:list', 'step:item', 'trip:list', 'trip:item'])]
     private ?User $creator;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(['step:list', 'step:item'])]
+    #[Groups(['step:list', 'step:item', 'trip:list', 'trip:item'])]
     private ?string $description;
 
     #[ORM\ManyToOne(targetEntity: Document::class, inversedBy: 'steps')]
-    #[Groups(['step:list', 'step:item'])]
+    #[Groups(['step:list', 'step:item', 'trip:list', 'trip:item'])]
     private ?Document $documents;
 
     #[ORM\OneToMany(mappedBy: 'step', targetEntity: PointOfInterest::class)]

@@ -26,11 +26,11 @@ class Location
     private ?int $id;
 
     #[ORM\Column(type: 'float')]
-    #[Groups(['location:list', 'location:item', 'pointOfInterest:collection'])]
+    #[Groups(['location:list', 'location:item', 'pointOfInterest:list', 'pointOfInterest:item', 'step:list', 'step:item'])]
     private ?float $latitude;
 
     #[ORM\Column(type: 'float')]
-    #[Groups(['location:list', 'location:item'])]
+    #[Groups(['location:list', 'location:item', 'pointOfInterest:list', 'pointOfInterest:item', 'step:list', 'step:item'])]
     private ?float $longitude;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]

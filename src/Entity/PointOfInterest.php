@@ -22,27 +22,27 @@ class PointOfInterest
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(['pointOfInterest:list', 'pointOfInterest:item'])]
+    #[Groups(['pointOfInterest:list', 'pointOfInterest:item', 'trip:list', 'trip:item'])]
     private ?int $id;
 
     #[ORM\ManyToOne(targetEntity: Location::class, inversedBy: 'pointOfInterests')]
-    #[Groups(['pointOfInterest:list', 'pointOfInterest:item'])]
+    #[Groups(['pointOfInterest:list', 'pointOfInterest:item', 'trip:list', 'trip:item'])]
     private ?Location $location;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'pointOfInterests')]
-    #[Groups(['pointOfInterest:list', 'pointOfInterest:item'])]
+    #[Groups(['pointOfInterest:list', 'pointOfInterest:item', 'trip:list', 'trip:item'])]
     private ?User $creator;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    #[Groups(['pointOfInterest:list', 'pointOfInterest:item'])]
+    #[Groups(['pointOfInterest:list', 'pointOfInterest:item', 'trip:list', 'trip:item'])]
     private DateTimeImmutable $creationDate;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(['pointOfInterest'])]
+    #[Groups(['pointOfInterest', 'trip:list', 'trip:item'])]
     private ?string $description;
 
     #[ORM\OneToMany(mappedBy: 'pointOfInterest', targetEntity: Document::class)]
-    #[Groups(['pointOfInterest:list', 'pointOfInterest:item'])]
+    #[Groups(['pointOfInterest:list', 'pointOfInterest:item', 'trip:list', 'trip:item'])]
     private Collection $documents;
 
     #[ORM\ManyToOne(targetEntity: Step::class, inversedBy: 'pointsOfInterest')]
