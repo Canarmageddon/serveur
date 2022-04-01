@@ -2,7 +2,6 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Album;
 use App\Entity\Cost;
 use App\Entity\Location;
 use App\Entity\PointOfInterest;
@@ -20,6 +19,7 @@ class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
+        #region datas
         $arrayLocation = [];
         $arrayLocation[] = ['Gare de Strasbourg', 'Gare', 48.5850678, 7.7345492];
         $arrayLocation[] = ['Château du Haut-Koenigsbourg', 'Monument historique', 48.2494853, 7.3444831];
@@ -32,15 +32,26 @@ class AppFixtures extends Fixture
         $arrayLocation[] = ['Ecomusée', 'Evénementiel', 48.1769458, 7.0193129];
         $arrayLocation[] = ["Musée de l'automobile", 'Evénementiel', 47.7610702, 7.3284082];
         $arrayLocation[] = ['Tellure', 'Tourisme', 48.2137384, 7.1373458];
-        $locations = [];
+        $locations = []; //Liste des objects Location
 
+        $tripNames = array('Grandes vacances 2022', 'Visite de l\'Alsace', 'On emmène Mémé balader');
+        $toDoListNames = array('Préparation du voyage', 'Choses à faire à la Montagne des Singes', 'A ne pas oublier de faire', 'Médicaments de Mémé');
+        $taskNames = array('Faire les courses', 'Nettoyer la voiture', 'Vérifier l\'huile', 'Vérifier la pression des pneus', 'Huiler le Youpala de Mémé');//5
+        $costNames = array('Dentifrice', 'Papier toilette', 'Restaurant samedi', 'Acrobranche', 'Alcool', 'Essence');//6
+        $costCategories = array('Hygiène', 'Hygiène', 'Alimentaire', 'Loisir', 'Alimentaire/Loisir', 'Elevé');
+
+        $users = [];
+        $users[] = array('root', 'Poisson', 'd\'Avril', 'root', (array)'ROLE_ADMIN');
+        #endregion
+
+        #region Factory
         $user = new User();
-        $user->setEmail('root');
-        $user->setFirstName('Jean-Michel');
-        $user->setLastName('Crapeau');
-        $user->setPassword('root');
-        $user->setRoles((array)'ROLE_ADMIN');
-        $manager->persist($user);
+        $user->setEmail($users[0]);
+        $user->setFirstName($users[1]);
+        $user->setLastName($users[2]);
+        $user->setPassword($users[3]);
+        $user->setRoles($users[4]);
+        $manager->persist($users[5]);
 
         for($i = 0 ; $i < count($arrayLocation) ; $i++) {
             $location = new Location();
@@ -52,20 +63,20 @@ class AppFixtures extends Fixture
             $locations[] = $location;
         }
 
-        for($a = 1 ; $a < 4 ; $a++) {
+        for($a = 0 ; $a < 3 ; $a++) {
             $trip = new Trip();
-            $trip->setName('Voyage numéro ' . $a);
+            $trip->setName($tripNames[$a]);
             $trip->addTraveler($user);
 
-            for($tdl = 1 ; $tdl < 4 ; $tdl++){
+            for($tdl = 0 ; $tdl < 3 ; $tdl++){
                 $toDoList = new ToDoList();
-                $toDoList->setName('ToDoList ' . $tdl);
+                $toDoList->setName($toDoListNames[$tdl]);
 
                 /*********** TASKS ***********/
-                for($i = 1 ; $i < 5 ; $i++) {
+                for($i = 0 ; $i < 4 ; $i++) {
                     $task = new Task();
-                    $task->setName('Tâche ' . $i);
-                    $task->setDescription('description tâche ' . $i);
+                    $task->setName($taskNames[$i]);
+                    $task->setDescription($taskNames[$i]);
                     $task->setCreator($user);
                     $task->setDate((new DateTime('now'))->modify('+2 days'));
                     $toDoList->addTask($task);
@@ -78,12 +89,12 @@ class AppFixtures extends Fixture
 
             /*********** COSTS ***********/
 
-            for($i = 1; $i < 6; $i++)
+            for($i = 0; $i < 5; $i++)
             {
                 $cost = new Cost();
-                $cost->setLabel('Cost number ' . $i);
+                $cost->setLabel($costNames[$i]);
                 $cost->setValue(10 * $i);
-                $cost->setCategory("category " . $i);
+                $cost->setCategory($costCategories[$i]);
                 $cost->setBeneficiaries($user->getFirstName() . $user->getLastName());
                 $cost->setCreator($user);
                 $trip->addCost($cost);
@@ -94,18 +105,18 @@ class AppFixtures extends Fixture
 
             for($j = 0 ; $j < 7; $j++) {
                 $pointOfInterest = new PointOfInterest();
-                $pointOfInterest->setDescription('Point of Interest ' . $j);
-                $pointOfInterest->setCreator($user);
                 $pointOfInterest->setLocation($locations[$j]);
+                $pointOfInterest->setDescription($locations[$j]->getName());
+                $pointOfInterest->setCreator($user);
                 $trip->addPointsOfInterest($pointOfInterest);
                 $manager->persist($pointOfInterest);
             }
 
             for($j = 0 ; $j < 4; $j++) {
                 $step = new Step();
-                $step->setDescription('Step ' . $j);
-                $step->setCreator($user);
                 $step->setLocation($locations[$j + 7]);
+                $step->setDescription($locations[$j + 7]->getName());
+                $step->setCreator($user);
                 $trip->addStep($step);
                 $manager->persist($step);
             }
@@ -123,5 +134,6 @@ class AppFixtures extends Fixture
         }
 
         $manager->flush();
+        #endregion
     }
 }
