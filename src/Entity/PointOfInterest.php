@@ -17,7 +17,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
     itemOperations: ['get' => ['normalization_context' => ['groups' => 'pointOfInterest:item']],
         'point_of_interest_new' => [
             'method' => 'POST',
-            'path' => '/pointOfInterests',
+            'path' => '/point_of_interests',
             'controller' => PointOfInterestController::class,
         ],
         'put',
@@ -25,7 +25,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
         ],
     order: ['trip' => 'ASC'],
     paginationEnabled: false,
-    routePrefix: '/pointOfInterest',
 )]
 class PointOfInterest
 {
