@@ -46,12 +46,12 @@ class AppFixtures extends Fixture
 
         #region Factory
         $user = new User();
-        $user->setEmail($users[0]);
-        $user->setFirstName($users[1]);
-        $user->setLastName($users[2]);
-        $user->setPassword($users[3]);
-        $user->setRoles($users[4]);
-        $manager->persist($users[5]);
+        $user->setEmail($users[0][0]);
+        $user->setFirstName($users[0][1]);
+        $user->setLastName($users[0][2]);
+        $user->setPassword($users[0][3]);
+        $user->setRoles($users[0][4]);
+        $manager->persist($user);
 
         for($i = 0 ; $i < count($arrayLocation) ; $i++) {
             $location = new Location();
