@@ -17,7 +17,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
     itemOperations: ['get' => ['normalization_context' => ['groups' => 'trip:item']],
         'trip_new' => [
             'method' => 'POST',
-            'path' => '/api/trips',
+            'path' => '/trips',
             'controller' => TripController::class,
         ],
         'put',

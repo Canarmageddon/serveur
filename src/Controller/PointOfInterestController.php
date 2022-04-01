@@ -17,7 +17,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 #[AsController]
 class PointOfInterestController extends AbstractController
 {
-    #[Route('/api/pointOfInterests', name: 'point_of_interest_new', methods: 'POST')]
+    #[Route('/pointOfInterests', name: 'point_of_interest_new', methods: 'POST')]
     public function new(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer): Response
     {
         try {

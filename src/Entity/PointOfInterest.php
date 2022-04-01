@@ -17,7 +17,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
     itemOperations: ['get' => ['normalization_context' => ['groups' => 'pointOfInterest:item']],
         'point_of_interest_new' => [
             'method' => 'POST',
-            'path' => '/api/pointOfInterests',
+            'path' => '/pointOfInterests',
             'controller' => PointOfInterestController::class,
         ],
         'put',
