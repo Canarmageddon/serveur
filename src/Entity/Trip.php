@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Controller\TripController;
 use App\Repository\TripRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -13,7 +14,15 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: TripRepository::class)]
 #[ApiResource(
     collectionOperations: ['get' => ['normalization_context' => ['groups' => 'trip:list']]],
-    itemOperations: ['get' => ['normalization_context' => ['groups' => 'trip:item']]],
+    itemOperations: ['get' => ['normalization_context' => ['groups' => 'trip:item']],
+        'trip_new' => [
+            'method' => 'POST',
+            'path' => '/trips',
+            'controller' => TripController::class,
+        ],
+        'put',
+        'delete',
+    ],
     order: ['name' => 'ASC'],
     paginationEnabled: false,
 )]

@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Controller\PointOfInterestController;
 use App\Repository\PointOfInterestRepository;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -13,7 +14,15 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: PointOfInterestRepository::class)]
 #[ApiResource(
     collectionOperations: ['get' => ['normalization_context' => ['groups' => 'pointOfInterest:list']]],
-    itemOperations: ['get' => ['normalization_context' => ['groups' => 'pointOfInterest:item']]],
+    itemOperations: ['get' => ['normalization_context' => ['groups' => 'pointOfInterest:item']],
+        'point_of_interest_new' => [
+            'method' => 'POST',
+            'path' => '/point_of_interests',
+            'controller' => PointOfInterestController::class,
+        ],
+        'put',
+        'delete',
+        ],
     order: ['trip' => 'ASC'],
     paginationEnabled: false,
 )]

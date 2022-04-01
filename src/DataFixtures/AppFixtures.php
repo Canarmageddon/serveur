@@ -19,7 +19,7 @@ class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        #region datas
+        #region Data
         $arrayLocation = [];
         $arrayLocation[] = ['Gare de Strasbourg', 'Gare', 48.5850678, 7.7345492];
         $arrayLocation[] = ['Château du Haut-Koenigsbourg', 'Monument historique', 48.2494853, 7.3444831];
@@ -93,9 +93,9 @@ class AppFixtures extends Fixture
             {
                 $cost = new Cost();
                 $cost->setLabel($costNames[$i]);
-                $cost->setValue(10 * $i);
+                $cost->setValue(10 * $i + 5);
                 $cost->setCategory($costCategories[$i]);
-                $cost->setBeneficiaries($user->getFirstName() . $user->getLastName());
+                $cost->setBeneficiaries($user);
                 $cost->setCreator($user);
                 $trip->addCost($cost);
                 $manager->persist($cost);
