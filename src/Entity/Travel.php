@@ -19,19 +19,19 @@ class Travel
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(['travel:list', 'travel:item'])]
+    #[Groups(['travel:list', 'travel:item', 'trip:list', 'trip:item'])]
     private ?int $id;
 
     #[ORM\ManyToOne(targetEntity: Location::class, inversedBy: 'starts')]
-    #[Groups(['travel:list', 'travel:item'])]
+    #[Groups(['travel:list', 'travel:item', 'trip:list', 'trip:item'])]
     private ?Location $start;
 
     #[ORM\ManyToOne(targetEntity: Location::class, inversedBy: 'ends')]
-    #[Groups(['travel:list', 'travel:item'])]
+    #[Groups(['travel:list', 'travel:item', 'trip:list', 'trip:item'])]
     private ?Location $end;
 
     #[ORM\Column(type: 'integer')]
-    #[Groups(['travel:list', 'travel:item'])]
+    #[Groups(['travel:list', 'travel:item', 'trip:list', 'trip:item'])]
     private ?int $duration;
 
     #[ORM\ManyToOne(targetEntity: Trip::class, inversedBy: 'travels')]
