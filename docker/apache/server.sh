@@ -2,7 +2,7 @@
 
 cd /server
 
-composer install && symfony server:start
+composer install && symfony console cache:clear && symfony server:start && symfony console d:f:l -n
 
 
 
