@@ -14,7 +14,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class TripController extends AbstractController
 {
-    #[Route('/trips', name: 'trip_new', methods: 'POST')]
+    #[Route('/trips/new', name: 'trip_new', methods: 'POST')]
     public function new(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer): Response
     {
         try {
