@@ -34,7 +34,7 @@ class Location
     private ?float $longitude;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(['location:list', 'location:item'])]
+    #[Groups(['location:list', 'location:item', 'pointOfInterest:list', 'pointOfInterest:item'])]
     private ?string $name;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
