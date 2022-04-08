@@ -2,7 +2,7 @@
 
 cd /server
 
-composer install && php bin/console d:s:u -f && symfony server:start
+composer install && symfony server:start
 
 
 

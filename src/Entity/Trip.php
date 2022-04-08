@@ -31,7 +31,7 @@ class Trip
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(['trip:list', 'trip:item'])]
+    #[Groups(['trip:list', 'trip:item', 'travel:list', 'travel:item'])]
     private ?int $id;
 
     #[ORM\OneToMany(mappedBy: 'trip', targetEntity: User::class)]
