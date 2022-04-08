@@ -12,7 +12,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiResource(
     collectionOperations: ['get' => ['normalization_context' => ['groups' => 'picture:list']]],
     itemOperations: ['get' => ['normalization_context' => ['groups' => 'picture:item']]],
-    order: ['album' => 'ASC'],
     paginationEnabled: false,
 )]
 class Picture

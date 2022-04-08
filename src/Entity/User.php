@@ -16,7 +16,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiResource(
     collectionOperations: ['get' => ['normalization_context' => ['groups' => 'user:list']]],
     itemOperations: ['get' => ['normalization_context' => ['groups' => 'user:item']]],
-    order: ['creationDate' => 'ASC'],
     paginationEnabled: false,
 )]
 class User implements UserInterface, PasswordAuthenticatedUserInterface

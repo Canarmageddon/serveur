@@ -13,17 +13,17 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PointOfInterestRepository::class)]
 #[ApiResource(
-    collectionOperations: ['get' => ['normalization_context' => ['groups' => 'pointOfInterest:list']]],
-    itemOperations: ['get' => ['normalization_context' => ['groups' => 'pointOfInterest:item']],
-        'point_of_interest_new' => [
+    collectionOperations: [
+        'get' => ['normalization_context' => ['groups' => 'pointOfInterest:list']],
+        'post' => [
             'method' => 'POST',
-            'path' => '/point_of_interests',
-            'controller' => PointOfInterestController::class,
-        ],
+            'path' => '/point_of_interests/new',
+        ]],
+    itemOperations: [
+        'get' => ['normalization_context' => ['groups' => 'pointOfInterest:item']],
         'put',
         'delete',
         ],
-    order: ['trip' => 'ASC'],
     paginationEnabled: false,
 )]
 class PointOfInterest

@@ -14,7 +14,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiResource(
     collectionOperations: ['get' => ['normalization_context' => ['groups' => 'step:list']]],
     itemOperations: ['get' => ['normalization_context' => ['groups' => 'step:item']]],
-    order: ['trip' => 'ASC'],
     paginationEnabled: false,
 )]
 class Step

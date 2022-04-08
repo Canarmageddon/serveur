@@ -23,7 +23,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
         'put',
         'delete',
     ],
-    order: ['name' => 'ASC'],
     paginationEnabled: false,
 )]
 class Trip
