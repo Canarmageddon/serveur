@@ -14,7 +14,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiResource(
     collectionOperations: ['get' => ['normalization_context' => ['groups' => 'location:list']]],
     itemOperations: ['get' => ['normalization_context' => ['groups' => 'location:item']]],
-    order: ['name' => 'ASC'],
     paginationEnabled: false,
 )]
 class Location
@@ -34,7 +33,7 @@ class Location
     private ?float $longitude;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(['location:list', 'location:item'])]
+    #[Groups(['location:list', 'location:item', 'pointOfInterest:list', 'pointOfInterest:item', 'trip:list', 'trip:item'])]
     private ?string $name;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]

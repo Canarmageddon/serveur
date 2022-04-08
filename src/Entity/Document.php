@@ -14,7 +14,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiResource(
     collectionOperations: ['get' => ['normalization_context' => ['groups' => 'document:list']]],
     itemOperations: ['get' => ['normalization_context' => ['groups' => 'document:item']]],
-    order: ['name' => 'ASC'],
     paginationEnabled: false,
 )]
 class Document
