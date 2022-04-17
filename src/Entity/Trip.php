@@ -15,14 +15,22 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiResource(
     collectionOperations: [
         'get' => ['normalization_context' => ['groups' => 'trip:list']],
-        'post' => [
+        'new' => [
             'method' => 'POST',
-            'path' => '/trips/new',
+            'route_name' => 'trip_new',
         ]],
     itemOperations: [
         'get' => ['normalization_context' => ['groups' => 'trip:item']],
         'put',
         'delete',
+        'poi' => [
+            'method' => 'GET',
+            'route_name' => 'poi_by_trip',
+        ],
+        'steps' => [
+            'method' => 'GET',
+            'route_name' => 'steps_by_trip',
+        ]
     ],
     paginationEnabled: false,
 )]
