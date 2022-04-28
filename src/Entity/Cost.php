@@ -12,7 +12,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiResource(
     collectionOperations: ['get' => ['normalization_context' => ['groups' => 'cost:list']]],
     itemOperations: ['get' => ['normalization_context' => ['groups' => 'cost:item']]],
-    order: ['creationDate' => 'DESC', 'trip' => 'ASC'],
     paginationEnabled: false,
 )]
 class Cost

@@ -14,7 +14,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class TripController extends AbstractController
 {
-    #[Route('/trips', name: 'trip_new', methods: 'POST')]
+    #[Route('/api/trips/new', name: 'trip_new', methods: 'POST')]
     public function new(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer): Response
     {
         try {
@@ -23,7 +23,7 @@ class TripController extends AbstractController
             $entityManager->persist($trip);
             $entityManager->flush();
 
-            return $this->json($trip, 201, [], ['groups' => 'trip:list']);
+            return $this->json($trip, 201, [], ['groups' => 'trip:item']);
         }
         catch (NotEncodableValueException $e)
         {
@@ -31,6 +31,34 @@ class TripController extends AbstractController
                 'status' => 400,
                 'message' => $e->getMessage()
             ], 400);
+        }
+    }
+
+    #[Route('/api/trips/{id}/steps', name: 'steps_by_trip', methods: 'GET')]
+    public function steps(EntityManagerInterface $entityManager, int $id): Response
+    {
+        /** @var Trip $trip */
+        $trip = $entityManager->getRepository(Trip::class)->find($id);
+        if ($trip != null) {
+            return $this->json($trip->getSteps(), 201, [], ['groups' => 'step:item']);
+        } else {
+            return $this->json([
+                'message' => 'Trip ' . $id . ' not found',
+            ], 404);
+        }
+    }
+
+    #[Route('/api/trips/{id}/poi', name: 'poi_by_trip', methods: 'GET')]
+    public function poi(EntityManagerInterface $entityManager, int $id): Response
+    {
+        /** @var Trip $trip */
+        $trip = $entityManager->getRepository(Trip::class)->find($id);
+        if ($trip != null) {
+            return $this->json($trip->getPointsOfInterest(), 201, [], ['groups' => 'pointOfInterest:item']);
+        } else {
+            return $this->json([
+                'message' => 'Trip ' . $id . ' not found',
+            ], 404);
         }
     }
 }

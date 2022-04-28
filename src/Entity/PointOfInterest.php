@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\Controller\PointOfInterestController;
 use App\Repository\PointOfInterestRepository;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -13,17 +12,47 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PointOfInterestRepository::class)]
 #[ApiResource(
-    collectionOperations: ['get' => ['normalization_context' => ['groups' => 'pointOfInterest:list']]],
-    itemOperations: ['get' => ['normalization_context' => ['groups' => 'pointOfInterest:item']],
-        'point_of_interest_new' => [
+    collectionOperations: [
+        'get' => ['normalization_context' => ['groups' => 'pointOfInterest:list']],
+        'new' => [
             'method' => 'POST',
-            'path' => '/point_of_interests',
-            'controller' => PointOfInterestController::class,
-        ],
+            'route_name' => 'point_of_interest_new',
+            'openapi_context' => [
+                'summary'     => 'Create a point of interest',
+                'description' => "Longitude and latitude needed, others are nullable",
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema'  => [
+                                'type' => 'object',
+                                'properties' =>
+                                    [
+                                        'latitude' => ['type' => 'float'],
+                                        'longitude' => ['type' => 'float'],
+                                        'title' => ['type' => 'string'],
+                                        'description' => ['type' => 'string'],
+                                        'creator' => ['type' => 'string'],
+                                        'trip' => ['type' => 'string'],
+                                    ],
+                            ],
+                            'example' => [
+                                'latitude' => 48.123,
+                                'longitude' => 7.123,
+                                'title' => "Title",
+                                'description' => "Brief POI description",
+                                'creator' => "/api/users/id",
+                                'trip' => "/api/trips/id",
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ]],
+    itemOperations: [
+        'get' => ['normalization_context' => ['groups' => 'pointOfInterest:item']],
         'put',
         'delete',
         ],
-    order: ['trip' => 'ASC'],
     paginationEnabled: false,
 )]
 class PointOfInterest

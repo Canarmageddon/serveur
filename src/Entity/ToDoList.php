@@ -13,7 +13,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiResource(
     collectionOperations: ['get' => ['normalization_context' => ['groups' => 'toDoList:list']]],
     itemOperations: ['get' => ['normalization_context' => ['groups' => 'toDoList:item']]],
-    order: ['trip' => 'ASC'],
     paginationEnabled: false,
 )]
 class ToDoList

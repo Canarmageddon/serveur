@@ -14,9 +14,25 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ApiResource(
-    collectionOperations: ['get' => ['normalization_context' => ['groups' => 'user:list']]],
-    itemOperations: ['get' => ['normalization_context' => ['groups' => 'user:item']]],
-    order: ['creationDate' => 'ASC'],
+    collectionOperations: [
+        'get' => ['normalization_context' => ['groups' => 'user:list']],
+        'byEmail' => [
+            'method' => 'GET',
+            'route_name' => 'user_by_email',
+            "openapi_context" => [
+                "parameters" => [
+                    [
+                        "name" => "email",
+                        "type" => "string",
+                        "in" => "path",
+                        "required" => true,
+                    ]
+                ]
+            ]
+        ]],
+    itemOperations: [
+        'get' => ['normalization_context' => ['groups' => 'user:item']],
+        ],
     paginationEnabled: false,
 )]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
