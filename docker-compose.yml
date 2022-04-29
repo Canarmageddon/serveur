@@ -24,8 +24,6 @@ services:
     container_name: db
     env_file:
       - .bdd.env
-    ports:
-      - '3306:3306'
     volumes:
       - /datadir/mysql:/var/lib/mysql
     labels:
