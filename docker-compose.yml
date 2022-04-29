@@ -8,29 +8,29 @@ services:
       dockerfile: ./docker/apache/Dockerfile
     depends_on:
       - db
+    links:
+      - db
     volumes:
       - ./:/server/
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.php.rule=Host(`api.26.muffin.pm`)"
+      - "traefik.http.routers.php.rule=Host(`vm-26.iutrs.unistra.fr`)"
       - "traefik.docker.network=frontend_default"
       - "traefik.http.routers.php.entrypoints=web"
       - "traefik.http.services.php.loadbalancer.server.port=8000"
-    
+
   db:
     image: mysql:5.7
     container_name: db
-    environment:
-      MYSQL_ROOT_PASSWORD: secret
-      MYSQL_USER: symfony
-      MYSQL_PASSWORD: symfony
+    env_file:
+      - .bdd.env
     ports:
       - '3306:3306'
     volumes:
       - /datadir/mysql:/var/lib/mysql
     labels:
       - "traefik.enable=false"
-    
+
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -44,7 +44,7 @@ services:
     restart: always
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.pma.rule=Host(`api.26.muffin.pm`)"
+      - "traefik.http.routers.pma.rule=Host(`vm-26.iutrs.unistra.fr`)"
       - "traefik.docker.network=frontend_default"
       - "traefik.http.routers.pma.entrypoints=entrypma"
       - "traefik.http.services.pma.loadbalancer.server.port=80"
