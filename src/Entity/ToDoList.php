@@ -20,15 +20,15 @@ class ToDoList
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(['toDoList:list', 'toDoList:item'])]
+    #[Groups(['toDoList:list', 'toDoList:item', 'trip:item'])]
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(['toDoList:list', 'toDoList:item'])]
+    #[Groups(['toDoList:list', 'toDoList:item', 'trip:item'])]
     private ?string $name;
 
     #[ORM\OneToMany(mappedBy: 'toDoList', targetEntity: Task::class)]
-    #[Groups(['toDoList:list', 'toDoList:item'])]
+    #[Groups(['toDoList:list', 'toDoList:item', 'trip:item'])]
     private Collection $tasks;
 
     #[ORM\ManyToOne(targetEntity: Trip::class, inversedBy: 'toDoLists')]
