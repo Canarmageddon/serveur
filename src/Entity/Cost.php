@@ -11,7 +11,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: CostRepository::class)]
 #[ApiResource(
     collectionOperations: ['get' => ['normalization_context' => ['groups' => 'cost:list']]],
-    itemOperations: ['get' => ['normalization_context' => ['groups' => 'cost:item']]],
+    itemOperations: [
+        'get' => ['normalization_context' => ['groups' => 'cost:item']],
+        'delete'
+    ],
     paginationEnabled: false,
 )]
 class Cost

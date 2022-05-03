@@ -18,10 +18,18 @@ use Symfony\Component\Serializer\Annotation\Groups;
         'new' => [
             'method' => 'POST',
             'route_name' => 'trip_new',
-        ]],
+        ],
+        'addUser' => [
+            'method' => 'POST',
+            'route_name' => 'trip_add_user'
+        ],
+        'removeUser' => [
+            'method' => 'POST',
+            'route_name' => 'trip_remove_user'
+        ]
+    ],
     itemOperations: [
         'get' => ['normalization_context' => ['groups' => 'trip:item']],
-        'put',
         'delete',
         'poi' => [
             'method' => 'GET',
@@ -50,7 +58,7 @@ class Trip
     #[Groups(['trip:list', 'trip:item'])]
     private ?Album $album;
 
-    #[ORM\OneToMany(mappedBy: 'trip', targetEntity: Cost::class)]
+    #[ORM\OneToMany(mappedBy: 'trip', targetEntity: Cost::class,  cascade: ['persist', 'remove'])]
     #[Groups(['trip:list', 'trip:item'])]
     private Collection $costs;
 
@@ -58,19 +66,19 @@ class Trip
     #[Groups(['trip:list', 'trip:item'])]
     private ?string $name;
 
-    #[ORM\OneToMany(mappedBy: 'trip', targetEntity: ToDoList::class)]
+    #[ORM\OneToMany(mappedBy: 'trip', targetEntity: ToDoList::class, cascade: ['persist', 'remove'])]
     #[Groups(['trip:list', 'trip:item'])]
     private Collection $toDoLists;
 
-    #[ORM\OneToMany(mappedBy: 'trip', targetEntity: PointOfInterest::class)]
+    #[ORM\OneToMany(mappedBy: 'trip', targetEntity: PointOfInterest::class, cascade: ['persist', 'remove'])]
     #[Groups(['trip:list', 'trip:item'])]
     private Collection $pointsOfInterest;
 
-    #[ORM\OneToMany(mappedBy: 'trip', targetEntity: Step::class)]
+    #[ORM\OneToMany(mappedBy: 'trip', targetEntity: Step::class, cascade: ['persist', 'remove'])]
     #[Groups(['trip:list', 'trip:item'])]
     private Collection $steps;
 
-    #[ORM\OneToMany(mappedBy: 'trip', targetEntity: Travel::class)]
+    #[ORM\OneToMany(mappedBy: 'trip', targetEntity: Travel::class, cascade: ['persist', 'remove'])]
     #[Groups(['trip:list', 'trip:item'])]
     private Collection $travels;
 

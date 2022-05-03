@@ -13,7 +13,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource(
     collectionOperations: ['get' => ['normalization_context' => ['groups' => 'album:list']]],
-    itemOperations: ['get' => ['normalization_context' => ['groups' => 'album:item']]],
+    itemOperations: [
+        'get' => ['normalization_context' => ['groups' => 'album:item']],
+        'delete'
+    ],
     paginationEnabled: false,
 )]
 class Album
@@ -24,11 +27,11 @@ class Album
     #[Groups(['album:list', 'album:item'])]
     private $id;
 
-    #[ORM\OneToOne(inversedBy: 'album', targetEntity: Trip::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(inversedBy: 'album', targetEntity: Trip::class, cascade: ['persist'])]
     #[Groups(['album:list', 'album:item'])]
     private ?Trip $trip;
 
-    #[ORM\OneToMany(mappedBy: 'album', targetEntity: Picture::class)]
+    #[ORM\OneToMany(mappedBy: 'album', targetEntity: Picture::class, cascade: ['persist', 'remove'])]
     #[Groups(['album:list', 'album:item'])]
 
     private Collection $pictures;

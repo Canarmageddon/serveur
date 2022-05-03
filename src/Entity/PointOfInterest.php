@@ -47,10 +47,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
                     ],
                 ],
             ],
-        ]],
+        ],
+    ],
     itemOperations: [
         'get' => ['normalization_context' => ['groups' => 'pointOfInterest:item']],
-        'put',
         'delete',
         ],
     paginationEnabled: false,

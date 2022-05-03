@@ -10,7 +10,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: TravelRepository::class)]
 #[ApiResource(
     collectionOperations: ['get' => ['normalization_context' => ['groups' => 'travel:list']]],
-    itemOperations: ['get' => ['normalization_context' => ['groups' => 'travel:item']]],
+    itemOperations: [
+        'get' => ['normalization_context' => ['groups' => 'travel:item']],
+        'delete'
+    ],
     paginationEnabled: false,
 )]
 class Travel
@@ -21,14 +24,6 @@ class Travel
     #[Groups(['travel:list', 'travel:item', 'trip:list', 'trip:item'])]
     private ?int $id;
 
-    #[ORM\ManyToOne(targetEntity: Location::class, inversedBy: 'starts')]
-    #[Groups(['travel:list', 'travel:item', 'trip:list', 'trip:item'])]
-    private ?Location $start;
-
-    #[ORM\ManyToOne(targetEntity: Location::class, inversedBy: 'ends')]
-    #[Groups(['travel:list', 'travel:item', 'trip:list', 'trip:item'])]
-    private ?Location $end;
-
     #[ORM\Column(type: 'integer')]
     #[Groups(['travel:list', 'travel:item', 'trip:list', 'trip:item'])]
     private ?int $duration;
@@ -37,33 +32,17 @@ class Travel
     #[Groups(['travel:list', 'travel:item'])]
     private ?Trip $trip;
 
+    #[ORM\ManyToOne(targetEntity: Step::class, inversedBy: 'starts')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Step $start;
+
+    #[ORM\ManyToOne(targetEntity: Step::class, inversedBy: 'ends')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Step $end;
+
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getStart(): ?Location
-    {
-        return $this->start;
-    }
-
-    public function setStart(?Location $start): self
-    {
-        $this->start = $start;
-
-        return $this;
-    }
-
-    public function getEnd(): ?Location
-    {
-        return $this->end;
-    }
-
-    public function setEnd(?Location $end): self
-    {
-        $this->end = $end;
-
-        return $this;
     }
 
     public function getDuration(): ?int
@@ -86,6 +65,30 @@ class Travel
     public function setTrip(?Trip $trip): self
     {
         $this->trip = $trip;
+
+        return $this;
+    }
+
+    public function getStart(): ?Step
+    {
+        return $this->start;
+    }
+
+    public function setStart(?Step $start): self
+    {
+        $this->start = $start;
+
+        return $this;
+    }
+
+    public function getEnd(): ?Step
+    {
+        return $this->end;
+    }
+
+    public function setEnd(?Step $end): self
+    {
+        $this->end = $end;
 
         return $this;
     }

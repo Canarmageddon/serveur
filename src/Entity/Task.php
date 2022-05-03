@@ -12,7 +12,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: TaskRepository::class)]
 #[ApiResource(
     collectionOperations: ['get' => ['normalization_context' => ['groups' => 'task:list']]],
-    itemOperations: ['get' => ['normalization_context' => ['groups' => 'task:item']]],
+    itemOperations: [
+        'get' => ['normalization_context' => ['groups' => 'task:item']],
+        'delete'
+    ],
     paginationEnabled: false,
 )]
 class Task

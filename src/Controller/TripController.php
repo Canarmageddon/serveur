@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Dto\TripDto\userInput;
 use App\Entity\Location;
 use App\Entity\Trip;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -59,6 +61,116 @@ class TripController extends AbstractController
             return $this->json([
                 'message' => 'Trip ' . $id . ' not found',
             ], 404);
+        }
+    }
+
+    #[Route('/api/trips/addUser', name: 'trip_add_user', methods: 'POST')]
+    public function addUser(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer): Response
+    {
+        try {
+            $data = $request->getContent();
+            /** @var UserInput $userInput */
+            $userInput = $serializer->deserialize($data, UserInput::class, 'json');
+            $emailUser = $userInput->getEmailUser();
+            $idTrip = $userInput->getIdTrip();
+            /** @var User $user */
+            $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $emailUser]);
+            /** @var Trip $trip */
+            $trip = $entityManager->getRepository(Trip::class)->find($idTrip);
+
+            if($user != null && $trip != null) {
+                //Vérifier si l'user est déjà dans le trip, sinon, l'ajouter et flush
+                if (!$trip->getTravelers()->contains($user)) {
+                    $trip->addTraveler($user);
+                    $entityManager->persist($trip);
+                    $entityManager->flush();
+                    return $this->json([
+                        'message' => 'User ' . $emailUser . ' added to ' . $idTrip . ' Trip',
+                    ], 201);
+
+                } else {
+                    return $this->json([
+                        'message' => 'User ' . $emailUser . ' already member of ' . $idTrip . ' Trip',
+                    ], 201);
+                }
+
+            } elseif ($user == null && $trip == null) {
+                return $this->json([
+                    'message' => 'Trip ' . $idTrip . ' and User ' . $emailUser . ' not found',
+                ], 404);
+
+            } elseif ($user == null) {
+                return $this->json([
+                    'message' => 'User ' . $emailUser . ' not found',
+                ], 404);
+
+            } else {
+                return $this->json([
+                    'message' => 'Trip ' . $idTrip . ' not found',
+                ], 404);
+            }
+        }
+        catch (NotEncodableValueException $e)
+        {
+            return $this->json([
+                'status' => 400,
+                'message' => $e->getMessage()
+            ], 400);
+        }
+    }
+
+    #[Route('/api/trips/removeUser', name: 'trip_remove_user', methods: 'POST')]
+    public function removeUser(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer): Response
+    {
+        try {
+            $data = $request->getContent();
+            /** @var userInput $userInput */
+            $userInput = $serializer->deserialize($data, UserInput::class, 'json');
+            $emailUser = $userInput->getEmailUser();
+            $idTrip = $userInput->getIdTrip();
+            /** @var User $user */
+            $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $emailUser]);
+            /** @var Trip $trip */
+            $trip = $entityManager->getRepository(Trip::class)->find($idTrip);
+
+            if($user != null && $trip != null) {
+                //Vérifier si l'user est déjà dans le trip, si oui, l'enlever et flush
+                if ($trip->getTravelers()->contains($user)) {
+                    $trip->removeTraveler($user);
+                    $entityManager->persist($trip);
+                    $entityManager->flush();
+                    return $this->json([
+                        'message' => 'User ' . $emailUser . ' removed from ' . $idTrip . ' Trip',
+                    ], 201);
+
+                } else {
+                    return $this->json([
+                        'message' => 'User ' . $emailUser . ' already member of ' . $idTrip . ' Trip',
+                    ], 201);
+                }
+
+            } elseif ($user == null && $trip == null) {
+                return $this->json([
+                    'message' => 'Trip ' . $idTrip . ' and User ' . $emailUser . ' not found',
+                ], 404);
+
+            } elseif ($user == null) {
+                return $this->json([
+                    'message' => 'User ' . $emailUser . ' not found',
+                ], 404);
+
+            } else {
+                return $this->json([
+                    'message' => 'Trip ' . $idTrip . ' not found',
+                ], 404);
+            }
+        }
+        catch (NotEncodableValueException $e)
+        {
+            return $this->json([
+                'status' => 400,
+                'message' => $e->getMessage()
+            ], 400);
         }
     }
 }

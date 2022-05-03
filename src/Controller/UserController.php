@@ -19,7 +19,7 @@ class UserController extends AbstractController
             return $this->json($user, 201, [], ['groups' => 'user:item']);
         } else {
             return $this->json([
-                'message' => 'User with email  ' . $email . ' not found',
+                'message' => 'User with email ' . $email . ' not found',
             ], 404);
         }
     }

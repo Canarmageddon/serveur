@@ -13,7 +13,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: LocationRepository::class)]
 #[ApiResource(
     collectionOperations: ['get' => ['normalization_context' => ['groups' => 'location:list']]],
-    itemOperations: ['get' => ['normalization_context' => ['groups' => 'location:item']]],
+    itemOperations: [
+        'get' => ['normalization_context' => ['groups' => 'location:item']],
+        'delete'
+    ],
     paginationEnabled: false,
 )]
 class Location
@@ -40,21 +43,13 @@ class Location
     #[Groups(['location:list', 'location:item'])]
     private ?string $type;
 
-    #[ORM\OneToMany(mappedBy: 'location', targetEntity: PointOfInterest::class)]
+    #[ORM\OneToMany(mappedBy: 'location', targetEntity: PointOfInterest::class, cascade: ['persist', 'remove'])]
     #[Groups(['location:list', 'location:item'])]
     private Collection $pointOfInterests;
 
-    #[ORM\OneToMany(mappedBy: 'location', targetEntity: Step::class)]
+    #[ORM\OneToMany(mappedBy: 'location', targetEntity: Step::class,  cascade: ['persist', 'remove'])]
     #[Groups(['location:list', 'location:item'])]
     private Collection $steps;
-
-    #[ORM\OneToMany(mappedBy: 'start', targetEntity: Travel::class)]
-    #[Groups(['location:list', 'location:item'])]
-    private Collection $starts;
-
-    #[ORM\OneToMany(mappedBy: 'end', targetEntity: Travel::class)]
-    #[Groups(['location:list', 'location:item'])]
-    private Collection $ends;
 
     #[ORM\OneToMany(mappedBy: 'location', targetEntity: Picture::class)]
     #[Groups(['location:list', 'location:item'])]
@@ -64,8 +59,6 @@ class Location
     {
         $this->pointOfInterests = new ArrayCollection();
         $this->steps = new ArrayCollection();
-        $this->starts = new ArrayCollection();
-        $this->ends = new ArrayCollection();
         $this->pictures = new ArrayCollection();
     }
 
@@ -176,66 +169,6 @@ class Location
             // set the owning side to null (unless already changed)
             if ($step->getLocation() === $this) {
                 $step->setLocation(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Travel>
-     */
-    public function getStarts(): Collection
-    {
-        return $this->starts;
-    }
-
-    public function addStart(Travel $travel): self
-    {
-        if (!$this->starts->contains($travel)) {
-            $this->starts[] = $travel;
-            $travel->setStart($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTravel(Travel $travel): self
-    {
-        if ($this->starts->removeElement($travel)) {
-            // set the owning side to null (unless already changed)
-            if ($travel->getStart() === $this) {
-                $travel->setStart(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Travel>
-     */
-    public function getEnds(): Collection
-    {
-        return $this->ends;
-    }
-
-    public function addEnd(Travel $end): self
-    {
-        if (!$this->ends->contains($end)) {
-            $this->ends[] = $end;
-            $end->setEnd($this);
-        }
-
-        return $this;
-    }
-
-    public function removeEnd(Travel $end): self
-    {
-        if ($this->ends->removeElement($end)) {
-            // set the owning side to null (unless already changed)
-            if ($end->getEnd() === $this) {
-                $end->setEnd(null);
             }
         }
 
