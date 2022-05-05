@@ -78,12 +78,9 @@ class Picture
     private ?Location $location;
 
     #[ORM\ManyToOne(targetEntity: Album::class, inversedBy: 'pictures')]
-    #[Groups(['picture:list', 'picture:item'])]
+    #[Groups(['picture:list', 'picture:item', 'picture:read'])]
     private ?Album $album;
 
-    #[ApiProperty(iri: 'http://schema.org/contentUrl')]
-    #[Groups(['picture:read'])]
-    public ?string $contentUrl = null;
 
     /**
      * @Vich\UploadableField(mapping="picture", fileNameProperty="filePath")

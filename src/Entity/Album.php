@@ -24,7 +24,7 @@ class Album
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(['album:list', 'album:item'])]
+    #[Groups(['album:list', 'album:item', 'picture:read'])]
     private $id;
 
     #[ORM\OneToOne(inversedBy: 'album', targetEntity: Trip::class, cascade: ['persist'])]
