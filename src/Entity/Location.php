@@ -13,7 +13,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: LocationRepository::class)]
 #[ApiResource(
     collectionOperations: [
-        'get' => ['normalization_context' => ['groups' => 'location:list']],
+        'get' => [
+            'normalization_context' => ['groups' => 'location:list']],
         'new' => [
             'method' => 'POST',
             'route_name' => 'location_new',

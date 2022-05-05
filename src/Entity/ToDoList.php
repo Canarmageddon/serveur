@@ -7,11 +7,18 @@ use App\Repository\ToDoListRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ToDoListRepository::class)]
 #[ApiResource(
-    collectionOperations: ['get' => ['normalization_context' => ['groups' => 'toDoList:list']]],
+    collectionOperations: [
+        'get' => ['normalization_context' => ['groups' => 'toDoList:list']],
+        'new' => [
+            'method' => 'POST',
+            'route_name' => 'toDoList_new',
+        ]
+    ],
     itemOperations: [
         'get' => ['normalization_context' => ['groups' => 'toDoList:item']],
         'delete'
@@ -38,7 +45,7 @@ class ToDoList
     #[Groups(['toDoList:list', 'toDoList:item'])]
     private ?Trip $trip;
 
-    public function __construct()
+    #[Pure] public function __construct()
     {
         $this->tasks = new ArrayCollection();
     }
