@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Dto\TripDto\userInput;
+use App\Dto\TripDto\UserInput;
 use App\Entity\Location;
 use App\Entity\Trip;
 use App\Entity\User;
@@ -124,7 +124,7 @@ class TripController extends AbstractController
     {
         try {
             $data = $request->getContent();
-            /** @var userInput $userInput */
+            /** @var UserInput $userInput */
             $userInput = $serializer->deserialize($data, UserInput::class, 'json');
             $emailUser = $userInput->getEmailUser();
             $idTrip = $userInput->getIdTrip();
