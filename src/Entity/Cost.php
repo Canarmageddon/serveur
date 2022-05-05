@@ -27,23 +27,23 @@ class Cost
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(['cost:list', 'cost:item'])]
+    #[Groups(['cost:list', 'cost:item', 'trip:item'])]
     private ?int $id;
 
     #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'], inversedBy: 'costs')]
-    #[Groups(['cost:list', 'cost:item'])]
+    #[Groups(['cost:list', 'cost:item', 'trip:item'])]
     private ?User $creator;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    #[Groups(['cost:list', 'cost:item'])]
+    #[Groups(['cost:list', 'cost:item', 'trip:item'])]
     private ?DateTimeImmutable $creationDate;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(['cost:list', 'cost:item'])]
+    #[Groups(['cost:list', 'cost:item', 'trip:item'])]
     private ?string $category;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(['cost:list', 'cost:item'])]
+    #[Groups(['cost:list', 'cost:item', 'trip:item'])]
     private ?string $beneficiaries;
 
     #[ORM\ManyToOne(targetEntity: Trip::class, cascade: ['persist'], inversedBy: 'costs')]
@@ -51,11 +51,11 @@ class Cost
     private ?Trip $trip;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(['cost:list', 'cost:item'])]
+    #[Groups(['cost:list', 'cost:item', 'trip:item'])]
     private ?string $label;
 
     #[ORM\Column(type: 'float')]
-    #[Groups(['cost:list', 'cost:item'])]
+    #[Groups(['cost:list', 'cost:item', 'trip:item'])]
     private ?float $value;
 
     public function getId(): ?int
