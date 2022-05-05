@@ -11,9 +11,16 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: TaskRepository::class)]
 #[ApiResource(
-    collectionOperations: ['get' => ['normalization_context' => ['groups' => 'task:list']]],
-    itemOperations: ['get' => ['normalization_context' => ['groups' => 'task:item']]],
-    order: ['creationDate' => 'ASC'],
+    collectionOperations: ['get' => ['normalization_context' => ['groups' => 'task:list']],
+        'new' => [
+            'method' => 'POST',
+            'route_name' => 'task_new',
+        ]
+    ],
+    itemOperations: [
+        'get' => ['normalization_context' => ['groups' => 'task:item']],
+        'delete'
+    ],
     paginationEnabled: false,
 )]
 class Task
@@ -21,19 +28,19 @@ class Task
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(['task:list', 'task:item'])]
+    #[Groups(['task:list', 'task:item', 'trip:item'])]
     private ?int $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(['task:list', 'task:item'])]
+    #[Groups(['task:list', 'task:item', 'trip:item'])]
     private ?string $name;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(['task:list', 'task:item'])]
+    #[Groups(['task:list', 'task:item', 'trip:item'])]
     private ?string $description;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'tasks')]
-    #[Groups(['task:list', 'task:item'])]
+    #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'], inversedBy: 'tasks')]
+    #[Groups(['task:list', 'task:item', 'trip:item'])]
     private ?User $creator;
 
     #[ORM\Column(type: 'datetime_immutable')]
@@ -41,10 +48,10 @@ class Task
     private ?DateTimeImmutable $creationDate;
 
     #[ORM\Column(type: 'datetime')]
-    #[Groups(['task:list', 'task:item'])]
+    #[Groups(['task:list', 'task:item', 'trip:item'])]
     private ?DateTimeInterface $date;
 
-    #[ORM\ManyToOne(targetEntity: ToDoList::class, inversedBy: 'tasks')]
+    #[ORM\ManyToOne(targetEntity: ToDoList::class, cascade: ['persist'], inversedBy: 'tasks')]
     #[Groups(['task:list', 'task:item'])]
     private ?ToDoList $toDoList;
 

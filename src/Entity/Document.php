@@ -13,8 +13,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: DocumentRepository::class)]
 #[ApiResource(
     collectionOperations: ['get' => ['normalization_context' => ['groups' => 'document:list']]],
-    itemOperations: ['get' => ['normalization_context' => ['groups' => 'document:item']]],
-    order: ['name' => 'ASC'],
+    itemOperations: [
+        'get' => ['normalization_context' => ['groups' => 'document:item']],
+        'delete'
+    ],
     paginationEnabled: false,
 )]
 class Document
@@ -37,14 +39,8 @@ class Document
     #[Groups(['document:list', 'document:item'])]
     private ?PointOfInterest $pointOfInterest;
 
-    #[ORM\OneToMany(mappedBy: 'documents', targetEntity: Step::class)]
-    #[Groups(['document:list', 'document:item'])]
-    private Collection $steps;
-
-    #[Pure] public function __construct()
-    {
-        $this->steps = new ArrayCollection();
-    }
+    #[ORM\ManyToOne(targetEntity: Step::class, inversedBy: 'documents')]
+    private $step;
 
     public function getId(): ?int
     {
@@ -87,32 +83,14 @@ class Document
         return $this;
     }
 
-    /**
-     * @return Collection<int, Step>
-     */
-    public function getSteps(): Collection
+    public function getStep(): ?Step
     {
-        return $this->steps;
+        return $this->step;
     }
 
-    public function addStep(Step $step): self
+    public function setStep(?Step $step): self
     {
-        if (!$this->steps->contains($step)) {
-            $this->steps[] = $step;
-            $step->setDocuments($this);
-        }
-
-        return $this;
-    }
-
-    public function removeStep(Step $step): self
-    {
-        if ($this->steps->removeElement($step)) {
-            // set the owning side to null (unless already changed)
-            if ($step->getDocuments() === $this) {
-                $step->setDocuments(null);
-            }
-        }
+        $this->step = $step;
 
         return $this;
     }

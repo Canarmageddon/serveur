@@ -13,17 +13,33 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: TripRepository::class)]
 #[ApiResource(
-    collectionOperations: ['get' => ['normalization_context' => ['groups' => 'trip:list']]],
-    itemOperations: ['get' => ['normalization_context' => ['groups' => 'trip:item']],
-        'trip_new' => [
+    collectionOperations: [
+        'get' => ['normalization_context' => ['groups' => 'trip:list']],
+        'new' => [
             'method' => 'POST',
-            'path' => '/trips',
-            'controller' => TripController::class,
+            'route_name' => 'trip_new',
         ],
-        'put',
-        'delete',
+        'addUser' => [
+            'method' => 'POST',
+            'route_name' => 'trip_add_user'
+        ],
+        'removeUser' => [
+            'method' => 'POST',
+            'route_name' => 'trip_remove_user'
+        ]
     ],
-    order: ['name' => 'ASC'],
+    itemOperations: [
+        'get' => ['normalization_context' => ['groups' => 'trip:item']],
+        'delete',
+        'poi' => [
+            'method' => 'GET',
+            'route_name' => 'poi_by_trip',
+        ],
+        'steps' => [
+            'method' => 'GET',
+            'route_name' => 'steps_by_trip',
+        ]
+    ],
     paginationEnabled: false,
 )]
 class Trip
@@ -42,7 +58,7 @@ class Trip
     #[Groups(['trip:list', 'trip:item'])]
     private ?Album $album;
 
-    #[ORM\OneToMany(mappedBy: 'trip', targetEntity: Cost::class)]
+    #[ORM\OneToMany(mappedBy: 'trip', targetEntity: Cost::class,  cascade: ['persist', 'remove'])]
     #[Groups(['trip:list', 'trip:item'])]
     private Collection $costs;
 
@@ -50,19 +66,19 @@ class Trip
     #[Groups(['trip:list', 'trip:item'])]
     private ?string $name;
 
-    #[ORM\OneToMany(mappedBy: 'trip', targetEntity: ToDoList::class)]
+    #[ORM\OneToMany(mappedBy: 'trip', targetEntity: ToDoList::class, cascade: ['persist', 'remove'])]
     #[Groups(['trip:list', 'trip:item'])]
     private Collection $toDoLists;
 
-    #[ORM\OneToMany(mappedBy: 'trip', targetEntity: PointOfInterest::class)]
+    #[ORM\OneToMany(mappedBy: 'trip', targetEntity: PointOfInterest::class, cascade: ['persist', 'remove'])]
     #[Groups(['trip:list', 'trip:item'])]
     private Collection $pointsOfInterest;
 
-    #[ORM\OneToMany(mappedBy: 'trip', targetEntity: Step::class)]
+    #[ORM\OneToMany(mappedBy: 'trip', targetEntity: Step::class, cascade: ['persist', 'remove'])]
     #[Groups(['trip:list', 'trip:item'])]
     private Collection $steps;
 
-    #[ORM\OneToMany(mappedBy: 'trip', targetEntity: Travel::class)]
+    #[ORM\OneToMany(mappedBy: 'trip', targetEntity: Travel::class, cascade: ['persist', 'remove'])]
     #[Groups(['trip:list', 'trip:item'])]
     private Collection $travels;
 

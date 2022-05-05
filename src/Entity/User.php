@@ -14,9 +14,26 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ApiResource(
-    collectionOperations: ['get' => ['normalization_context' => ['groups' => 'user:list']]],
-    itemOperations: ['get' => ['normalization_context' => ['groups' => 'user:item']]],
-    order: ['creationDate' => 'ASC'],
+    collectionOperations: [
+        'get' => ['normalization_context' => ['groups' => 'user:list']],
+        'byEmail' => [
+            'method' => 'GET',
+            'route_name' => 'user_by_email',
+            "openapi_context" => [
+                "parameters" => [
+                    [
+                        "name" => "email",
+                        "type" => "string",
+                        "in" => "path",
+                        "required" => true,
+                    ]
+                ]
+            ]
+        ]],
+    itemOperations: [
+        'get' => ['normalization_context' => ['groups' => 'user:item']],
+        'delete'
+        ],
     paginationEnabled: false,
 )]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -24,11 +41,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(['user:list', 'user:item'])]
+    #[Groups(['user:list', 'user:item', 'trip:item'])]
     private ?int $id;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
-    #[Groups(['user:list', 'user:item'])]
+    #[Groups(['user:list', 'user:item', 'trip:item'])]
     private ?string $email;
 
     #[ORM\Column(type: 'json')]
@@ -39,11 +56,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private string $password;
 
     #[ORM\Column(type: 'string', length: 50)]
-    #[Groups(['user:list', 'user:item'])]
+    #[Groups(['user:list', 'user:item', 'trip:item'])]
     private ?string $firstName;
 
     #[ORM\Column(type: 'string', length: 50)]
-    #[Groups(['user:list', 'user:item'])]
+    #[Groups(['user:list', 'user:item', 'trip:item'])]
     private ?string $lastName;
 
     #[ORM\Column(type: 'datetime_immutable')]
@@ -70,7 +87,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user:list', 'user:item'])]
     private Collection $tasks;
 
-    #[ORM\OneToMany(mappedBy: 'creator', targetEntity: Cost::class)]
+    #[ORM\OneToMany(mappedBy: 'creator', targetEntity: Cost::class, cascade: ['persist', 'remove'])]
     #[Groups(['user:list', 'user:item'])]
     private Collection $costs;
 

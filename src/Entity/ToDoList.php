@@ -12,8 +12,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: ToDoListRepository::class)]
 #[ApiResource(
     collectionOperations: ['get' => ['normalization_context' => ['groups' => 'toDoList:list']]],
-    itemOperations: ['get' => ['normalization_context' => ['groups' => 'toDoList:item']]],
-    order: ['trip' => 'ASC'],
+    itemOperations: [
+        'get' => ['normalization_context' => ['groups' => 'toDoList:item']],
+        'delete'
+    ],
     paginationEnabled: false,
 )]
 class ToDoList
@@ -21,15 +23,15 @@ class ToDoList
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(['toDoList:list', 'toDoList:item'])]
+    #[Groups(['toDoList:list', 'toDoList:item', 'trip:item'])]
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(['toDoList:list', 'toDoList:item'])]
+    #[Groups(['toDoList:list', 'toDoList:item', 'trip:item'])]
     private ?string $name;
 
-    #[ORM\OneToMany(mappedBy: 'toDoList', targetEntity: Task::class)]
-    #[Groups(['toDoList:list', 'toDoList:item'])]
+    #[ORM\OneToMany(mappedBy: 'toDoList', targetEntity: Task::class, cascade: ['persist', 'remove'])]
+    #[Groups(['toDoList:list', 'toDoList:item', 'trip:item'])]
     private Collection $tasks;
 
     #[ORM\ManyToOne(targetEntity: Trip::class, inversedBy: 'toDoLists')]

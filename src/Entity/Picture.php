@@ -77,7 +77,7 @@ class Picture
     #[Groups(['picture:list', 'picture:item', 'picture:read'])]
     private ?Location $location;
 
-    #[ORM\ManyToOne(targetEntity: Album::class, inversedBy: 'pictures')]
+    #[ORM\ManyToOne(targetEntity: Album::class, cascade: ['persist', 'remove'], inversedBy: 'pictures')]
     #[Groups(['picture:list', 'picture:item'])]
     private ?Album $album;
 
