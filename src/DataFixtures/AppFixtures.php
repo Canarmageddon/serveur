@@ -112,6 +112,7 @@ class AppFixtures extends Fixture
                 $manager->persist($pointOfInterest);
             }
 
+            $steps = [];
             for($j = 0 ; $j < 4; $j++) {
                 $step = new Step();
                 $step->setLocation($locations[$j + 7]);
@@ -119,12 +120,13 @@ class AppFixtures extends Fixture
                 $step->setCreator($user);
                 $trip->addStep($step);
                 $manager->persist($step);
+                $steps[] = $step;
             }
 
             for($j = 0 ; $j < 3; $j++) {
                 $travel = new Travel();
-                $travel->setStart($locations[$j +7]);
-                $travel->setEnd($locations[$j +8]);
+                $travel->setStart($steps[$j]);
+                $travel->setEnd($steps[$j + 1]);
                 $travel->setDuration(3600 * ($i+1));
                 $trip->addTravel($travel);
                 $manager->persist($travel);

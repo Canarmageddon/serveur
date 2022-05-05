@@ -32,6 +32,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
         ]],
     itemOperations: [
         'get' => ['normalization_context' => ['groups' => 'user:item']],
+        'delete'
         ],
     paginationEnabled: false,
 )]
@@ -86,7 +87,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user:list', 'user:item'])]
     private Collection $tasks;
 
-    #[ORM\OneToMany(mappedBy: 'creator', targetEntity: Cost::class)]
+    #[ORM\OneToMany(mappedBy: 'creator', targetEntity: Cost::class, cascade: ['persist', 'remove'])]
     #[Groups(['user:list', 'user:item'])]
     private Collection $costs;
 

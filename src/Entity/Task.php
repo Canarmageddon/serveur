@@ -11,8 +11,16 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: TaskRepository::class)]
 #[ApiResource(
-    collectionOperations: ['get' => ['normalization_context' => ['groups' => 'task:list']]],
-    itemOperations: ['get' => ['normalization_context' => ['groups' => 'task:item']]],
+    collectionOperations: ['get' => ['normalization_context' => ['groups' => 'task:list']],
+        'new' => [
+            'method' => 'POST',
+            'route_name' => 'task_new',
+        ]
+    ],
+    itemOperations: [
+        'get' => ['normalization_context' => ['groups' => 'task:item']],
+        'delete'
+    ],
     paginationEnabled: false,
 )]
 class Task
@@ -31,7 +39,7 @@ class Task
     #[Groups(['task:list', 'task:item', 'trip:item'])]
     private ?string $description;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'tasks')]
+    #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'], inversedBy: 'tasks')]
     #[Groups(['task:list', 'task:item', 'trip:item'])]
     private ?User $creator;
 
@@ -43,7 +51,7 @@ class Task
     #[Groups(['task:list', 'task:item', 'trip:item'])]
     private ?DateTimeInterface $date;
 
-    #[ORM\ManyToOne(targetEntity: ToDoList::class, inversedBy: 'tasks')]
+    #[ORM\ManyToOne(targetEntity: ToDoList::class, cascade: ['persist'], inversedBy: 'tasks')]
     #[Groups(['task:list', 'task:item'])]
     private ?ToDoList $toDoList;
 

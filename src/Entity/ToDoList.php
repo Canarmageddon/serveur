@@ -12,7 +12,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: ToDoListRepository::class)]
 #[ApiResource(
     collectionOperations: ['get' => ['normalization_context' => ['groups' => 'toDoList:list']]],
-    itemOperations: ['get' => ['normalization_context' => ['groups' => 'toDoList:item']]],
+    itemOperations: [
+        'get' => ['normalization_context' => ['groups' => 'toDoList:item']],
+        'delete'
+    ],
     paginationEnabled: false,
 )]
 class ToDoList
@@ -27,7 +30,7 @@ class ToDoList
     #[Groups(['toDoList:list', 'toDoList:item', 'trip:item'])]
     private ?string $name;
 
-    #[ORM\OneToMany(mappedBy: 'toDoList', targetEntity: Task::class)]
+    #[ORM\OneToMany(mappedBy: 'toDoList', targetEntity: Task::class, cascade: ['persist', 'remove'])]
     #[Groups(['toDoList:list', 'toDoList:item', 'trip:item'])]
     private Collection $tasks;
 

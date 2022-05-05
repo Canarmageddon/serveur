@@ -10,8 +10,16 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CostRepository::class)]
 #[ApiResource(
-    collectionOperations: ['get' => ['normalization_context' => ['groups' => 'cost:list']]],
-    itemOperations: ['get' => ['normalization_context' => ['groups' => 'cost:item']]],
+    collectionOperations: ['get' => ['normalization_context' => ['groups' => 'cost:list']],
+        'new' => [
+            'method' => 'POST',
+            'route_name' => 'cost_new',
+        ]
+    ],
+    itemOperations: [
+        'get' => ['normalization_context' => ['groups' => 'cost:item']],
+        'delete'
+    ],
     paginationEnabled: false,
 )]
 class Cost
@@ -22,7 +30,7 @@ class Cost
     #[Groups(['cost:list', 'cost:item'])]
     private ?int $id;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'costs')]
+    #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'], inversedBy: 'costs')]
     #[Groups(['cost:list', 'cost:item'])]
     private ?User $creator;
 
@@ -38,7 +46,7 @@ class Cost
     #[Groups(['cost:list', 'cost:item'])]
     private ?string $beneficiaries;
 
-    #[ORM\ManyToOne(targetEntity: Trip::class, inversedBy: 'costs')]
+    #[ORM\ManyToOne(targetEntity: Trip::class, cascade: ['persist'], inversedBy: 'costs')]
     #[Groups(['cost:list', 'cost:item'])]
     private ?Trip $trip;
 

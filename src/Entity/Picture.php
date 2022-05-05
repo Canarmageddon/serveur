@@ -11,7 +11,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: PictureRepository::class)]
 #[ApiResource(
     collectionOperations: ['get' => ['normalization_context' => ['groups' => 'picture:list']]],
-    itemOperations: ['get' => ['normalization_context' => ['groups' => 'picture:item']]],
+    itemOperations: [
+        'get' => ['normalization_context' => ['groups' => 'picture:item']],
+        'delete'
+    ],
     paginationEnabled: false,
 )]
 class Picture
