@@ -10,7 +10,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CostRepository::class)]
 #[ApiResource(
-    collectionOperations: ['get' => ['normalization_context' => ['groups' => 'cost:list']]],
+    collectionOperations: ['get' => ['normalization_context' => ['groups' => 'cost:list']],
+        'new' => [
+            'method' => 'POST',
+            'route_name' => 'cost_new',
+        ]
+    ],
     itemOperations: [
         'get' => ['normalization_context' => ['groups' => 'cost:item']],
         'delete'
@@ -25,7 +30,7 @@ class Cost
     #[Groups(['cost:list', 'cost:item'])]
     private ?int $id;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'costs')]
+    #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'], inversedBy: 'costs')]
     #[Groups(['cost:list', 'cost:item'])]
     private ?User $creator;
 
@@ -41,7 +46,7 @@ class Cost
     #[Groups(['cost:list', 'cost:item'])]
     private ?string $beneficiaries;
 
-    #[ORM\ManyToOne(targetEntity: Trip::class, inversedBy: 'costs')]
+    #[ORM\ManyToOne(targetEntity: Trip::class, cascade: ['persist'], inversedBy: 'costs')]
     #[Groups(['cost:list', 'cost:item'])]
     private ?Trip $trip;
 

@@ -12,13 +12,18 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: StepRepository::class)]
 #[ApiResource(
-    collectionOperations: ['get' => ['normalization_context' => ['groups' => 'step:list']]],
+    collectionOperations: ['get' => ['normalization_context' => ['groups' => 'step:list']],
+        'new' => [
+            'method' => 'POST',
+            'route_name' => 'step_new',
+        ]],
     itemOperations: [
         'get' => ['normalization_context' => ['groups' => 'step:item']],
         'delete'
     ],
     paginationEnabled: false,
 )]
+
 class Step
 {
     #[ORM\Id]
@@ -27,7 +32,7 @@ class Step
     #[Groups(['step:list', 'step:item', 'trip:list', 'trip:item'])]
     private ?int $id;
 
-    #[ORM\ManyToOne(targetEntity: Location::class, inversedBy: 'steps')]
+    #[ORM\ManyToOne(targetEntity: Location::class, cascade: ['persist'], inversedBy: 'steps')]
     #[Groups(['step:list', 'step:item', 'trip:list', 'trip:item'])]
     private ?Location $location;
 
@@ -35,7 +40,7 @@ class Step
     #[Groups(['step:list', 'step:item', 'trip:list', 'trip:item'])]
     private ?DateTimeImmutable $creationDate;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'steps')]
+    #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'], inversedBy: 'steps')]
     #[Groups(['step:list', 'step:item', 'trip:list', 'trip:item'])]
     private ?User $creator;
 
@@ -47,7 +52,7 @@ class Step
     #[Groups(['step:list', 'step:item'])]
     private Collection $pointsOfInterest;
 
-    #[ORM\ManyToOne(targetEntity: Trip::class, inversedBy: 'steps')]
+    #[ORM\ManyToOne(targetEntity: Trip::class, cascade: ['persist'], inversedBy: 'steps')]
     #[Groups(['step:list', 'step:item'])]
     private ?Trip $trip;
 
@@ -58,7 +63,7 @@ class Step
     private Collection $ends;
 
     #[ORM\OneToMany(mappedBy: 'step', targetEntity: Document::class)]
-    private $documents;
+    private Collection $documents;
 
     public function getId(): ?int
     {
