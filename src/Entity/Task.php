@@ -28,19 +28,19 @@ class Task
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(['task:list', 'task:item'])]
+    #[Groups(['task:list', 'task:item', 'trip:item'])]
     private ?int $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(['task:list', 'task:item'])]
+    #[Groups(['task:list', 'task:item', 'trip:item'])]
     private ?string $name;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(['task:list', 'task:item'])]
+    #[Groups(['task:list', 'task:item', 'trip:item'])]
     private ?string $description;
 
     #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'], inversedBy: 'tasks')]
-    #[Groups(['task:list', 'task:item'])]
+    #[Groups(['task:list', 'task:item', 'trip:item'])]
     private ?User $creator;
 
     #[ORM\Column(type: 'datetime_immutable')]
@@ -48,7 +48,7 @@ class Task
     private ?DateTimeImmutable $creationDate;
 
     #[ORM\Column(type: 'datetime')]
-    #[Groups(['task:list', 'task:item'])]
+    #[Groups(['task:list', 'task:item', 'trip:item'])]
     private ?DateTimeInterface $date;
 
     #[ORM\ManyToOne(targetEntity: ToDoList::class, cascade: ['persist'], inversedBy: 'tasks')]
