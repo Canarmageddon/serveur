@@ -56,11 +56,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private string $password;
 
     #[ORM\Column(type: 'string', length: 50)]
-    #[Groups(['user:list', 'user:item', 'trip:item'])]
+    #[Groups(['user:list', 'user:item', 'trip:item', 'picture:read'])]
     private ?string $firstName;
 
     #[ORM\Column(type: 'string', length: 50)]
-    #[Groups(['user:list', 'user:item', 'trip:item'])]
+    #[Groups(['user:list', 'user:item', 'trip:item', 'picture:read'])]
     private ?string $lastName;
 
     #[ORM\Column(type: 'datetime_immutable')]
