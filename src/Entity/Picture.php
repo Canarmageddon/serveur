@@ -35,9 +35,21 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
                                 'type' => 'object',
                                 'properties' => [
                                     'file' => [
-                                        'type' => 'string',
+                                        'type' => 'file',
                                         'format' => 'binary',
                                     ],
+                                    'creator' => [
+                                        'type' => 'creatorId',
+                                        'format' => 'int'
+                                    ],
+                                    'album' => [
+                                        'type' => 'albumId',
+                                        'format' => 'int'
+                                    ],
+                                    'location' => [
+                                        'type' => 'locationId',
+                                        'format' => 'int'
+                                    ]
                                 ],
                             ],
                         ],
