@@ -88,11 +88,9 @@ class Step
     private ?Trip $trip;
 
     #[ORM\OneToMany(mappedBy: 'start', targetEntity: Travel::class, orphanRemoval: true)]
-    #[Groups(['step:list', 'step:item', 'trip:list', 'trip:item'])]
     private Collection $starts;
 
     #[ORM\OneToMany(mappedBy: 'end', targetEntity: Travel::class, orphanRemoval: true)]
-    #[Groups(['step:list', 'step:item', 'trip:list', 'trip:item'])]
     private Collection $ends;
 
     #[ORM\OneToMany(mappedBy: 'step', targetEntity: Document::class)]
