@@ -10,7 +10,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CostRepository::class)]
 #[ApiResource(
-    collectionOperations: ['get' => ['normalization_context' => ['groups' => 'cost:list']],
+    collectionOperations: [
+        'get' => ['normalization_context' => ['groups' => 'cost:list']],
         'new' => [
             'method' => 'POST',
             'route_name' => 'cost_new',

@@ -20,7 +20,6 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  */
 #[ORM\Entity(repositoryClass: PictureRepository::class)]
 #[ApiResource(
-    normalizationContext: ['groups' => ['picture:read']],
     collectionOperations: [
         'get',
         'post' => [
@@ -66,6 +65,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
             'read' => false
         ]
     ],
+    normalizationContext: ['groups' => ['picture:read']],
     order: ['album' => 'ASC'],
     paginationEnabled: false,
 )]

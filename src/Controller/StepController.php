@@ -2,9 +2,7 @@
 
 namespace App\Controller;
 
-use App\Dto\CostInput;
 use App\Dto\StepInput;
-use App\Entity\Cost;
 use App\Entity\Location;
 use App\Entity\Step;
 use App\Entity\Trip;
@@ -24,14 +22,16 @@ class StepController extends AbstractController
     {
         try {
             $data = $request->getContent();
-            /** @var Step $stepInput */
+            /** @var StepInput $stepInput */
             $stepInput = $serializer->deserialize($data, StepInput::class, 'json');
             $step = new Step();
-            $step->setDescription($stepInput->getDescription());
+            $location = new Location();
+            $location->setLatitude($stepInput->getLatitude());
+            $location->setLongitude($stepInput->getLongitude());
+            $location->addStep($step);
+            $entityManager->persist($location);
 
-            /** @var Location $location */
-            $location = $entityManager->getRepository(Location::class)->find($stepInput->getLocation());
-            $location?->addStep($step);
+            $step->setDescription($stepInput->getDescription());
 
             /** @var User $creator */
             $creator = $entityManager->getRepository(User::class)->find($stepInput->getCreator());

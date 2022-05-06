@@ -12,7 +12,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: DocumentRepository::class)]
 #[ApiResource(
-    collectionOperations: ['get' => ['normalization_context' => ['groups' => 'document:list']]],
+    collectionOperations: [
+        'get' => ['normalization_context' => ['groups' => 'document:list']]
+    ],
     itemOperations: [
         'get' => ['normalization_context' => ['groups' => 'document:item']],
         'delete'

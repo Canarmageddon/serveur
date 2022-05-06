@@ -4,30 +4,30 @@ namespace App\Dto\TripDto;
 
 class UserInput {
 
-    private ?string $emailUser;
+    private ?string $email;
 
-    private ?int $idTrip;
+    private ?int $trip;
 
-    public function getEmailUser(): ?string
+    public function getEmail(): ?string
     {
-        return $this->emailUser;
+        return $this->email;
     }
 
-    public function setCreator(?string $emailUser): self
+    public function setEmail(?string $email): self
     {
-        $this->emailUser = $emailUser;
+        $this->email = $email;
 
         return $this;
     }
 
-    public function getIdTrip(): ?int
+    public function getTrip(): ?int
     {
-        return $this->idTrip;
+        return $this->trip;
     }
 
-    public function setIdTrip(?int $idTrip): self
+    public function setTrip(?int $trip): self
     {
-        $this->idTrip = $idTrip;
+        $this->trip = $trip;
 
         return $this;
     }

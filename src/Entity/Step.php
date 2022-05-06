@@ -12,7 +12,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: StepRepository::class)]
 #[ApiResource(
-    collectionOperations: ['get' => ['normalization_context' => ['groups' => 'step:list']],
+    collectionOperations: [
+        'get' => ['normalization_context' => ['groups' => 'step:list']],
         'new' => [
             'method' => 'POST',
             'route_name' => 'step_new',
