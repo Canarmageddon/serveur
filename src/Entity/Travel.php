@@ -9,7 +9,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: TravelRepository::class)]
 #[ApiResource(
-    collectionOperations: ['get' => ['normalization_context' => ['groups' => 'travel:list']]],
+    collectionOperations: [
+        'get' => ['normalization_context' => ['groups' => 'travel:list']],
+        'new' => [
+            'method' => 'POST',
+            'route_name' => 'travel_new',
+        ]    ],
     itemOperations: [
         'get' => ['normalization_context' => ['groups' => 'travel:item']],
         'delete'

@@ -7,12 +7,19 @@ use App\Repository\AlbumRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: AlbumRepository::class)]
 
 #[ApiResource(
-    collectionOperations: ['get' => ['normalization_context' => ['groups' => 'album:list']]],
+    collectionOperations: [
+        'get' => ['normalization_context' => ['groups' => 'album:list']],
+        'new' => [
+            'method' => 'POST',
+            'route_name' => 'album_new',
+        ]
+    ],
     itemOperations: [
         'get' => ['normalization_context' => ['groups' => 'album:item']],
         'delete'
@@ -24,7 +31,7 @@ class Album
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(['album:list', 'album:item'])]
+    #[Groups(['album:list', 'album:item', 'picture:read'])]
     private $id;
 
     #[ORM\OneToOne(inversedBy: 'album', targetEntity: Trip::class, cascade: ['persist'])]
@@ -36,7 +43,7 @@ class Album
 
     private Collection $pictures;
 
-    public function __construct()
+    #[Pure] public function __construct()
     {
         $this->pictures = new ArrayCollection();
     }

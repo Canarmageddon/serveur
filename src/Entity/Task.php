@@ -11,7 +11,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: TaskRepository::class)]
 #[ApiResource(
-    collectionOperations: ['get' => ['normalization_context' => ['groups' => 'task:list']],
+    collectionOperations: [
+        'get' => ['normalization_context' => ['groups' => 'task:list']],
         'new' => [
             'method' => 'POST',
             'route_name' => 'task_new',

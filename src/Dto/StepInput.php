@@ -4,7 +4,9 @@ namespace App\Dto;
 
 class StepInput
 {
-    private ?int $location;
+    private ?float $longitude = null;
+
+    private ?float $latitude = null;
 
     private ?int $creator;
 
@@ -13,20 +15,38 @@ class StepInput
     private ?int $trip;
 
     /**
-     * @return int|null
+     * @return float|null
      */
-    public function getLocation(): ?int
+    public function getLongitude(): ?float
     {
-        return $this->location;
+        return $this->longitude;
     }
 
     /**
-     * @param int|null $location
+     * @param float|null $longitude
      */
-    public function setLocation(?int $location): void
+    public function setLongitude(?float $longitude): void
     {
-        $this->location = $location;
+        $this->longitude = $longitude;
     }
+
+    /**
+     * @return float|null
+     */
+    public function getLatitude(): ?float
+    {
+        return $this->latitude;
+    }
+
+    /**
+     * @param float|null $latitude
+     */
+    public function setLatitude(?float $latitude): void
+    {
+        $this->latitude = $latitude;
+    }
+
+
 
     /**
      * @return int|null
