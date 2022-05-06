@@ -84,7 +84,7 @@ class PointOfInterest
     private Collection $documents;
 
     #[ORM\ManyToOne(targetEntity: Step::class, inversedBy: 'pointsOfInterest')]
-    #[Groups(['pointOfInterest:list', 'pointOfInterest:item', 'trip:list', 'trip:item'])]
+    #[Groups(['pointOfInterest:list', 'pointOfInterest:item', 'trip:item'])]
     private ?Step $step;
 
     #[ORM\ManyToOne(targetEntity: Trip::class, inversedBy: 'pointsOfInterest')]
