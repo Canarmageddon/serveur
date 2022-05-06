@@ -35,7 +35,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
                             'example' => [
                                 'label' => "Motif du coût",
                                 'value' => 13.37,
-                                'beneficiaries' => "Adresses mails des Users concernés (sera changé bientôt)",-
+                                'beneficiaries' => "Adresses mails des Users concernés (sera changé bientôt)",
                                 'creator' => 1,
                                 'trip' => 1,
                             ],
