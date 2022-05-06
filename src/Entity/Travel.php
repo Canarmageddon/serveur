@@ -14,6 +14,32 @@ use Symfony\Component\Serializer\Annotation\Groups;
         'new' => [
             'method' => 'POST',
             'route_name' => 'travel_new',
+            'openapi_context' => [
+                'summary'     => 'Create a travel',
+                'description' => "Create a travel from two steps",
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema'  => [
+                                'type' => 'object',
+                                'properties' =>
+                                    [
+                                        'duration' => ['type' => 'int'],
+                                        'trip' => ['type' => 'int'],
+                                        'start' => ['type' => 'int'],
+                                        'end' => ['type' => 'int'],
+                                    ],
+                            ],
+                            'example' => [
+                                'duration' => 1,
+                                'trip' => 1,
+                                'start' => 1,
+                                'end' => 1,
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ]    ],
     itemOperations: [
         'get' => ['normalization_context' => ['groups' => 'travel:item']],
@@ -38,10 +64,12 @@ class Travel
     private ?Trip $trip;
 
     #[ORM\ManyToOne(targetEntity: Step::class, inversedBy: 'starts')]
+    #[Groups(['travel:list', 'travel:item', 'trip:list', 'trip:item'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?Step $start;
 
     #[ORM\ManyToOne(targetEntity: Step::class, inversedBy: 'ends')]
+    #[Groups(['travel:list', 'travel:item', 'trip:list', 'trip:item'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?Step $end;
 

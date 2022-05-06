@@ -5,7 +5,8 @@ namespace App\Controller;
 use App\Dto\PointOfInterestInput;
 use App\Entity\Location;
 use App\Entity\PointOfInterest;
-use App\Repository\PointOfInterestRepository;
+use App\Entity\Trip;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,18 +33,21 @@ class PointOfInterestController extends AbstractController
             $location->addPointOfInterest($poi);
             $entityManager->persist($location);
 
-            if ($pointOfInterestInput->getCreator() != null) {
-                $poi->setCreator($pointOfInterestInput->getCreator());
-            }
+            /** @var User $creator */
+            $creator = $entityManager->getRepository(User::class)->find($pointOfInterestInput->getCreator());
+            $creator?->addPointOfInterest($poi);
+
+            /** @var Trip $trip */
+            $trip = $entityManager->getRepository(Trip::class)->find($pointOfInterestInput->getTrip());
+            $trip?->addPointsOfInterest($poi);
+
             if ($pointOfInterestInput->getTitle() != null) {
                 $poi->setTitle($pointOfInterestInput->getTitle());
             }
             if ($pointOfInterestInput->getDescription() != null) {
                 $poi->setDescription($pointOfInterestInput->getDescription());
             }
-            if ($pointOfInterestInput->getTrip() != null) {
-                $poi->setTrip($pointOfInterestInput->getTrip());
-            }
+
             $entityManager->persist($poi);
             $entityManager->flush();
 

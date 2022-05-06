@@ -17,6 +17,36 @@ use Symfony\Component\Serializer\Annotation\Groups;
         'new' => [
             'method' => 'POST',
             'route_name' => 'step_new',
+            'openapi_context' => [
+                'summary'     => 'Create a step',
+                'description' => "Longitude and latitude needed, others are nullable",
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema'  => [
+                                'type' => 'object',
+                                'properties' =>
+                                    [
+                                        'latitude' => ['type' => 'float'],
+                                        'longitude' => ['type' => 'float'],
+                                        'title' => ['type' => 'string'],
+                                        'description' => ['type' => 'string'],
+                                        'creator' => ['type' => 'int'],
+                                        'trip' => ['type' => 'int'],
+                                    ],
+                            ],
+                            'example' => [
+                                'latitude' => 48.123,
+                                'longitude' => 7.123,
+                                'title' => "Title",
+                                'description' => "Brief POI description",
+                                'creator' => 1,
+                                'trip' => 1,
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ]],
     itemOperations: [
         'get' => ['normalization_context' => ['groups' => 'step:item']],
@@ -58,9 +88,11 @@ class Step
     private ?Trip $trip;
 
     #[ORM\OneToMany(mappedBy: 'start', targetEntity: Travel::class, orphanRemoval: true)]
+    #[Groups(['step:list', 'step:item', 'trip:list', 'trip:item'])]
     private Collection $starts;
 
     #[ORM\OneToMany(mappedBy: 'end', targetEntity: Travel::class, orphanRemoval: true)]
+    #[Groups(['step:list', 'step:item', 'trip:list', 'trip:item'])]
     private Collection $ends;
 
     #[ORM\OneToMany(mappedBy: 'step', targetEntity: Document::class)]

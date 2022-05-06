@@ -18,14 +18,78 @@ use Symfony\Component\Serializer\Annotation\Groups;
         'new' => [
             'method' => 'POST',
             'route_name' => 'trip_new',
+            'openapi_context' => [
+                'summary'     => 'Create a Trip',
+                'description' => "Pas d'idée mdr",
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema'  => [
+                                'type' => 'object',
+                                'properties' =>
+                                    [
+                                        'name' => ['type' => 'string'],
+                                    ],
+                            ],
+                            'example' => [
+                                'name' => "Vacances au soleil",
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ],
         'addUser' => [
             'method' => 'POST',
-            'route_name' => 'trip_add_user'
+            'route_name' => 'trip_add_user',
+            'openapi_context' => [
+                'summary'     => 'Add a User to a Trip',
+                'description' => "Vérifie si les deux données correspondent à des entités, puis l'ajoute",
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema'  => [
+                                'type' => 'object',
+                                'properties' =>
+                                    [
+                                        'email' => ['type' => 'string'],
+                                        'trip' => ['type' => 'int'],
+                                    ],
+                            ],
+                            'example' => [
+                                'email' => "root@root.fr",
+                                'trip' => 1,
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ],
         'removeUser' => [
             'method' => 'POST',
-            'route_name' => 'trip_remove_user'
+            'route_name' => 'trip_remove_user',
+            'openapi_context' => [
+                'summary'     => 'Remove a User from a Trip',
+                'description' => "Vérifie si les deux données correspondent à des entités, puis l'enlève",
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema'  => [
+                                'type' => 'object',
+                                'properties' =>
+                                    [
+                                        'email' => ['type' => 'string'],
+                                        'trip' => ['type' => 'int'],
+                                    ],
+                            ],
+                            'example' => [
+                                'email' => "root@root.fr",
+                                'trip' => 1,
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ]
     ],
     itemOperations: [
