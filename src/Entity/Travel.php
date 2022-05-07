@@ -44,6 +44,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
         ]    ],
     itemOperations: [
         'get' => ['normalization_context' => ['groups' => 'travel:item']],
+        'documents' => [
+            'method' => 'GET',
+            'route_name' => 'documents_by_travel',
+        ],
         'delete'
     ],
     paginationEnabled: false,
