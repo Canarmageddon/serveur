@@ -81,7 +81,7 @@ class Task
     private ?DateTimeInterface $date;
 
     #[ORM\ManyToOne(targetEntity: ToDoList::class, cascade: ['persist'], inversedBy: 'tasks')]
-    #[Groups(['task:list', 'task:item', 'trip:item'])]
+    #[Groups(['task:list', 'task:item'])]
     private ?ToDoList $toDoList;
 
     public function getId(): ?int
