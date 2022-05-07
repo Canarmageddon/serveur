@@ -16,7 +16,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
         'get' => ['normalization_context' => ['groups' => 'toDoList:list']],
         'new' => [
             'method' => 'POST',
-            'route_name' => 'toDoList_new',
+            'route_name' => 'to_do_list_new',
             'openapi_context' => [
                 'summary'     => 'Create a To Do List',
                 'description' => "Create a To Do List and add it to a Trip",
@@ -43,6 +43,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
     ],
     itemOperations: [
         'get' => ['normalization_context' => ['groups' => 'toDoList:item']],
+        'tasks' => [
+            'method' => 'GET',
+            'route_name' => 'tasks_by_to_do_list',
+        ],
         'delete'
     ],
     paginationEnabled: false,

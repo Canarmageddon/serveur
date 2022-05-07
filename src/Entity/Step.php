@@ -50,6 +50,14 @@ use Symfony\Component\Serializer\Annotation\Groups;
         ]],
     itemOperations: [
         'get' => ['normalization_context' => ['groups' => 'step:item']],
+        'documents' => [
+            'method' => 'GET',
+            'route_name' => 'documents_by_step',
+        ],
+        'poi' => [
+            'method' => 'GET',
+            'route_name' => 'poi_by_step',
+        ],
         'delete'
     ],
     paginationEnabled: false,

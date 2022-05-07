@@ -48,6 +48,18 @@ use Symfony\Component\Serializer\Annotation\Groups;
     ],
     itemOperations: [
         'get' => ['normalization_context' => ['groups' => 'location:item']],
+        'poi' => [
+            'method' => 'GET',
+            'route_name' => 'poi_by_location',
+        ],
+        'steps' => [
+            'method' => 'GET',
+            'route_name' => 'steps_by_location',
+        ],
+        'pictures' => [
+            'method' => 'GET',
+            'route_name' => 'pictures_by_location',
+        ],
         'delete'
     ],
     paginationEnabled: false,

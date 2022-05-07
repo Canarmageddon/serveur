@@ -94,7 +94,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
     ],
     itemOperations: [
         'get' => ['normalization_context' => ['groups' => 'trip:item']],
-        'delete',
+        'costs' => [
+            'method' => 'GET',
+            'route_name' => 'costs_by_trip',
+        ],
         'poi' => [
             'method' => 'GET',
             'route_name' => 'poi_by_trip',
@@ -102,7 +105,16 @@ use Symfony\Component\Serializer\Annotation\Groups;
         'steps' => [
             'method' => 'GET',
             'route_name' => 'steps_by_trip',
-        ]
+        ],
+        'travels' => [
+            'method' => 'GET',
+            'route_name' => 'travels_by_trip',
+        ],
+        'to_do_list' => [
+            'method' => 'GET',
+            'route_name' => 'to_do_lists_by_trip',
+        ],
+        'delete'
     ],
     paginationEnabled: false,
 )]

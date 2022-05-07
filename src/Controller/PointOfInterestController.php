@@ -19,6 +19,20 @@ use Symfony\Component\Serializer\SerializerInterface;
 #[AsController]
 class PointOfInterestController extends AbstractController
 {
+    #[Route('/api/point_of_interests/{id}/documents', name: 'documents_by_poi', methods: 'GET')]
+    public function poi(EntityManagerInterface $entityManager, int $id): Response
+    {
+        /** @var PointOfInterest $pointOfInterest */
+        $pointOfInterest = $entityManager->getRepository(PointOfInterest::class)->find($id);
+        if ($pointOfInterest != null) {
+            return $this->json($pointOfInterest->getDocuments(), 200, [], ['groups' => 'document:item']);
+        } else {
+            return $this->json([
+                'message' => 'Point of Interest ' . $id . ' not found',
+            ], 404);
+        }
+    }
+
     #[Route('/api/point_of_interests/new', name: 'point_of_interest_new', methods: 'POST')]
     public function new(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer): Response
     {

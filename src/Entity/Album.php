@@ -42,6 +42,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
     ],
     itemOperations: [
         'get' => ['normalization_context' => ['groups' => 'album:item']],
+        'pictures' => [
+            'method' => 'GET',
+            'route_name' => 'pictures_by_album',
+        ],
         'delete'
     ],
     paginationEnabled: false,

@@ -51,8 +51,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
     ],
     itemOperations: [
         'get' => ['normalization_context' => ['groups' => 'pointOfInterest:item']],
-        'delete',
+        'documents' => [
+            'method' => 'GET',
+            'route_name' => 'documents_by_poi',
         ],
+        'delete',
+    ],
     paginationEnabled: false,
 )]
 class PointOfInterest

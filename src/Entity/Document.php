@@ -42,7 +42,7 @@ class Document
     private ?PointOfInterest $pointOfInterest;
 
     #[ORM\ManyToOne(targetEntity: Step::class, inversedBy: 'documents')]
-    private $step;
+    private ?Step $step;
 
     public function getId(): ?int
     {

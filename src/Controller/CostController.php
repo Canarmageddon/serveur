@@ -18,7 +18,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 #[AsController]
 class CostController extends AbstractController
 {
-    #[Route('/api/cost/new', name: 'cost_new', methods: 'POST')]
+    #[Route('/api/costs/new', name: 'cost_new', methods: 'POST')]
     public function new(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer): Response
     {
         try {

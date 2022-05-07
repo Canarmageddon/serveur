@@ -15,7 +15,49 @@ use Symfony\Component\Serializer\SerializerInterface;
 #[AsController]
 class LocationController extends AbstractController
 {
-    #[Route('/api/location/new', name: 'location_new', methods: 'POST')]
+    #[Route('/api/locations/{id}/pictures', name: 'pictures_by_location', methods: 'GET')]
+    public function pictures(EntityManagerInterface $entityManager, int $id): Response
+    {
+        /** @var Location $location */
+        $location = $entityManager->getRepository(Location::class)->find($id);
+        if ($location != null) {
+            return $this->json($location->getPictures(), 200, [], ['groups' => 'picture:item']);
+        } else {
+            return $this->json([
+                'message' => 'Location ' . $id . ' not found',
+            ], 404);
+        }
+    }
+
+    #[Route('/api/locations/{id}/poi', name: 'poi_by_location', methods: 'GET')]
+    public function poi(EntityManagerInterface $entityManager, int $id): Response
+    {
+        /** @var Location $location */
+        $location = $entityManager->getRepository(Location::class)->find($id);
+        if ($location != null) {
+            return $this->json($location->getPointOfInterests(), 200, [], ['groups' => 'pointOfInterest:item']);
+        } else {
+            return $this->json([
+                'message' => 'Location ' . $id . ' not found',
+            ], 404);
+        }
+    }
+
+    #[Route('/api/locations/{id}/steps', name: 'steps_by_location', methods: 'GET')]
+    public function steps(EntityManagerInterface $entityManager, int $id): Response
+    {
+        /** @var Location $location */
+        $location = $entityManager->getRepository(Location::class)->find($id);
+        if ($location != null) {
+            return $this->json($location->getSteps(), 200, [], ['groups' => 'step:item']);
+        } else {
+            return $this->json([
+                'message' => 'Location ' . $id . ' not found',
+            ], 404);
+        }
+    }
+
+    #[Route('/api/locations/new', name: 'location_new', methods: 'POST')]
     public function new(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer): Response
     {
         try {

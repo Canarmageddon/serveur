@@ -16,33 +16,13 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class TripController extends AbstractController
 {
-    #[Route('/api/trips/new', name: 'trip_new', methods: 'POST')]
-    public function new(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer): Response
-    {
-        try {
-            $data = $request->getContent();
-            $trip = $serializer->deserialize($data, Trip::class, 'json');
-            $entityManager->persist($trip);
-            $entityManager->flush();
-
-            return $this->json($trip, 201, [], ['groups' => 'trip:item']);
-        }
-        catch (NotEncodableValueException $e)
-        {
-            return $this->json([
-                'status' => 400,
-                'message' => $e->getMessage()
-            ], 400);
-        }
-    }
-
-    #[Route('/api/trips/{id}/steps', name: 'steps_by_trip', methods: 'GET')]
-    public function steps(EntityManagerInterface $entityManager, int $id): Response
+    #[Route('/api/trips/{id}/costs', name: 'costs_by_trip', methods: 'GET')]
+    public function costs(EntityManagerInterface $entityManager, int $id): Response
     {
         /** @var Trip $trip */
         $trip = $entityManager->getRepository(Trip::class)->find($id);
         if ($trip != null) {
-            return $this->json($trip->getSteps(), 200, [], ['groups' => 'step:item']);
+            return $this->json($trip->getCosts(), 200, [], ['groups' => 'cost:item']);
         } else {
             return $this->json([
                 'message' => 'Trip ' . $id . ' not found',
@@ -61,6 +41,68 @@ class TripController extends AbstractController
             return $this->json([
                 'message' => 'Trip ' . $id . ' not found',
             ], 404);
+        }
+    }
+
+    #[Route('/api/trips/{id}/steps', name: 'steps_by_trip', methods: 'GET')]
+    public function steps(EntityManagerInterface $entityManager, int $id): Response
+    {
+        /** @var Trip $trip */
+        $trip = $entityManager->getRepository(Trip::class)->find($id);
+        if ($trip != null) {
+            return $this->json($trip->getSteps(), 200, [], ['groups' => 'step:item']);
+        } else {
+            return $this->json([
+                'message' => 'Trip ' . $id . ' not found',
+            ], 404);
+        }
+    }
+
+    #[Route('/api/trips/{id}/travels', name: 'travels_by_trip', methods: 'GET')]
+    public function travels(EntityManagerInterface $entityManager, int $id): Response
+    {
+        /** @var Trip $trip */
+        $trip = $entityManager->getRepository(Trip::class)->find($id);
+        if ($trip != null) {
+            return $this->json($trip->getTravels(), 200, [], ['groups' => 'travel:item']);
+        } else {
+            return $this->json([
+                'message' => 'Trip ' . $id . ' not found',
+            ], 404);
+        }
+    }
+
+    #[Route('/api/trips/{id}/to_do_lists', name: 'to_do_lists_by_trip', methods: 'GET')]
+    public function toDoLists(EntityManagerInterface $entityManager, int $id): Response
+    {
+        /** @var Trip $trip */
+        $trip = $entityManager->getRepository(Trip::class)->find($id);
+        if ($trip != null) {
+            return $this->json($trip->getToDoLists(), 200, [], ['groups' => 'toDoList:item']);
+        } else {
+            return $this->json([
+                'message' => 'Trip ' . $id . ' not found',
+            ], 404);
+        }
+    }
+
+    #[Route('/api/trips/new', name: 'trip_new', methods: 'POST')]
+    public function new(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer): Response
+    {
+        try {
+            $data = $request->getContent();
+            $trip = $serializer->deserialize($data, Trip::class, 'json');
+            $entityManager->persist($trip);
+            $entityManager->flush();
+
+            return $this->json($trip, 201, [], ['groups' => 'trip:item']);
+        }
+        catch (NotEncodableValueException $e)
+        {
+            return $this->json([
+                'status' => 400,
+                'message' => $e->getMessage()
+            ], 400);
         }
     }
 
