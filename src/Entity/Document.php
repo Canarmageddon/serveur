@@ -4,10 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\DocumentRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: DocumentRepository::class)]
@@ -65,30 +62,6 @@ class Document
     public function setRoute(string $route): self
     {
         $this->route = $route;
-
-        return $this;
-    }
-
-    public function getPointOfInterest(): ?PointOfInterest
-    {
-        return $this->pointOfInterest;
-    }
-
-    public function setPointOfInterest(?PointOfInterest $pointOfInterest): self
-    {
-        $this->pointOfInterest = $pointOfInterest;
-
-        return $this;
-    }
-
-    public function getStep(): ?Step
-    {
-        return $this->step;
-    }
-
-    public function setStep(?Step $step): self
-    {
-        $this->step = $step;
 
         return $this;
     }
