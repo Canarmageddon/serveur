@@ -37,12 +37,8 @@ class Document
     #[Groups(['document:list', 'document:item'])]
     private ?string $route;
 
-    #[ORM\ManyToOne(targetEntity: PointOfInterest::class, inversedBy: 'documents')]
-    #[Groups(['document:list', 'document:item'])]
-    private ?PointOfInterest $pointOfInterest;
-
-    #[ORM\ManyToOne(targetEntity: Step::class, inversedBy: 'documents')]
-    private ?Step $step;
+    #[ORM\ManyToOne(targetEntity: MapElement::class, inversedBy: 'documents')]
+    private ?MapElement $mapElement;
 
     public function getId(): ?int
     {
@@ -93,6 +89,18 @@ class Document
     public function setStep(?Step $step): self
     {
         $this->step = $step;
+
+        return $this;
+    }
+
+    public function getMapElement(): ?MapElement
+    {
+        return $this->mapElement;
+    }
+
+    public function setMapElement(?MapElement $mapElement): self
+    {
+        $this->mapElement = $mapElement;
 
         return $this;
     }

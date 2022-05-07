@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\TravelRepository;
 use Doctrine\ORM\Mapping as ORM;
+use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: TravelRepository::class)]
@@ -47,14 +48,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
     ],
     paginationEnabled: false,
 )]
-class Travel
+class Travel extends MapElement
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    #[Groups(['travel:list', 'travel:item', 'trip:list', 'trip:item'])]
-    private ?int $id;
-
     #[ORM\Column(type: 'integer')]
     #[Groups(['travel:list', 'travel:item', 'trip:list', 'trip:item'])]
     private ?int $duration;
@@ -72,11 +67,6 @@ class Travel
     #[Groups(['travel:list', 'travel:item', 'trip:list', 'trip:item'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?Step $end;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getDuration(): ?int
     {
@@ -124,5 +114,10 @@ class Travel
         $this->end = $end;
 
         return $this;
+    }
+
+    #[Pure] public function __construct()
+    {
+        parent::__construct();
     }
 }

@@ -63,14 +63,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
     paginationEnabled: false,
 )]
 
-class Step
+class Step extends MapElement
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    #[Groups(['step:list', 'step:item', 'trip:list', 'trip:item'])]
-    private ?int $id;
-
     #[ORM\ManyToOne(targetEntity: Location::class, cascade: ['persist'], inversedBy: 'steps')]
     #[Groups(['step:list', 'step:item', 'trip:list', 'trip:item'])]
     private ?Location $location;
@@ -100,14 +94,6 @@ class Step
 
     #[ORM\OneToMany(mappedBy: 'end', targetEntity: Travel::class, orphanRemoval: true)]
     private Collection $ends;
-
-    #[ORM\OneToMany(mappedBy: 'step', targetEntity: Document::class)]
-    private Collection $documents;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getLocation(): ?Location
     {
@@ -163,11 +149,11 @@ class Step
     }
 
     public function __construct(){
+        parent::__construct();
         $this->creationDate = new DateTimeImmutable('now');
         $this->pointsOfInterest = new ArrayCollection();
         $this->starts = new ArrayCollection();
         $this->ends = new ArrayCollection();
-        $this->documents = new ArrayCollection();
     }
 
     /**
@@ -254,36 +240,6 @@ class Step
             // set the owning side to null (unless already changed)
             if ($end->getEnd() === $this) {
                 $end->setEnd(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Document>
-     */
-    public function getDocuments(): Collection
-    {
-        return $this->documents;
-    }
-
-    public function addDocument(Document $document): self
-    {
-        if (!$this->documents->contains($document)) {
-            $this->documents[] = $document;
-            $document->setStep($this);
-        }
-
-        return $this;
-    }
-
-    public function removeDocument(Document $document): self
-    {
-        if ($this->documents->removeElement($document)) {
-            // set the owning side to null (unless already changed)
-            if ($document->getStep() === $this) {
-                $document->setStep(null);
             }
         }
 
