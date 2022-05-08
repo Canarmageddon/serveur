@@ -2,9 +2,7 @@
 
 namespace App\Controller;
 
-use App\Dto\CostInput;
 use App\Dto\StepInput;
-use App\Entity\Cost;
 use App\Entity\Location;
 use App\Entity\Step;
 use App\Entity\Trip;
@@ -19,19 +17,49 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class StepController extends AbstractController
 {
-    #[Route('/api/step/new', name: 'step_new', methods: 'POST')]
+    #[Route('/api/steps/{id}/documents', name: 'documents_by_step', methods: 'GET')]
+    public function documents(EntityManagerInterface $entityManager, int $id): Response
+    {
+        /** @var Step $step */
+        $step = $entityManager->getRepository(Step::class)->find($id);
+        if ($step != null) {
+            return $this->json($step->getDocuments(), 200, [], ['groups' => 'document:item']);
+        } else {
+            return $this->json([
+                'message' => 'Step ' . $id . ' not found',
+            ], 404);
+        }
+    }
+
+    #[Route('/api/steps/{id}/poi', name: 'poi_by_step', methods: 'GET')]
+    public function poi(EntityManagerInterface $entityManager, int $id): Response
+    {
+        /** @var Step $step */
+        $step = $entityManager->getRepository(Step::class)->find($id);
+        if ($step != null) {
+            return $this->json($step->getPointsOfInterest(), 200, [], ['groups' => 'pointOfInterest:item']);
+        } else {
+            return $this->json([
+                'message' => 'Step ' . $id . ' not found',
+            ], 404);
+        }
+    }
+
+    #[Route('/api/steps/new', name: 'step_new', methods: 'POST')]
     public function new(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer): Response
     {
         try {
             $data = $request->getContent();
-            /** @var Step $stepInput */
+            /** @var StepInput $stepInput */
             $stepInput = $serializer->deserialize($data, StepInput::class, 'json');
             $step = new Step();
-            $step->setDescription($stepInput->getDescription());
+            $location = new Location();
+            $location->setLatitude($stepInput->getLatitude());
+            $location->setLongitude($stepInput->getLongitude());
+            $location->addStep($step);
+            $entityManager->persist($location);
 
-            /** @var Location $location */
-            $location = $entityManager->getRepository(Location::class)->find($stepInput->getLocation());
-            $location?->addStep($step);
+            $step->setDescription($stepInput->getDescription());
 
             /** @var User $creator */
             $creator = $entityManager->getRepository(User::class)->find($stepInput->getCreator());

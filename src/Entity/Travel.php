@@ -5,25 +5,55 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\TravelRepository;
 use Doctrine\ORM\Mapping as ORM;
+use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: TravelRepository::class)]
 #[ApiResource(
-    collectionOperations: ['get' => ['normalization_context' => ['groups' => 'travel:list']]],
+    collectionOperations: [
+        'get' => ['normalization_context' => ['groups' => 'travel:list']],
+        'new' => [
+            'method' => 'POST',
+            'route_name' => 'travel_new',
+            'openapi_context' => [
+                'summary'     => 'Create a travel',
+                'description' => "Create a travel from two steps",
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema'  => [
+                                'type' => 'object',
+                                'properties' =>
+                                    [
+                                        'duration' => ['type' => 'int'],
+                                        'trip' => ['type' => 'int'],
+                                        'start' => ['type' => 'int'],
+                                        'end' => ['type' => 'int'],
+                                    ],
+                            ],
+                            'example' => [
+                                'duration' => 1,
+                                'trip' => 1,
+                                'start' => 1,
+                                'end' => 1,
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ]    ],
     itemOperations: [
         'get' => ['normalization_context' => ['groups' => 'travel:item']],
+        'documents' => [
+            'method' => 'GET',
+            'route_name' => 'documents_by_travel',
+        ],
         'delete'
     ],
     paginationEnabled: false,
 )]
-class Travel
+class Travel extends MapElement
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    #[Groups(['travel:list', 'travel:item', 'trip:list', 'trip:item'])]
-    private ?int $id;
-
     #[ORM\Column(type: 'integer')]
     #[Groups(['travel:list', 'travel:item', 'trip:list', 'trip:item'])]
     private ?int $duration;
@@ -33,17 +63,14 @@ class Travel
     private ?Trip $trip;
 
     #[ORM\ManyToOne(targetEntity: Step::class, inversedBy: 'starts')]
+    #[Groups(['travel:list', 'travel:item', 'trip:list', 'trip:item'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?Step $start;
 
     #[ORM\ManyToOne(targetEntity: Step::class, inversedBy: 'ends')]
+    #[Groups(['travel:list', 'travel:item', 'trip:list', 'trip:item'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?Step $end;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getDuration(): ?int
     {
@@ -91,5 +118,10 @@ class Travel
         $this->end = $end;
 
         return $this;
+    }
+
+    #[Pure] public function __construct()
+    {
+        parent::__construct();
     }
 }

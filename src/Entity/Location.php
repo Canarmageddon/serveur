@@ -13,14 +13,53 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: LocationRepository::class)]
 #[ApiResource(
     collectionOperations: [
-        'get' => ['normalization_context' => ['groups' => 'location:list']],
+        'get' => [
+            'normalization_context' => ['groups' => 'location:list']],
         'new' => [
             'method' => 'POST',
             'route_name' => 'location_new',
+            'openapi_context' => [
+                'summary'     => 'Create a location',
+                'description' => "Longitude and latitude needed, others are nullable",
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema'  => [
+                                'type' => 'object',
+                                'properties' =>
+                                    [
+                                        'latitude' => ['type' => 'float'],
+                                        'longitude' => ['type' => 'float'],
+                                        'title' => ['type' => 'string'],
+                                        'category' => ['type' => 'string'],
+                                    ],
+                            ],
+                            'example' => [
+                                'latitude' => 48.123,
+                                'longitude' => 7.123,
+                                'title' => "Title",
+                                'category' => "Ex : Musée",
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ]
     ],
     itemOperations: [
         'get' => ['normalization_context' => ['groups' => 'location:item']],
+        'poi' => [
+            'method' => 'GET',
+            'route_name' => 'poi_by_location',
+        ],
+        'steps' => [
+            'method' => 'GET',
+            'route_name' => 'steps_by_location',
+        ],
+        'pictures' => [
+            'method' => 'GET',
+            'route_name' => 'pictures_by_location',
+        ],
         'delete'
     ],
     paginationEnabled: false,
@@ -34,15 +73,15 @@ class Location
     private ?int $id;
 
     #[ORM\Column(type: 'float')]
-    #[Groups(['location:list', 'location:item', 'pointOfInterest:list', 'pointOfInterest:item', 'step:list', 'step:item', 'trip:list', 'trip:item'])]
+    #[Groups(['location:list', 'location:item', 'pointOfInterest:list', 'pointOfInterest:item', 'step:list', 'step:item', 'trip:list', 'trip:item', 'picture:read'])]
     private ?float $latitude;
 
     #[ORM\Column(type: 'float')]
-    #[Groups(['location:list', 'location:item', 'pointOfInterest:list', 'pointOfInterest:item', 'step:list', 'step:item', 'trip:list', 'trip:item'])]
+    #[Groups(['location:list', 'location:item', 'pointOfInterest:list', 'pointOfInterest:item', 'step:list', 'step:item', 'trip:list', 'trip:item', 'picture:read'])]
     private ?float $longitude;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(['location:list', 'location:item', 'pointOfInterest:list', 'pointOfInterest:item', 'trip:list', 'trip:item'])]
+    #[Groups(['location:list', 'location:item', 'pointOfInterest:list', 'pointOfInterest:item', 'trip:list', 'trip:item', 'picture:read'])]
     private ?string $name;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]

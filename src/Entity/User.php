@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -32,8 +33,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
         ]],
     itemOperations: [
         'get' => ['normalization_context' => ['groups' => 'user:item']],
-        'delete'
+        'trips' => [
+            'method' => 'GET',
+            'route_name' => 'trips_by_user',
         ],
+        'delete',
+    ],
     paginationEnabled: false,
 )]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -56,11 +61,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private string $password;
 
     #[ORM\Column(type: 'string', length: 50)]
-    #[Groups(['user:list', 'user:item', 'trip:item'])]
+    #[Groups(['user:list', 'user:item', 'trip:item', 'picture:read'])]
     private ?string $firstName;
 
     #[ORM\Column(type: 'string', length: 50)]
-    #[Groups(['user:list', 'user:item', 'trip:item'])]
+    #[Groups(['user:list', 'user:item', 'trip:item', 'picture:read'])]
     private ?string $lastName;
 
     #[ORM\Column(type: 'datetime_immutable')]
@@ -75,10 +80,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user:list', 'user:item'])]
     private Collection $steps;
 
-    #[ORM\ManyToOne(targetEntity: Trip::class, inversedBy: 'travelers')]
-    #[Groups(['user:list', 'user:item'])]
-    private ?Trip $trip;
-
     #[ORM\OneToMany(mappedBy: 'creator', targetEntity: Picture::class)]
     #[Groups(['user:list', 'user:item'])]
     private Collection $pictures;
@@ -90,6 +91,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'creator', targetEntity: Cost::class, cascade: ['persist', 'remove'])]
     #[Groups(['user:list', 'user:item'])]
     private Collection $costs;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: TripUser::class, orphanRemoval: true)]
+    private Collection $tripUsers;
 
     public function getId(): ?int
     {
@@ -197,6 +201,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->pictures = new ArrayCollection();
         $this->tasks = new ArrayCollection();
         $this->costs = new ArrayCollection();
+        $this->tripUsers = new ArrayCollection();
     }
 
     /**
@@ -255,18 +260,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $step->setCreator(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getTrip(): ?Trip
-    {
-        return $this->trip;
-    }
-
-    public function setTrip(?Trip $trip): self
-    {
-        $this->trip = $trip;
 
         return $this;
     }
@@ -364,5 +357,44 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __toString(): string
     {
         return $this->getFirstName() . ' ' . $this->getLastName();
+    }
+
+    /**
+     * @return Collection<int, TripUser>
+     */
+    public function getTripUsers(): Collection
+    {
+        return $this->tripUsers;
+    }
+
+    public function addTripUser(TripUser $tripUser): self
+    {
+        if (!$this->tripUsers->contains($tripUser)) {
+            $this->tripUsers[] = $tripUser;
+            $tripUser->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTripUser(TripUser $tripUser): self
+    {
+        if ($this->tripUsers->removeElement($tripUser)) {
+            // set the owning side to null (unless already changed)
+            if ($tripUser->getUser() === $this) {
+                $tripUser->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    #[Pure] public function getTrips(): array
+    {
+        $trips = [];
+        foreach($this->getTripUsers() as $tripUser) {
+            $trips[] = $tripUser->getTrip();
+        }
+        return $trips;
     }
 }

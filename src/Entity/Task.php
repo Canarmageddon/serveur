@@ -11,10 +11,39 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: TaskRepository::class)]
 #[ApiResource(
-    collectionOperations: ['get' => ['normalization_context' => ['groups' => 'task:list']],
+    collectionOperations: [
+        'get' => ['normalization_context' => ['groups' => 'task:list']],
         'new' => [
             'method' => 'POST',
             'route_name' => 'task_new',
+            'openapi_context' => [
+                'summary'     => 'Create a task',
+                'description' => "Create a task and add it to a ToDoList",
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema'  => [
+                                'type' => 'object',
+                                'properties' =>
+                                    [
+                                        'name' => ['type' => 'string'],
+                                        'description' => ['type' => 'string'],
+                                        'creator' => ['type' => 'int'],
+                                        'toDoList' => ['type' => 'int'],
+                                        'date' => ['type' => 'string'],
+                                    ],
+                            ],
+                            'example' => [
+                                'name' => "Intitulé de la tâche",
+                                'description' => "Courte description",
+                                'creator' => 1,
+                                'toDoList' => 1,
+                                'date' => "01-09-1998 16:30",
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ]
     ],
     itemOperations: [

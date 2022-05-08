@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Dto\TripDto\UserInput;
 use App\Entity\Location;
 use App\Entity\Trip;
+use App\Entity\TripUser;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,6 +17,90 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class TripController extends AbstractController
 {
+    #[Route('/api/trips/{id}/costs', name: 'costs_by_trip', methods: 'GET')]
+    public function costs(EntityManagerInterface $entityManager, int $id): Response
+    {
+        /** @var Trip $trip */
+        $trip = $entityManager->getRepository(Trip::class)->find($id);
+        if ($trip != null) {
+            return $this->json($trip->getCosts(), 200, [], ['groups' => 'cost:item']);
+        } else {
+            return $this->json([
+                'message' => 'Trip ' . $id . ' not found',
+            ], 404);
+        }
+    }
+
+    #[Route('/api/trips/{id}/poi', name: 'poi_by_trip', methods: 'GET')]
+    public function poi(EntityManagerInterface $entityManager, int $id): Response
+    {
+        /** @var Trip $trip */
+        $trip = $entityManager->getRepository(Trip::class)->find($id);
+        if ($trip != null) {
+            return $this->json($trip->getPointsOfInterest(), 200, [], ['groups' => 'pointOfInterest:item']);
+        } else {
+            return $this->json([
+                'message' => 'Trip ' . $id . ' not found',
+            ], 404);
+        }
+    }
+
+    #[Route('/api/trips/{id}/steps', name: 'steps_by_trip', methods: 'GET')]
+    public function steps(EntityManagerInterface $entityManager, int $id): Response
+    {
+        /** @var Trip $trip */
+        $trip = $entityManager->getRepository(Trip::class)->find($id);
+        if ($trip != null) {
+            return $this->json($trip->getSteps(), 200, [], ['groups' => 'step:item']);
+        } else {
+            return $this->json([
+                'message' => 'Trip ' . $id . ' not found',
+            ], 404);
+        }
+    }
+
+    #[Route('/api/trips/{id}/travels', name: 'travels_by_trip', methods: 'GET')]
+    public function travels(EntityManagerInterface $entityManager, int $id): Response
+    {
+        /** @var Trip $trip */
+        $trip = $entityManager->getRepository(Trip::class)->find($id);
+        if ($trip != null) {
+            return $this->json($trip->getTravels(), 200, [], ['groups' => 'travel:item']);
+        } else {
+            return $this->json([
+                'message' => 'Trip ' . $id . ' not found',
+            ], 404);
+        }
+    }
+
+    #[Route('/api/trips/{id}/toDoLists', name: 'to_do_lists_by_trip', methods: 'GET')]
+    public function toDoLists(EntityManagerInterface $entityManager, int $id): Response
+    {
+        /** @var Trip $trip */
+        $trip = $entityManager->getRepository(Trip::class)->find($id);
+        if ($trip != null) {
+            return $this->json($trip->getToDoLists(), 200, [], ['groups' => 'toDoList:item']);
+        } else {
+            return $this->json([
+                'message' => 'Trip ' . $id . ' not found',
+            ], 404);
+        }
+    }
+
+    #[Route('/api/trips/{id}/users', name: 'users_by_trip', methods: 'GET')]
+    public function users(EntityManagerInterface $entityManager, int $id): Response
+    {
+        /** @var Trip $trip */
+        $trip = $entityManager->getRepository(Trip::class)->find($id);
+        if ($trip != null) {
+            return $this->json($trip->getUsers(), 200, [], ['groups' => 'user:item']);
+        } else {
+            return $this->json([
+                'message' => 'Trip ' . $id . ' not found',
+            ], 404);
+        }
+    }
+
     #[Route('/api/trips/new', name: 'trip_new', methods: 'POST')]
     public function new(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer): Response
     {
@@ -36,34 +121,6 @@ class TripController extends AbstractController
         }
     }
 
-    #[Route('/api/trips/{id}/steps', name: 'steps_by_trip', methods: 'GET')]
-    public function steps(EntityManagerInterface $entityManager, int $id): Response
-    {
-        /** @var Trip $trip */
-        $trip = $entityManager->getRepository(Trip::class)->find($id);
-        if ($trip != null) {
-            return $this->json($trip->getSteps(), 201, [], ['groups' => 'step:item']);
-        } else {
-            return $this->json([
-                'message' => 'Trip ' . $id . ' not found',
-            ], 404);
-        }
-    }
-
-    #[Route('/api/trips/{id}/poi', name: 'poi_by_trip', methods: 'GET')]
-    public function poi(EntityManagerInterface $entityManager, int $id): Response
-    {
-        /** @var Trip $trip */
-        $trip = $entityManager->getRepository(Trip::class)->find($id);
-        if ($trip != null) {
-            return $this->json($trip->getPointsOfInterest(), 201, [], ['groups' => 'pointOfInterest:item']);
-        } else {
-            return $this->json([
-                'message' => 'Trip ' . $id . ' not found',
-            ], 404);
-        }
-    }
-
     #[Route('/api/trips/addUser', name: 'trip_add_user', methods: 'POST')]
     public function addUser(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer): Response
     {
@@ -71,27 +128,34 @@ class TripController extends AbstractController
             $data = $request->getContent();
             /** @var UserInput $userInput */
             $userInput = $serializer->deserialize($data, UserInput::class, 'json');
-            $emailUser = $userInput->getEmailUser();
-            $idTrip = $userInput->getIdTrip();
+            $emailUser = $userInput->getEmail();
+            $idTrip = $userInput->getTrip();
             /** @var User $user */
             $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $emailUser]);
             /** @var Trip $trip */
             $trip = $entityManager->getRepository(Trip::class)->find($idTrip);
 
             if($user != null && $trip != null) {
+
+                /** @var TripUser $tripUser */
+                $tripUser = $entityManager->getRepository(TripUser::class)->findOneBy(['trip' => $trip->getId(), 'user' => $user->getId()]);
+
                 //Vérifier si l'user est déjà dans le trip, sinon, l'ajouter et flush
-                if (!$trip->getTravelers()->contains($user)) {
-                    $trip->addTraveler($user);
-                    $entityManager->persist($trip);
+                if ($tripUser == null) {
+                    $tripUser = new TripUser();
+                    $trip->addTripUser($tripUser);
+                    $user->addTripUser($tripUser);
+                    $tripUser->setRole($userInput->getRole());
+                    $entityManager->persist($tripUser);
                     $entityManager->flush();
                     return $this->json([
-                        'message' => 'User ' . $emailUser . ' added to ' . $idTrip . ' Trip',
-                    ], 201);
+                        'message' => 'User ' . $emailUser . ' added to Trip ' . $idTrip,
+                    ], 202);
 
                 } else {
                     return $this->json([
-                        'message' => 'User ' . $emailUser . ' already member of ' . $idTrip . ' Trip',
-                    ], 201);
+                        'message' => 'User ' . $emailUser . ' already member of Trip ' . $idTrip,
+                    ], 200);
                 }
 
             } elseif ($user == null && $trip == null) {
@@ -126,27 +190,32 @@ class TripController extends AbstractController
             $data = $request->getContent();
             /** @var UserInput $userInput */
             $userInput = $serializer->deserialize($data, UserInput::class, 'json');
-            $emailUser = $userInput->getEmailUser();
-            $idTrip = $userInput->getIdTrip();
+            $emailUser = $userInput->getEmail();
+            $idTrip = $userInput->getTrip();
             /** @var User $user */
             $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $emailUser]);
             /** @var Trip $trip */
             $trip = $entityManager->getRepository(Trip::class)->find($idTrip);
 
             if($user != null && $trip != null) {
+
+                /** @var TripUser $tripUser */
+                $tripUser = $entityManager->getRepository(TripUser::class)->findOneBy(['trip' => $trip->getId(), 'user' => $user->getId()]);
+
                 //Vérifier si l'user est déjà dans le trip, si oui, l'enlever et flush
-                if ($trip->getTravelers()->contains($user)) {
-                    $trip->removeTraveler($user);
-                    $entityManager->persist($trip);
+                if ($tripUser != null) {
+                    $trip->removeTripUser($tripUser);
+                    $user->removeTripUser($tripUser);
+                    $entityManager->remove($tripUser);
                     $entityManager->flush();
                     return $this->json([
                         'message' => 'User ' . $emailUser . ' removed from ' . $idTrip . ' Trip',
-                    ], 201);
+                    ], 202);
 
                 } else {
                     return $this->json([
                         'message' => 'User ' . $emailUser . ' already member of ' . $idTrip . ' Trip',
-                    ], 201);
+                    ], 200);
                 }
 
             } elseif ($user == null && $trip == null) {

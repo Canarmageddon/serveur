@@ -23,4 +23,18 @@ class UserController extends AbstractController
             ], 404);
         }
     }
+
+    #[Route('/api/users/{id}/trips', name: 'trips_by_user', methods: 'GET')]
+    public function users(EntityManagerInterface $entityManager, int $id): Response
+    {
+        /** @var User $user */
+        $user = $entityManager->getRepository(User::class)->find($id);
+        if ($user != null) {
+            return $this->json($user->getTrips(), 200, [], ['groups' => 'trip:item']);
+        } else {
+            return $this->json([
+                'message' => 'User ' . $id . ' not found',
+            ], 404);
+        }
+    }
 }

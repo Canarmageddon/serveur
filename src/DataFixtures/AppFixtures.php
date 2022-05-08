@@ -10,6 +10,7 @@ use App\Entity\Task;
 use App\Entity\ToDoList;
 use App\Entity\Travel;
 use App\Entity\Trip;
+use App\Entity\TripUser;
 use App\Entity\User;
 use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -41,17 +42,25 @@ class AppFixtures extends Fixture
         $costCategories = array('Hygiène', 'Hygiène', 'Alimentaire', 'Loisir', 'Alimentaire/Loisir', 'Elevé');
 
         $users = [];
-        $users[] = array('root', 'Poisson', 'd\'Avril', 'root', (array)'ROLE_ADMIN');
+        $users[] = array('root@root.fr', 'Poisson', 'd\'Avril', 'mdp', (array)'ROLE_ADMIN');
+        $users[] = array('canartichaud@duck.com', 'Canard', 'Tichaut', 'mdp', (array)'ROLE_USER');
+        $users[] = array('XxWumpa69CortexSlayerxX@gmail.com', 'Crash', 'Bandicoot', 'mdp', (array)'ROLE_USER');
         #endregion
 
         #region Factory
-        $user = new User();
-        $user->setEmail($users[0][0]);
-        $user->setFirstName($users[0][1]);
-        $user->setLastName($users[0][2]);
-        $user->setPassword($users[0][3]);
-        $user->setRoles($users[0][4]);
-        $manager->persist($user);
+        $createdUsers = [];
+
+        foreach($users as $newUser) {
+            $user = new User();
+            $user->setEmail($newUser[0]);
+            $user->setFirstName($newUser[1]);
+            $user->setLastName($newUser[2]);
+            $user->setPassword($newUser[3]);
+            $user->setRoles($newUser[4]);
+            $manager->persist($user);
+            $createdUsers[] = $user;
+        }
+
 
         for($i = 0 ; $i < count($arrayLocation) ; $i++) {
             $location = new Location();
@@ -63,10 +72,21 @@ class AppFixtures extends Fixture
             $locations[] = $location;
         }
 
+        $roles = ['admin', 'editor', 'guest'];
+
         for($a = 0 ; $a < 3 ; $a++) {
             $trip = new Trip();
             $trip->setName($tripNames[$a]);
-            $trip->addTraveler($user);
+
+            $idRole = 0;
+            foreach($createdUsers as $traveler) {
+                $tripUser = new TripUser();
+                $trip->addTripUser($tripUser);
+                $traveler->addTripUser($tripUser);
+                $tripUser->setRole($roles[$idRole]);
+                $manager->persist($tripUser);
+                $idRole++;
+            }
 
             for($tdl = 0 ; $tdl < 3 ; $tdl++){
                 $toDoList = new ToDoList();

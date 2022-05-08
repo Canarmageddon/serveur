@@ -10,10 +10,39 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CostRepository::class)]
 #[ApiResource(
-    collectionOperations: ['get' => ['normalization_context' => ['groups' => 'cost:list']],
+    collectionOperations: [
+        'get' => ['normalization_context' => ['groups' => 'cost:list']],
         'new' => [
             'method' => 'POST',
             'route_name' => 'cost_new',
+            'openapi_context' => [
+                'summary'     => 'Create a cost',
+                'description' => "Gestion des bénéficiaires changée prochainement",
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema'  => [
+                                'type' => 'object',
+                                'properties' =>
+                                    [
+                                        'label' => ['type' => 'string'],
+                                        'value' => ['type' => 'float'],
+                                        'beneficiaries' => ['type' => 'string'],
+                                        'creator' => ['type' => 'int'],
+                                        'trip' => ['type' => 'int'],
+                                    ],
+                            ],
+                            'example' => [
+                                'label' => "Motif du coût",
+                                'value' => 13.37,
+                                'beneficiaries' => "Adresses mails des Users concernés (sera changé bientôt)",
+                                'creator' => 1,
+                                'trip' => 1,
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ]
     ],
     itemOperations: [
