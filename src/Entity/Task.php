@@ -76,13 +76,16 @@ class Task
     #[Groups(['task:list', 'task:item'])]
     private ?DateTimeImmutable $creationDate;
 
-    #[ORM\Column(type: 'datetime')]
+    #[ORM\Column(type: 'datetime', nullable: true)]
     #[Groups(['task:list', 'task:item', 'trip:item'])]
     private ?DateTimeInterface $date;
 
     #[ORM\ManyToOne(targetEntity: ToDoList::class, cascade: ['persist'], inversedBy: 'tasks')]
     #[Groups(['task:list', 'task:item'])]
     private ?ToDoList $toDoList;
+
+    #[ORM\Column(type: 'boolean')]
+    private ?bool $isDone;
 
     public function getId(): ?int
     {
@@ -154,6 +157,18 @@ class Task
     public function setToDoList(?ToDoList $toDoList): self
     {
         $this->toDoList = $toDoList;
+
+        return $this;
+    }
+
+    public function getIsDone(): ?bool
+    {
+        return $this->isDone;
+    }
+
+    public function setIsDone(bool $isDone): self
+    {
+        $this->isDone = $isDone;
 
         return $this;
     }
