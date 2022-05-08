@@ -4,15 +4,17 @@ namespace App\Dto;
 
 class CostInput
 {
-    private ?int $creator;
+    private ?int $creator = null;
 
-    private ?string $beneficiaries;
+    private ?string $beneficiaries = null;
 
-    private ?int $trip;
+    private ?int $trip = null;
 
-    private ?string $label;
+    private ?string $label = null;
 
-    private ?float $value;
+    private ?float $value = null;
+
+    private ?string $category = null;
 
     /**
      * @return int|null
@@ -29,8 +31,6 @@ class CostInput
     {
         $this->creator = $creator;
     }
-
-    private ?string $category;
 
     /**
      * @return string|null

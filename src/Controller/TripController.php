@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Dto\TripDto\UserInput;
-use App\Entity\Location;
 use App\Entity\Trip;
 use App\Entity\TripUser;
 use App\Entity\User;
@@ -215,7 +214,7 @@ class TripController extends AbstractController
                 } else {
                     return $this->json([
                         'message' => 'User ' . $emailUser . ' already member of ' . $idTrip . ' Trip',
-                    ], 200);
+                    ]);
                 }
 
             } elseif ($user == null && $trip == null) {
@@ -233,6 +232,40 @@ class TripController extends AbstractController
                     'message' => 'Trip ' . $idTrip . ' not found',
                 ], 404);
             }
+        }
+        catch (NotEncodableValueException $e)
+        {
+            return $this->json([
+                'status' => 400,
+                'message' => $e->getMessage()
+            ], 400);
+        }
+    }
+
+    #[Route('/api/trips/{id}/edit', name: 'trip_edit', methods: 'PUT')]
+    public function edit(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer, int $id): Response
+    {
+        try {
+            $data = $request->getContent();
+            /** @var Trip $tripInput */
+            $tripInput = $serializer->deserialize($data, Trip::class, 'json');
+            /** @var Trip $trip */
+            $trip = $entityManager->getRepository(Trip::class)->find($id);
+            if ($trip == null) {
+                return $this->json([
+                    'status' => 400,
+                    'message' => "Trip " . $id . " not found"
+                ], 400);
+            }
+
+            if ($tripInput->getName() != null) {
+                $trip->setName($tripInput->getName());
+            }
+
+            $entityManager->persist($trip);
+            $entityManager->flush();
+
+            return $this->json($trip, 201, [], ['groups' => 'trip:item']);
         }
         catch (NotEncodableValueException $e)
         {

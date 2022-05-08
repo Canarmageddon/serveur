@@ -29,6 +29,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
                                     [
                                         'latitude' => ['type' => 'float'],
                                         'longitude' => ['type' => 'float'],
+                                        'name' => ['type' => 'string'],
+                                        'type' => ['type' => 'string'],
                                         'title' => ['type' => 'string'],
                                         'description' => ['type' => 'string'],
                                         'creator' => ['type' => 'int'],
@@ -38,6 +40,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
                             'example' => [
                                 'latitude' => 48.123,
                                 'longitude' => 7.123,
+                                'name' => "Nom du lieu",
+                                'type' => "Type du lieu",
                                 'title' => "Title",
                                 'description' => "Brief POI description",
                                 'creator' => 1,
@@ -55,13 +59,47 @@ use Symfony\Component\Serializer\Annotation\Groups;
             'method' => 'GET',
             'route_name' => 'documents_by_poi',
         ],
+        'edit' => [
+            'method' => 'PUT',
+            'route_name' => 'point_of_interest_edit',
+            'openapi_context' => [
+                'summary'     => 'Edit a point of interest',
+                'description' => "Edit a point of interest",
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema'  => [
+                                'type' => 'object',
+                                'properties' =>
+                                    [
+                                        'latitude' => ['type' => 'float'],
+                                        'longitude' => ['type' => 'float'],
+                                        'name' => ['type' => 'string'],
+                                        'type' => ['type' => 'string'],
+                                        'title' => ['type' => 'string'],
+                                        'description' => ['type' => 'string'],
+                                    ],
+                            ],
+                            'example' => [
+                                'latitude' => 48.123,
+                                'longitude' => 7.123,
+                                'name' => "Nom du lieu",
+                                'type' => "Type du lieu",
+                                'title' => "Titre du POI",
+                                'description' => "Brief POI description",
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
         'delete',
     ],
     paginationEnabled: false,
 )]
 class PointOfInterest extends MapElement
 {
-    #[ORM\ManyToOne(targetEntity: Location::class, inversedBy: 'pointOfInterests')]
+    #[ORM\ManyToOne(targetEntity: Location::class, cascade: ['persist'], inversedBy: 'pointOfInterests')]
     #[Groups(['pointOfInterest:list', 'pointOfInterest:item', 'trip:list', 'trip:item'])]
     private ?Location $location;
 

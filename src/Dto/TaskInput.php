@@ -6,15 +6,17 @@ use DateTimeInterface;
 
 class TaskInput
 {
-    private ?string $name;
+    private ?string $name = null;
 
-    private ?string $description;
+    private ?string $description = null;
 
-    private ?int $creator;
+    private ?int $creator = null;
 
-    private ?DateTimeInterface $date;
+    private ?DateTimeInterface $date = null;
 
-    private ?int $toDoList;
+    private ?int $toDoList = null;
+
+    private ?bool $isDone = null;
 
     /**
      * @return string|null
@@ -94,5 +96,21 @@ class TaskInput
     public function setToDoList(?int $toDoList): void
     {
         $this->toDoList = $toDoList;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getIsDone(): ?bool
+    {
+        return $this->isDone;
+    }
+
+    /**
+     * @param bool|null $isDone
+     */
+    public function setIsDone(?bool $isDone): void
+    {
+        $this->isDone = $isDone;
     }
 }

@@ -29,6 +29,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
                                     [
                                         'latitude' => ['type' => 'float'],
                                         'longitude' => ['type' => 'float'],
+                                        'name' => ['type' => 'string'],
+                                        'type' => ['type' => 'string'],
                                         'title' => ['type' => 'string'],
                                         'description' => ['type' => 'string'],
                                         'creator' => ['type' => 'int'],
@@ -38,8 +40,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
                             'example' => [
                                 'latitude' => 48.123,
                                 'longitude' => 7.123,
+                                'name' => "Nom du lieu",
+                                'type' => "Type du lieu",
                                 'title' => "Title",
-                                'description' => "Brief POI description",
+                                'description' => "Brief Step description",
                                 'creator' => 1,
                                 'trip' => 1,
                             ],
@@ -47,7 +51,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
                     ],
                 ],
             ],
-        ]],
+        ]
+    ],
     itemOperations: [
         'get' => ['normalization_context' => ['groups' => 'step:item']],
         'documents' => [
@@ -57,6 +62,40 @@ use Symfony\Component\Serializer\Annotation\Groups;
         'poi' => [
             'method' => 'GET',
             'route_name' => 'poi_by_step',
+        ],
+        'new' => [
+            'method' => 'PUT',
+            'route_name' => 'step_edit',
+            'openapi_context' => [
+                'summary'     => 'Edit a step',
+                'description' => "Edit a step",
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema'  => [
+                                'type' => 'object',
+                                'properties' =>
+                                    [
+                                        'latitude' => ['type' => 'float'],
+                                        'longitude' => ['type' => 'float'],
+                                        'name' => ['type' => 'string'],
+                                        'type' => ['type' => 'string'],
+                                        'title' => ['type' => 'string'],
+                                        'description' => ['type' => 'string'],
+                                    ],
+                            ],
+                            'example' => [
+                                'latitude' => 48.123,
+                                'longitude' => 7.123,
+                                'name' => "Nom du lieu",
+                                'type' => "Type du lieu",
+                                'title' => "Titre de l'étape",
+                                'description' => "Brief Step description",
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ],
         'delete'
     ],
@@ -94,6 +133,10 @@ class Step extends MapElement
 
     #[ORM\OneToMany(mappedBy: 'end', targetEntity: Travel::class, orphanRemoval: true)]
     private Collection $ends;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups(['step:list', 'step:item', 'trip:list', 'trip:item'])]
+    private ?string $title;
 
     public function getLocation(): ?Location
     {
@@ -242,6 +285,18 @@ class Step extends MapElement
                 $end->setEnd(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(?string $title): self
+    {
+        $this->title = $title;
 
         return $this;
     }

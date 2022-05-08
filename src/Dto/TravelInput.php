@@ -4,13 +4,13 @@ namespace App\Dto;
 
 class TravelInput {
 
-    private ?int $duration;
+    private ?int $duration = null;
 
-    private ?int $trip;
+    private ?int $trip = null;
 
-    private ?int $start;
+    private ?int $start = null;
 
-    private ?int $end;
+    private ?int $end = null;
 
     /**
      * @return int|null

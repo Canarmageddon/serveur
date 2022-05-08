@@ -77,4 +77,47 @@ class LocationController extends AbstractController
             ], 400);
         }
     }
+
+    #[Route('/api/locations/{id}/edit', name: 'location_edit', methods: 'PUT')]
+    public function edit(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer, int $id): Response
+    {
+        try {
+            $data = $request->getContent();
+            /** @var Location $locationInput */
+            $locationInput = $serializer->deserialize($data, Location::class, 'json');
+
+            /** @var Location $location */
+            $location = $entityManager->getRepository(Location::class)->find($id);
+            if ($location == null) {
+                return $this->json([
+                    'status' => 400,
+                    'message' => "Location " . $id . " not found"
+                ], 400);
+            }
+
+            if ($locationInput->getName() != null) {
+                $location->setName($locationInput->getName());
+            }
+            if ($locationInput->getType() != null) {
+                $location->setType($locationInput->getType());
+            }
+            if ($locationInput->getLongitude() != null) {
+                $location->setLongitude($locationInput->getLongitude());
+            }
+            if ($locationInput->getLatitude() != null) {
+                $location->setLatitude($locationInput->getLatitude());
+            }
+            $entityManager->persist($location);
+            $entityManager->flush();
+
+            return $this->json($location, 201, [], ['groups' => 'location:item']);
+        }
+        catch (NotEncodableValueException $e)
+        {
+            return $this->json([
+                'status' => 400,
+                'message' => $e->getMessage()
+            ], 400);
+        }
+    }
 }

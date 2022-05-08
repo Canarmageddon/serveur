@@ -24,7 +24,7 @@ class Document
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     #[Groups(['document:list', 'document:item'])]
-    private ?int $id;
+    private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 255)]
     #[Groups(['document:list', 'document:item'])]

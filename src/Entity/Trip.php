@@ -19,7 +19,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             'route_name' => 'trip_new',
             'openapi_context' => [
                 'summary'     => 'Create a Trip',
-                'description' => "Pas d'idée mdr",
+                'description' => "Create a Trip",
                 'requestBody' => [
                     'content' => [
                         'application/json' => [
@@ -119,6 +119,30 @@ use Symfony\Component\Serializer\Annotation\Groups;
             'method' => 'GET',
             'route_name' => 'users_by_trip',
         ],
+        'edit' => [
+            'method' => 'PUT',
+            'route_name' => 'trip_edit',
+            'openapi_context' => [
+                'summary'     => 'Edit a Trip',
+                'description' => "Edit a Trip",
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema'  => [
+                                'type' => 'object',
+                                'properties' =>
+                                    [
+                                        'name' => ['type' => 'string'],
+                                    ],
+                            ],
+                            'example' => [
+                                'name' => "Vacances au soleil",
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
         'delete'
     ],
     paginationEnabled: false,
@@ -129,7 +153,7 @@ class Trip
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     #[Groups(['trip:list', 'trip:item', 'travel:list', 'travel:item'])]
-    private ?int $id;
+    private ?int $id = null;
 
     #[ORM\OneToOne(mappedBy: 'trip', targetEntity: Album::class, cascade: ['persist', 'remove'])]
     #[Groups(['trip:list', 'trip:item'])]
@@ -391,7 +415,7 @@ class Trip
         return $this;
     }
 
-    #[Pure] public function getUsers(): array
+    public function getUsers(): array
     {
         $travelers = [];
         foreach($this->getTripUsers() as $tripUser) {
