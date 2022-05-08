@@ -204,7 +204,6 @@ class TripController extends AbstractController
 
                 //Vérifier si l'user est déjà dans le trip, si oui, l'enlever et flush
                 if ($tripUser != null) {
-                    $tripUser = $entityManager->getRepository(TripUser::class)->findOneBy(['trip' => $trip->getId(), 'user' => $user->getId()]);
                     $trip->removeTripUser($tripUser);
                     $user->removeTripUser($tripUser);
                     $entityManager->remove($tripUser);
