@@ -19,7 +19,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 #[AsController]
 class TaskController extends AbstractController
 {
-    #[Route('/api/task/new', name: 'task_new', methods: 'POST')]
+    #[Route('/api/tasks/new', name: 'task_new', methods: 'POST')]
     public function new(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer): Response
     {
         try {

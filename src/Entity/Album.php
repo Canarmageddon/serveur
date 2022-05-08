@@ -18,10 +18,34 @@ use Symfony\Component\Serializer\Annotation\Groups;
         'new' => [
             'method' => 'POST',
             'route_name' => 'album_new',
-        ]
+            'openapi_context' => [
+                'summary'     => 'Create an album',
+                'description' => "Create an album and add it to a Trip",
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema'  => [
+                                'type' => 'object',
+                                'properties' =>
+                                    [
+                                        'trip' => ['type' => 'int'],
+                                    ],
+                            ],
+                            'example' => [
+                                'trip' => 1,
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
     ],
     itemOperations: [
         'get' => ['normalization_context' => ['groups' => 'album:item']],
+        'pictures' => [
+            'method' => 'GET',
+            'route_name' => 'pictures_by_album',
+        ],
         'delete'
     ],
     paginationEnabled: false,

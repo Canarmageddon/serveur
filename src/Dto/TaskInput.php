@@ -14,6 +14,8 @@ class TaskInput
 
     private ?DateTimeInterface $date;
 
+    private ?int $toDoList;
+
     /**
      * @return string|null
      */
@@ -93,6 +95,4 @@ class TaskInput
     {
         $this->toDoList = $toDoList;
     }
-
-    private ?int $toDoList;
 }

@@ -31,8 +31,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
                                         'longitude' => ['type' => 'float'],
                                         'title' => ['type' => 'string'],
                                         'description' => ['type' => 'string'],
-                                        'creator' => ['type' => 'string'],
-                                        'trip' => ['type' => 'string'],
+                                        'creator' => ['type' => 'int'],
+                                        'trip' => ['type' => 'int'],
                                     ],
                             ],
                             'example' => [
@@ -40,8 +40,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
                                 'longitude' => 7.123,
                                 'title' => "Title",
                                 'description' => "Brief POI description",
-                                'creator' => "/api/users/id",
-                                'trip' => "/api/trips/id",
+                                'creator' => 1,
+                                'trip' => 1,
                             ],
                         ],
                     ],
@@ -51,18 +51,16 @@ use Symfony\Component\Serializer\Annotation\Groups;
     ],
     itemOperations: [
         'get' => ['normalization_context' => ['groups' => 'pointOfInterest:item']],
-        'delete',
+        'documents' => [
+            'method' => 'GET',
+            'route_name' => 'documents_by_poi',
         ],
+        'delete',
+    ],
     paginationEnabled: false,
 )]
-class PointOfInterest
+class PointOfInterest extends MapElement
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    #[Groups(['pointOfInterest:list', 'pointOfInterest:item', 'trip:list', 'trip:item'])]
-    private ?int $id;
-
     #[ORM\ManyToOne(targetEntity: Location::class, inversedBy: 'pointOfInterests')]
     #[Groups(['pointOfInterest:list', 'pointOfInterest:item', 'trip:list', 'trip:item'])]
     private ?Location $location;
@@ -76,15 +74,11 @@ class PointOfInterest
     private DateTimeImmutable $creationDate;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(['pointOfInterest', 'trip:list', 'trip:item'])]
+    #[Groups(['pointOfInterest:list', 'pointOfInterest:item', 'trip:list', 'trip:item'])]
     private ?string $description;
 
-    #[ORM\OneToMany(mappedBy: 'pointOfInterest', targetEntity: Document::class)]
-    #[Groups(['pointOfInterest:list', 'pointOfInterest:item', 'trip:list', 'trip:item'])]
-    private Collection $documents;
-
     #[ORM\ManyToOne(targetEntity: Step::class, inversedBy: 'pointsOfInterest')]
-    #[Groups(['pointOfInterest:list', 'pointOfInterest:item', 'trip:item'])]
+    #[Groups(['pointOfInterest:list', 'pointOfInterest:item', 'trip:list', 'trip:item'])]
     private ?Step $step;
 
     #[ORM\ManyToOne(targetEntity: Trip::class, inversedBy: 'pointsOfInterest')]
@@ -92,12 +86,8 @@ class PointOfInterest
     private ?Trip $trip;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups(['pointOfInterest:list', 'pointOfInterest:item', 'trip:list', 'trip:item'])]
     private ?string $title;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getLocation(): ?Location
     {
@@ -129,8 +119,8 @@ class PointOfInterest
     }
 
     public function __construct(){
+        parent::__construct();
         $this->creationDate = new DateTimeImmutable('now');
-        $this->documents = new ArrayCollection();
     }
 
     public function getDescription(): ?string
@@ -141,36 +131,6 @@ class PointOfInterest
     public function setDescription(?string $description): self
     {
         $this->description = $description;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Document>
-     */
-    public function getDocuments(): Collection
-    {
-        return $this->documents;
-    }
-
-    public function addDocument(Document $document): self
-    {
-        if (!$this->documents->contains($document)) {
-            $this->documents[] = $document;
-            $document->setPointOfInterest($this);
-        }
-
-        return $this;
-    }
-
-    public function removeDocument(Document $document): self
-    {
-        if ($this->documents->removeElement($document)) {
-            // set the owning side to null (unless already changed)
-            if ($document->getPointOfInterest() === $this) {
-                $document->setPointOfInterest(null);
-            }
-        }
 
         return $this;
     }

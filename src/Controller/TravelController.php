@@ -20,6 +20,20 @@ use Symfony\Component\Serializer\SerializerInterface;
 #[AsController]
 class TravelController extends AbstractController
 {
+    #[Route('/api/travel/{id}/documents', name: 'documents_by_travel', methods: 'GET')]
+    public function documents(EntityManagerInterface $entityManager, int $id): Response
+    {
+        /** @var Travel $travel */
+        $travel = $entityManager->getRepository(Travel::class)->find($id);
+        if ($travel != null) {
+            return $this->json($travel->getDocuments(), 200, [], ['groups' => 'document:item']);
+        } else {
+            return $this->json([
+                'message' => 'Travel ' . $id . ' not found',
+            ], 404);
+        }
+    }
+
     #[Route('/api/travel/new', name: 'travel_new', methods: 'POST')]
     public function new(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer): Response
     {

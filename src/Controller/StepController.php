@@ -17,7 +17,35 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class StepController extends AbstractController
 {
-    #[Route('/api/step/new', name: 'step_new', methods: 'POST')]
+    #[Route('/api/steps/{id}/documents', name: 'documents_by_step', methods: 'GET')]
+    public function documents(EntityManagerInterface $entityManager, int $id): Response
+    {
+        /** @var Step $step */
+        $step = $entityManager->getRepository(Step::class)->find($id);
+        if ($step != null) {
+            return $this->json($step->getDocuments(), 200, [], ['groups' => 'document:item']);
+        } else {
+            return $this->json([
+                'message' => 'Step ' . $id . ' not found',
+            ], 404);
+        }
+    }
+
+    #[Route('/api/steps/{id}/poi', name: 'poi_by_step', methods: 'GET')]
+    public function poi(EntityManagerInterface $entityManager, int $id): Response
+    {
+        /** @var Step $step */
+        $step = $entityManager->getRepository(Step::class)->find($id);
+        if ($step != null) {
+            return $this->json($step->getPointsOfInterest(), 200, [], ['groups' => 'pointOfInterest:item']);
+        } else {
+            return $this->json([
+                'message' => 'Step ' . $id . ' not found',
+            ], 404);
+        }
+    }
+
+    #[Route('/api/steps/new', name: 'step_new', methods: 'POST')]
     public function new(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer): Response
     {
         try {
