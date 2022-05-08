@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\Controller\TripController;
 use App\Repository\TripRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -44,7 +43,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             'route_name' => 'trip_add_user',
             'openapi_context' => [
                 'summary'     => 'Add a User to a Trip',
-                'description' => "Vérifie si les deux données correspondent à des entités, puis l'ajoute",
+                'description' => "Nécessite l'email et l'id du trip, si aucun rôle précisé, rôle = 'guest'",
                 'requestBody' => [
                     'content' => [
                         'application/json' => [
@@ -54,11 +53,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
                                     [
                                         'email' => ['type' => 'string'],
                                         'trip' => ['type' => 'int'],
+                                        'role' => ['type' => 'string']
                                     ],
                             ],
                             'example' => [
                                 'email' => "root@root.fr",
                                 'trip' => 1,
+                                'role' => 'editor'
                             ],
                         ],
                     ],
@@ -110,9 +111,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
             'method' => 'GET',
             'route_name' => 'travels_by_trip',
         ],
-        'to_do_list' => [
+        'to_do_lists' => [
             'method' => 'GET',
             'route_name' => 'to_do_lists_by_trip',
+        ],
+        'users' => [
+            'method' => 'GET',
+            'route_name' => 'users_by_trip',
         ],
         'delete'
     ],
@@ -125,10 +130,6 @@ class Trip
     #[ORM\Column(type: 'integer')]
     #[Groups(['trip:list', 'trip:item', 'travel:list', 'travel:item'])]
     private ?int $id;
-
-    #[ORM\OneToMany(mappedBy: 'trip', targetEntity: User::class)]
-    #[Groups(['trip:list', 'trip:item'])]
-    private Collection $travelers;
 
     #[ORM\OneToOne(mappedBy: 'trip', targetEntity: Album::class, cascade: ['persist', 'remove'])]
     #[Groups(['trip:list', 'trip:item'])]
@@ -158,49 +159,22 @@ class Trip
     #[Groups(['trip:list', 'trip:item'])]
     private Collection $travels;
 
+    #[ORM\OneToMany(mappedBy: 'trip', targetEntity: TripUser::class, orphanRemoval: true)]
+    private Collection $tripUsers;
+
     #[Pure] public function __construct()
     {
-        $this->travelers = new ArrayCollection();
         $this->costs = new ArrayCollection();
         $this->toDoLists = new ArrayCollection();
         $this->pointsOfInterest = new ArrayCollection();
         $this->steps = new ArrayCollection();
         $this->travels = new ArrayCollection();
+        $this->tripUsers = new ArrayCollection();
     }
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    /**
-     * @return Collection<int, User>
-     */
-    public function getTravelers(): Collection
-    {
-        return $this->travelers;
-    }
-
-    public function addTraveler(User $traveler): self
-    {
-        if (!$this->travelers->contains($traveler)) {
-            $this->travelers[] = $traveler;
-            $traveler->setTrip($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTraveler(User $traveler): self
-    {
-        if ($this->travelers->removeElement($traveler)) {
-            // set the owning side to null (unless already changed)
-            if ($traveler->getTrip() === $this) {
-                $traveler->setTrip(null);
-            }
-        }
-
-        return $this;
     }
 
     public function getAlbum(): ?Album
@@ -385,5 +359,44 @@ class Trip
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, TripUser>
+     */
+    public function getTripUsers(): Collection
+    {
+        return $this->tripUsers;
+    }
+
+    public function addTripUser(TripUser $tripUser): self
+    {
+        if (!$this->tripUsers->contains($tripUser)) {
+            $this->tripUsers[] = $tripUser;
+            $tripUser->setTrip($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTripUser(TripUser $tripUser): self
+    {
+        if ($this->tripUsers->removeElement($tripUser)) {
+            // set the owning side to null (unless already changed)
+            if ($tripUser->getTrip() === $this) {
+                $tripUser->setTrip(null);
+            }
+        }
+
+        return $this;
+    }
+
+    #[Pure] public function getUsers(): array
+    {
+        $travelers = [];
+        foreach($this->getTripUsers() as $tripUser) {
+            $travelers[] = $tripUser->getUser();
+        }
+        return $travelers;
     }
 }

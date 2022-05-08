@@ -20,7 +20,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 #[AsController]
 class TravelController extends AbstractController
 {
-    #[Route('/api/travels/{id}/documents', name: 'documents_by_travel', methods: 'GET')]
+    #[Route('/api/travel/{id}/documents', name: 'documents_by_travel', methods: 'GET')]
     public function documents(EntityManagerInterface $entityManager, int $id): Response
     {
         /** @var Travel $travel */

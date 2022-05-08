@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Dto\TripDto\UserInput;
 use App\Entity\Location;
 use App\Entity\Trip;
+use App\Entity\TripUser;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -72,13 +73,27 @@ class TripController extends AbstractController
         }
     }
 
-    #[Route('/api/trips/{id}/to_do_lists', name: 'to_do_lists_by_trip', methods: 'GET')]
+    #[Route('/api/trips/{id}/toDoLists', name: 'to_do_lists_by_trip', methods: 'GET')]
     public function toDoLists(EntityManagerInterface $entityManager, int $id): Response
     {
         /** @var Trip $trip */
         $trip = $entityManager->getRepository(Trip::class)->find($id);
         if ($trip != null) {
             return $this->json($trip->getToDoLists(), 200, [], ['groups' => 'toDoList:item']);
+        } else {
+            return $this->json([
+                'message' => 'Trip ' . $id . ' not found',
+            ], 404);
+        }
+    }
+
+    #[Route('/api/trips/{id}/users', name: 'users_by_trip', methods: 'GET')]
+    public function users(EntityManagerInterface $entityManager, int $id): Response
+    {
+        /** @var Trip $trip */
+        $trip = $entityManager->getRepository(Trip::class)->find($id);
+        if ($trip != null) {
+            return $this->json($trip->getUsers(), 200, [], ['groups' => 'user:item']);
         } else {
             return $this->json([
                 'message' => 'Trip ' . $id . ' not found',
@@ -121,10 +136,17 @@ class TripController extends AbstractController
             $trip = $entityManager->getRepository(Trip::class)->find($idTrip);
 
             if($user != null && $trip != null) {
+
+                /** @var TripUser $tripUser */
+                $tripUser = $entityManager->getRepository(TripUser::class)->findOneBy(['trip' => $trip->getId(), 'user' => $user->getId()]);
+
                 //Vérifier si l'user est déjà dans le trip, sinon, l'ajouter et flush
-                if (!$trip->getTravelers()->contains($user)) {
-                    $trip->addTraveler($user);
-                    $entityManager->persist($trip);
+                if ($tripUser == null) {
+                    $tripUser = new TripUser();
+                    $trip->addTripUser($tripUser);
+                    $user->addTripUser($tripUser);
+                    $tripUser->setRole($userInput->getRole());
+                    $entityManager->persist($tripUser);
                     $entityManager->flush();
                     return $this->json([
                         'message' => 'User ' . $emailUser . ' added to Trip ' . $idTrip,
@@ -176,10 +198,16 @@ class TripController extends AbstractController
             $trip = $entityManager->getRepository(Trip::class)->find($idTrip);
 
             if($user != null && $trip != null) {
+
+                /** @var TripUser $tripUser */
+                $tripUser = $entityManager->getRepository(TripUser::class)->findOneBy(['trip' => $trip->getId(), 'user' => $user->getId()]);
+
                 //Vérifier si l'user est déjà dans le trip, si oui, l'enlever et flush
-                if ($trip->getTravelers()->contains($user)) {
-                    $trip->removeTraveler($user);
-                    $entityManager->persist($trip);
+                if ($tripUser != null) {
+                    $tripUser = $entityManager->getRepository(TripUser::class)->findOneBy(['trip' => $trip->getId(), 'user' => $user->getId()]);
+                    $trip->removeTripUser($tripUser);
+                    $user->removeTripUser($tripUser);
+                    $entityManager->remove($tripUser);
                     $entityManager->flush();
                     return $this->json([
                         'message' => 'User ' . $emailUser . ' removed from ' . $idTrip . ' Trip',
