@@ -32,7 +32,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
                                     ],
                             ],
                             'example' => [
-                                'duration' => 1,
+                                'duration' => 3600,
                                 'trip' => 1,
                                 'start' => 1,
                                 'end' => 1,
@@ -41,12 +41,37 @@ use Symfony\Component\Serializer\Annotation\Groups;
                     ],
                 ],
             ],
-        ]    ],
+        ]
+    ],
     itemOperations: [
         'get' => ['normalization_context' => ['groups' => 'travel:item']],
         'documents' => [
             'method' => 'GET',
             'route_name' => 'documents_by_travel',
+        ],
+        'edit' => [
+            'method' => 'PUT',
+            'route_name' => 'travel_edit',
+            'openapi_context' => [
+                'summary'     => 'Edit a travel',
+                'description' => "Edit a travel",
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema'  => [
+                                'type' => 'object',
+                                'properties' =>
+                                    [
+                                        'duration' => ['type' => 'int'],
+                                    ],
+                            ],
+                            'example' => [
+                                'duration' => 3600
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ],
         'delete'
     ],

@@ -75,7 +75,7 @@ class Picture
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     #[Groups(['picture:list', 'picture:item', 'picture:read'])]
-    private ?int $id;
+    private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'pictures')]
     #[Groups(['picture:list', 'picture:item', 'picture:read'])]

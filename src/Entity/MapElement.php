@@ -22,7 +22,8 @@ abstract class MapElement
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    #[Groups(['pointOfInterest:list', 'pointOfInterest:item', 'step:list', 'step:item', 'travel:list', 'travel:item', 'trip:list', 'trip:item'])]
+    private ?int $id = null;
 
     /**
      * @var string|null

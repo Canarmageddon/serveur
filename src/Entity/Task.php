@@ -48,6 +48,36 @@ use Symfony\Component\Serializer\Annotation\Groups;
     ],
     itemOperations: [
         'get' => ['normalization_context' => ['groups' => 'task:item']],
+        'edit' => [
+            'method' => 'PUT',
+            'route_name' => 'task_edit',
+            'openapi_context' => [
+                'summary'     => 'Edit a task',
+                'description' => "Edit a task",
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema'  => [
+                                'type' => 'object',
+                                'properties' =>
+                                    [
+                                        'name' => ['type' => 'string'],
+                                        'description' => ['type' => 'string'],
+                                        'date' => ['type' => 'string'],
+                                        'isDone' => ['type' => 'bool']
+                                    ],
+                            ],
+                            'example' => [
+                                'name' => "Intitulé de la tâche",
+                                'description' => "Courte description",
+                                'date' => "01-09-1998 16:30",
+                                'isDone' => false
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
         'delete'
     ],
     paginationEnabled: false,
@@ -58,7 +88,7 @@ class Task
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     #[Groups(['task:list', 'task:item', 'trip:item'])]
-    private ?int $id;
+    private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 255)]
     #[Groups(['task:list', 'task:item', 'trip:item'])]
@@ -76,13 +106,16 @@ class Task
     #[Groups(['task:list', 'task:item'])]
     private ?DateTimeImmutable $creationDate;
 
-    #[ORM\Column(type: 'datetime')]
+    #[ORM\Column(type: 'datetime', nullable: true)]
     #[Groups(['task:list', 'task:item', 'trip:item'])]
     private ?DateTimeInterface $date;
 
     #[ORM\ManyToOne(targetEntity: ToDoList::class, cascade: ['persist'], inversedBy: 'tasks')]
     #[Groups(['task:list', 'task:item'])]
     private ?ToDoList $toDoList;
+
+    #[ORM\Column(type: 'boolean')]
+    private ?bool $isDone = false;
 
     public function getId(): ?int
     {
@@ -154,6 +187,18 @@ class Task
     public function setToDoList(?ToDoList $toDoList): self
     {
         $this->toDoList = $toDoList;
+
+        return $this;
+    }
+
+    public function getIsDone(): ?bool
+    {
+        return $this->isDone;
+    }
+
+    public function setIsDone(bool $isDone): self
+    {
+        $this->isDone = $isDone;
 
         return $this;
     }

@@ -4,9 +4,9 @@ namespace App\Dto;
 
 class ToDoListInput {
 
-    private ?string $name;
+    private ?string $name = null;
 
-    private ?int $trip;
+    private ?int $trip = null;
 
     /**
      * @return string|null

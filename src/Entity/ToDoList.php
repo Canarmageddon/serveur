@@ -47,6 +47,30 @@ use Symfony\Component\Serializer\Annotation\Groups;
             'method' => 'GET',
             'route_name' => 'tasks_by_to_do_list',
         ],
+        'edit' => [
+            'method' => 'PUT',
+            'route_name' => 'to_do_list_edit',
+            'openapi_context' => [
+                'summary'     => 'Edit a To Do List',
+                'description' => "Edit a To Do List",
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema'  => [
+                                'type' => 'object',
+                                'properties' =>
+                                    [
+                                        'name' => ['type' => 'string'],
+                                    ],
+                            ],
+                            'example' => [
+                                'name' => "Nom de la To Do List",
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
         'delete'
     ],
     paginationEnabled: false,
@@ -57,7 +81,7 @@ class ToDoList
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     #[Groups(['toDoList:list', 'toDoList:item', 'trip:item'])]
-    private $id;
+    private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 255)]
     #[Groups(['toDoList:list', 'toDoList:item', 'trip:item'])]

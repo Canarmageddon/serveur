@@ -27,6 +27,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
                                     [
                                         'label' => ['type' => 'string'],
                                         'value' => ['type' => 'float'],
+                                        'category' => ['type' => 'string'],
                                         'beneficiaries' => ['type' => 'string'],
                                         'creator' => ['type' => 'int'],
                                         'trip' => ['type' => 'int'],
@@ -35,6 +36,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
                             'example' => [
                                 'label' => "Motif du coût",
                                 'value' => 13.37,
+                                'category' => "Hygiène",
                                 'beneficiaries' => "Adresses mails des Users concernés (sera changé bientôt)",
                                 'creator' => 1,
                                 'trip' => 1,
@@ -47,6 +49,36 @@ use Symfony\Component\Serializer\Annotation\Groups;
     ],
     itemOperations: [
         'get' => ['normalization_context' => ['groups' => 'cost:item']],
+        'edit' => [
+            'method' => 'PUT',
+            'route_name' => 'cost_edit',
+            'openapi_context' => [
+                'summary'     => 'Edit a cost',
+                'description' => "Gestion des bénéficiaires changée prochainement",
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema'  => [
+                                'type' => 'object',
+                                'properties' =>
+                                    [
+                                        'label' => ['type' => 'string'],
+                                        'value' => ['type' => 'float'],
+                                        'beneficiaries' => ['type' => 'string'],
+                                        'category' => ['type' => 'string']
+                                    ],
+                            ],
+                            'example' => [
+                                'label' => "Motif du coût",
+                                'value' => 13.37,
+                                'beneficiaries' => "Adresses mails des Users concernés (sera changé bientôt)",
+                                'category' => "Hygiène"
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
         'delete'
     ],
     paginationEnabled: false,
@@ -57,7 +89,7 @@ class Cost
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     #[Groups(['cost:list', 'cost:item'])]
-    private ?int $id;
+    private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'], inversedBy: 'costs')]
     #[Groups(['cost:list', 'cost:item'])]
@@ -67,7 +99,7 @@ class Cost
     #[Groups(['cost:list', 'cost:item'])]
     private ?DateTimeImmutable $creationDate;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     #[Groups(['cost:list', 'cost:item'])]
     private ?string $category;
 

@@ -56,10 +56,13 @@ class StepController extends AbstractController
             $location = new Location();
             $location->setLatitude($stepInput->getLatitude());
             $location->setLongitude($stepInput->getLongitude());
+            $location->setName($stepInput->getName());
+            $location->setType($stepInput->getType());
             $location->addStep($step);
             $entityManager->persist($location);
 
             $step->setDescription($stepInput->getDescription());
+            $step->setTitle($stepInput->getTitle());
 
             /** @var User $creator */
             $creator = $entityManager->getRepository(User::class)->find($stepInput->getCreator());
@@ -68,6 +71,56 @@ class StepController extends AbstractController
             /** @var Trip $trip */
             $trip = $entityManager->getRepository(Trip::class)->find($stepInput->getTrip());
             $trip?->addStep($step);
+
+            $entityManager->persist($step);
+            $entityManager->flush();
+
+            return $this->json($step, 201, [], ['groups' => 'step:item']);
+        }
+        catch (NotEncodableValueException $e)
+        {
+            return $this->json([
+                'status' => 400,
+                'message' => $e->getMessage()
+            ], 400);
+        }
+    }
+
+    #[Route('/api/steps/{id}/edit', name: 'step_edit', methods: 'PUT')]
+    public function edit(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer, int $id): Response
+    {
+        try {
+            $data = $request->getContent();
+            /** @var StepInput $stepInput */
+            $stepInput = $serializer->deserialize($data, StepInput::class, 'json');
+            /** @var Step $step */
+            $step = $entityManager->getRepository(Step::class)->find($id);
+            if ($step == null) {
+                return $this->json([
+                    'status' => 400,
+                    'message' => "Step " . $id . " not found"
+                ], 400);
+            }
+
+            if ($stepInput->getLatitude() != null) {
+                $step->getLocation()->setLatitude($stepInput->getLatitude());
+            }
+            if ($stepInput->getLongitude() != null) {
+                $step->getLocation()->setLongitude($stepInput->getLongitude());
+            }
+            if ($stepInput->getName() != null) {
+                $step->getLocation()->setName($stepInput->getName());
+            }
+            if ($stepInput->getType() != null) {
+                $step->getLocation()->setType($stepInput->getType());
+            }
+
+            if ($stepInput->getTitle() != null) {
+                $step->setTitle($stepInput->getTitle());
+            }
+            if ($stepInput->getDescription() != null) {
+                $step->setDescription($stepInput->getDescription());
+            }
 
             $entityManager->persist($step);
             $entityManager->flush();

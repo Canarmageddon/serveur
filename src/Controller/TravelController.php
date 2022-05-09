@@ -69,4 +69,38 @@ class TravelController extends AbstractController
             ], 400);
         }
     }
+
+    #[Route('/api/travel/{id}/edit', name: 'travel_edit', methods: 'PUT')]
+    public function edit(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer, int $id): Response
+    {
+        try {
+            $data = $request->getContent();
+            /** @var TravelInput $travelInput */
+            $travelInput = $serializer->deserialize($data, TravelInput::class, 'json');
+            /** @var Travel $travel */
+            $travel = $entityManager->getRepository(Travel::class)->find($id);
+            if ($travel == null) {
+                return $this->json([
+                    'status' => 400,
+                    'message' => "Travel " . $id . " not found"
+                ], 400);
+            }
+
+            if ($travelInput->getDuration() != null) {
+                $travel->setDuration($travelInput->getDuration());
+            }
+
+            $entityManager->persist($travel);
+            $entityManager->flush();
+
+            return $this->json($travel, 201, [], ['groups' => 'travel:item']);
+        }
+        catch (NotEncodableValueException $e)
+        {
+            return $this->json([
+                'status' => 400,
+                'message' => $e->getMessage()
+            ], 400);
+        }
+    }
 }

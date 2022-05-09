@@ -57,4 +57,38 @@ class ToDoListController extends AbstractController
             ], 400);
         }
     }
+
+    #[Route('/api/to_do_lists/{id}/edit', name: 'to_do_list_edit', methods: 'PUT')]
+    public function edit(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer, int $id): Response
+    {
+        try {
+            $data = $request->getContent();
+            /** @var ToDoListInput $toDoListInput */
+            $toDoListInput = $serializer->deserialize($data, ToDoListInput::class, 'json');
+            /** @var ToDoList $toDoList */
+            $toDoList = $entityManager->getRepository(ToDoList::class)->find($id);
+            if ($toDoList == null) {
+                return $this->json([
+                    'status' => 400,
+                    'message' => "To Do List " . $id . " not found"
+                ], 400);
+            }
+
+            if ($toDoListInput->getName() != null) {
+                $toDoList->setName($toDoListInput->getName());
+            }
+
+            $entityManager->persist($toDoList);
+            $entityManager->flush();
+
+            return $this->json($toDoList, 201, [], ['groups' => 'toDoList:item']);
+        }
+        catch (NotEncodableValueException $e)
+        {
+            return $this->json([
+                'status' => 400,
+                'message' => $e->getMessage()
+            ], 400);
+        }
+    }
 }
