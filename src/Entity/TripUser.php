@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\TripUserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: TripUserRepository::class)]
 class TripUser
@@ -18,10 +19,12 @@ class TripUser
     private ?Trip $trip;
 
     #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'], inversedBy: 'tripUsers')]
+    #[Groups(['user:item'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['user:item'])]
     private ?string $role;
 
     public function getId(): ?int
