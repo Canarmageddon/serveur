@@ -2,23 +2,23 @@
 
 namespace App\Dto;
 
-
-use App\Entity\Trip;
-use App\Entity\User;
-
 class PointOfInterestInput {
 
     private ?float $longitude = null;
 
     private ?float $latitude = null;
 
+    private ?string $name = null;
+
+    private ?string $type = null;
+
     private ?string $title = null;
 
     private ?string $description = null;
 
-    private ?User $creator = null;
+    private ?int $creator = null;
 
-    private ?Trip $trip = null;
+    private ?int $trip = null;
 
     public function getLatitude(): ?float
     {
@@ -42,6 +42,38 @@ class PointOfInterestInput {
         $this->longitude = $longitude;
 
         return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string|null $name
+     */
+    public function setName(?string $name): void
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string|null $type
+     */
+    public function setType(?string $type): void
+    {
+        $this->type = $type;
     }
 
     public function getTitle(): ?string
@@ -68,24 +100,24 @@ class PointOfInterestInput {
         return $this;
     }
 
-    public function getCreator(): ?User
+    public function getCreator(): ?int
     {
         return $this->creator;
     }
 
-    public function setCreator(?User $creator): self
+    public function setCreator(?int $creator): self
     {
         $this->creator = $creator;
 
         return $this;
     }
 
-    public function getTrip(): ?Trip
+    public function getTrip(): ?int
     {
         return $this->trip;
     }
 
-    public function setTrip(?Trip $trip): self
+    public function setTrip(?int $trip): self
     {
         $this->trip = $trip;
 

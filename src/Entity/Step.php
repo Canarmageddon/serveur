@@ -17,22 +17,93 @@ use Symfony\Component\Serializer\Annotation\Groups;
         'new' => [
             'method' => 'POST',
             'route_name' => 'step_new',
-        ]],
+            'openapi_context' => [
+                'summary'     => 'Create a step',
+                'description' => "Longitude and latitude needed, others are nullable",
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema'  => [
+                                'type' => 'object',
+                                'properties' =>
+                                    [
+                                        'latitude' => ['type' => 'float'],
+                                        'longitude' => ['type' => 'float'],
+                                        'name' => ['type' => 'string'],
+                                        'type' => ['type' => 'string'],
+                                        'title' => ['type' => 'string'],
+                                        'description' => ['type' => 'string'],
+                                        'creator' => ['type' => 'int'],
+                                        'trip' => ['type' => 'int'],
+                                    ],
+                            ],
+                            'example' => [
+                                'latitude' => 48.123,
+                                'longitude' => 7.123,
+                                'name' => "Nom du lieu",
+                                'type' => "Type du lieu",
+                                'title' => "Title",
+                                'description' => "Brief Step description",
+                                'creator' => 1,
+                                'trip' => 1,
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ]
+    ],
     itemOperations: [
         'get' => ['normalization_context' => ['groups' => 'step:item']],
+        'documents' => [
+            'method' => 'GET',
+            'route_name' => 'documents_by_step',
+        ],
+        'poi' => [
+            'method' => 'GET',
+            'route_name' => 'poi_by_step',
+        ],
+        'new' => [
+            'method' => 'PUT',
+            'route_name' => 'step_edit',
+            'openapi_context' => [
+                'summary'     => 'Edit a step',
+                'description' => "Edit a step",
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema'  => [
+                                'type' => 'object',
+                                'properties' =>
+                                    [
+                                        'latitude' => ['type' => 'float'],
+                                        'longitude' => ['type' => 'float'],
+                                        'name' => ['type' => 'string'],
+                                        'type' => ['type' => 'string'],
+                                        'title' => ['type' => 'string'],
+                                        'description' => ['type' => 'string'],
+                                    ],
+                            ],
+                            'example' => [
+                                'latitude' => 48.123,
+                                'longitude' => 7.123,
+                                'name' => "Nom du lieu",
+                                'type' => "Type du lieu",
+                                'title' => "Titre de l'étape",
+                                'description' => "Brief Step description",
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
         'delete'
     ],
     paginationEnabled: false,
 )]
 
-class Step
+class Step extends MapElement
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    #[Groups(['step:list', 'step:item', 'trip:list', 'trip:item'])]
-    private ?int $id;
-
     #[ORM\ManyToOne(targetEntity: Location::class, cascade: ['persist'], inversedBy: 'steps')]
     #[Groups(['step:list', 'step:item', 'trip:list', 'trip:item'])]
     private ?Location $location;
@@ -63,13 +134,9 @@ class Step
     #[ORM\OneToMany(mappedBy: 'end', targetEntity: Travel::class, orphanRemoval: true)]
     private Collection $ends;
 
-    #[ORM\OneToMany(mappedBy: 'step', targetEntity: Document::class)]
-    private Collection $documents;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups(['step:list', 'step:item', 'trip:list', 'trip:item'])]
+    private ?string $title;
 
     public function getLocation(): ?Location
     {
@@ -125,11 +192,11 @@ class Step
     }
 
     public function __construct(){
+        parent::__construct();
         $this->creationDate = new DateTimeImmutable('now');
         $this->pointsOfInterest = new ArrayCollection();
         $this->starts = new ArrayCollection();
         $this->ends = new ArrayCollection();
-        $this->documents = new ArrayCollection();
     }
 
     /**
@@ -222,32 +289,14 @@ class Step
         return $this;
     }
 
-    /**
-     * @return Collection<int, Document>
-     */
-    public function getDocuments(): Collection
+    public function getTitle(): ?string
     {
-        return $this->documents;
+        return $this->title;
     }
 
-    public function addDocument(Document $document): self
+    public function setTitle(?string $title): self
     {
-        if (!$this->documents->contains($document)) {
-            $this->documents[] = $document;
-            $document->setStep($this);
-        }
-
-        return $this;
-    }
-
-    public function removeDocument(Document $document): self
-    {
-        if ($this->documents->removeElement($document)) {
-            // set the owning side to null (unless already changed)
-            if ($document->getStep() === $this) {
-                $document->setStep(null);
-            }
-        }
+        $this->title = $title;
 
         return $this;
     }

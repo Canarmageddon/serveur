@@ -18,10 +18,78 @@ use Symfony\Component\Serializer\Annotation\Groups;
         'new' => [
             'method' => 'POST',
             'route_name' => 'location_new',
+            'openapi_context' => [
+                'summary'     => 'Create a location',
+                'description' => "Longitude and latitude needed, others are nullable",
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema'  => [
+                                'type' => 'object',
+                                'properties' =>
+                                    [
+                                        'latitude' => ['type' => 'float'],
+                                        'longitude' => ['type' => 'float'],
+                                        'name' => ['type' => 'string'],
+                                        'type' => ['type' => 'string'],
+                                    ],
+                            ],
+                            'example' => [
+                                'latitude' => 48.123,
+                                'longitude' => 7.123,
+                                'name' => "Louvre",
+                                'type' => "Musée",
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ]
     ],
     itemOperations: [
         'get' => ['normalization_context' => ['groups' => 'location:item']],
+        'poi' => [
+            'method' => 'GET',
+            'route_name' => 'poi_by_location',
+        ],
+        'steps' => [
+            'method' => 'GET',
+            'route_name' => 'steps_by_location',
+        ],
+        'pictures' => [
+            'method' => 'GET',
+            'route_name' => 'pictures_by_location',
+        ],
+        'edit' => [
+            'method' => 'PUT',
+            'route_name' => 'location_edit',
+            'openapi_context' => [
+                'summary'     => 'Edit a location',
+                'description' => "Edit a location",
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema'  => [
+                                'type' => 'object',
+                                'properties' =>
+                                    [
+                                        'latitude' => ['type' => 'float'],
+                                        'longitude' => ['type' => 'float'],
+                                        'name' => ['type' => 'string'],
+                                        'type' => ['type' => 'string'],
+                                    ],
+                            ],
+                            'example' => [
+                                'latitude' => 48.123,
+                                'longitude' => 7.123,
+                                'name' => "Louvre",
+                                'type' => "Ex : Musée",
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
         'delete'
     ],
     paginationEnabled: false,
@@ -32,23 +100,23 @@ class Location
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     #[Groups(['location:list', 'location:item', 'trip:list', 'trip:item'])]
-    private ?int $id;
+    private ?int $id = null;
 
     #[ORM\Column(type: 'float')]
     #[Groups(['location:list', 'location:item', 'pointOfInterest:list', 'pointOfInterest:item', 'step:list', 'step:item', 'trip:list', 'trip:item', 'picture:read'])]
-    private ?float $latitude;
+    private ?float $latitude = null;
 
     #[ORM\Column(type: 'float')]
     #[Groups(['location:list', 'location:item', 'pointOfInterest:list', 'pointOfInterest:item', 'step:list', 'step:item', 'trip:list', 'trip:item', 'picture:read'])]
-    private ?float $longitude;
+    private ?float $longitude = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     #[Groups(['location:list', 'location:item', 'pointOfInterest:list', 'pointOfInterest:item', 'trip:list', 'trip:item', 'picture:read'])]
-    private ?string $name;
+    private ?string $name = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     #[Groups(['location:list', 'location:item'])]
-    private ?string $type;
+    private ?string $type = null;
 
     #[ORM\OneToMany(mappedBy: 'location', targetEntity: PointOfInterest::class, cascade: ['persist', 'remove'])]
     #[Groups(['location:list', 'location:item'])]

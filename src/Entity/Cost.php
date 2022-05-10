@@ -15,10 +15,70 @@ use Symfony\Component\Serializer\Annotation\Groups;
         'new' => [
             'method' => 'POST',
             'route_name' => 'cost_new',
+            'openapi_context' => [
+                'summary'     => 'Create a cost',
+                'description' => "Gestion des bénéficiaires changée prochainement",
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema'  => [
+                                'type' => 'object',
+                                'properties' =>
+                                    [
+                                        'label' => ['type' => 'string'],
+                                        'value' => ['type' => 'float'],
+                                        'category' => ['type' => 'string'],
+                                        'beneficiaries' => ['type' => 'string'],
+                                        'creator' => ['type' => 'int'],
+                                        'trip' => ['type' => 'int'],
+                                    ],
+                            ],
+                            'example' => [
+                                'label' => "Motif du coût",
+                                'value' => 13.37,
+                                'category' => "Hygiène",
+                                'beneficiaries' => "Adresses mails des Users concernés (sera changé bientôt)",
+                                'creator' => 1,
+                                'trip' => 1,
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ]
     ],
     itemOperations: [
         'get' => ['normalization_context' => ['groups' => 'cost:item']],
+        'edit' => [
+            'method' => 'PUT',
+            'route_name' => 'cost_edit',
+            'openapi_context' => [
+                'summary'     => 'Edit a cost',
+                'description' => "Gestion des bénéficiaires changée prochainement",
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema'  => [
+                                'type' => 'object',
+                                'properties' =>
+                                    [
+                                        'label' => ['type' => 'string'],
+                                        'value' => ['type' => 'float'],
+                                        'beneficiaries' => ['type' => 'string'],
+                                        'category' => ['type' => 'string']
+                                    ],
+                            ],
+                            'example' => [
+                                'label' => "Motif du coût",
+                                'value' => 13.37,
+                                'beneficiaries' => "Adresses mails des Users concernés (sera changé bientôt)",
+                                'category' => "Hygiène"
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
         'delete'
     ],
     paginationEnabled: false,

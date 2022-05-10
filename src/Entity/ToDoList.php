@@ -16,11 +16,61 @@ use Symfony\Component\Serializer\Annotation\Groups;
         'get' => ['normalization_context' => ['groups' => 'toDoList:list']],
         'new' => [
             'method' => 'POST',
-            'route_name' => 'toDoList_new',
+            'route_name' => 'to_do_list_new',
+            'openapi_context' => [
+                'summary'     => 'Create a To Do List',
+                'description' => "Create a To Do List and add it to a Trip",
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema'  => [
+                                'type' => 'object',
+                                'properties' =>
+                                    [
+                                        'name' => ['type' => 'string'],
+                                        'trip' => ['type' => 'int'],
+                                    ],
+                            ],
+                            'example' => [
+                                'name' => "Nom de la To Do List",
+                                'trip' => 1,
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ]
     ],
     itemOperations: [
         'get' => ['normalization_context' => ['groups' => 'toDoList:item']],
+        'tasks' => [
+            'method' => 'GET',
+            'route_name' => 'tasks_by_to_do_list',
+        ],
+        'edit' => [
+            'method' => 'PUT',
+            'route_name' => 'to_do_list_edit',
+            'openapi_context' => [
+                'summary'     => 'Edit a To Do List',
+                'description' => "Edit a To Do List",
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema'  => [
+                                'type' => 'object',
+                                'properties' =>
+                                    [
+                                        'name' => ['type' => 'string'],
+                                    ],
+                            ],
+                            'example' => [
+                                'name' => "Nom de la To Do List",
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
         'delete'
     ],
     paginationEnabled: false,
@@ -31,7 +81,7 @@ class ToDoList
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     #[Groups(['toDoList:list', 'toDoList:item', 'trip:item'])]
-    private $id;
+    private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 255)]
     #[Groups(['toDoList:list', 'toDoList:item', 'trip:item'])]

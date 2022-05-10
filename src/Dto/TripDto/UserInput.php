@@ -8,6 +8,8 @@ class UserInput {
 
     private ?int $trip;
 
+    private ?string $role = 'guest';
+
     public function getEmail(): ?string
     {
         return $this->email;
@@ -31,4 +33,22 @@ class UserInput {
 
         return $this;
     }
+
+    /**
+     * @return string|null
+     */
+    public function getRole(): ?string
+    {
+        return $this->role;
+    }
+
+    /**
+     * @param string|null $role
+     */
+    public function setRole(?string $role): void
+    {
+        $this->role = $role;
+    }
+
+
 }

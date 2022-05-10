@@ -4,7 +4,7 @@ namespace App\Dto;
 
 class AlbumInput {
 
-    private ?int $trip;
+    private ?int $trip = null;
 
     /**
      * @return int|null

@@ -4,10 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\DocumentRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: DocumentRepository::class)]
@@ -27,7 +24,7 @@ class Document
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     #[Groups(['document:list', 'document:item'])]
-    private ?int $id;
+    private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 255)]
     #[Groups(['document:list', 'document:item'])]
@@ -37,12 +34,8 @@ class Document
     #[Groups(['document:list', 'document:item'])]
     private ?string $route;
 
-    #[ORM\ManyToOne(targetEntity: PointOfInterest::class, inversedBy: 'documents')]
-    #[Groups(['document:list', 'document:item'])]
-    private ?PointOfInterest $pointOfInterest;
-
-    #[ORM\ManyToOne(targetEntity: Step::class, inversedBy: 'documents')]
-    private $step;
+    #[ORM\ManyToOne(targetEntity: MapElement::class, inversedBy: 'documents')]
+    private ?MapElement $mapElement;
 
     public function getId(): ?int
     {
@@ -73,26 +66,14 @@ class Document
         return $this;
     }
 
-    public function getPointOfInterest(): ?PointOfInterest
+    public function getMapElement(): ?MapElement
     {
-        return $this->pointOfInterest;
+        return $this->mapElement;
     }
 
-    public function setPointOfInterest(?PointOfInterest $pointOfInterest): self
+    public function setMapElement(?MapElement $mapElement): self
     {
-        $this->pointOfInterest = $pointOfInterest;
-
-        return $this;
-    }
-
-    public function getStep(): ?Step
-    {
-        return $this->step;
-    }
-
-    public function setStep(?Step $step): self
-    {
-        $this->step = $step;
+        $this->mapElement = $mapElement;
 
         return $this;
     }

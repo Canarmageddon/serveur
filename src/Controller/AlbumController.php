@@ -17,7 +17,21 @@ use Symfony\Component\Serializer\SerializerInterface;
 #[AsController]
 class AlbumController extends AbstractController
 {
-    #[Route('/api/album/new', name: 'album_new', methods: 'POST')]
+    #[Route('/api/albums/{id}/pictures', name: 'pictures_by_album', methods: 'GET')]
+    public function pictures(EntityManagerInterface $entityManager, int $id): Response
+    {
+        /** @var Album $album */
+        $album = $entityManager->getRepository(Album::class)->find($id);
+        if ($album != null) {
+            return $this->json($album->getPictures(), 200, [], ['groups' => 'picture:item']);
+        } else {
+            return $this->json([
+                'message' => 'Album ' . $id . ' not found',
+            ], 404);
+        }
+    }
+
+    #[Route('/api/albums/new', name: 'album_new', methods: 'POST')]
     public function new(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer): Response
     {
         try {

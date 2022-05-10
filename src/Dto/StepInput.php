@@ -8,11 +8,17 @@ class StepInput
 
     private ?float $latitude = null;
 
-    private ?int $creator;
+    private ?string $name = null;
 
-    private ?string $description;
+    private ?string $type = null;
 
-    private ?int $trip;
+    private ?string $title = null;
+
+    private ?int $creator = null;
+
+    private ?string $description = null;
+
+    private ?int $trip = null;
 
     /**
      * @return float|null
@@ -46,7 +52,49 @@ class StepInput
         $this->latitude = $latitude;
     }
 
+    /**
+     * @return string|null
+     */
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
 
+    /**
+     * @param string|null $name
+     */
+    public function setName(?string $name): void
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string|null $type
+     */
+    public function setType(?string $type): void
+    {
+        $this->type = $type;
+    }
+
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(?string $title): self
+    {
+        $this->title = $title;
+
+        return $this;
+    }
 
     /**
      * @return int|null
