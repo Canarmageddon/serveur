@@ -61,11 +61,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private string $password;
 
     #[ORM\Column(type: 'string', length: 50)]
-    #[Groups(['user:list', 'user:item', 'trip:item', 'picture:read'])]
+    #[Groups(['user:list', 'user:item', 'trip:item', 'picture:read', 'document:read'])]
     private ?string $firstName;
 
     #[ORM\Column(type: 'string', length: 50)]
-    #[Groups(['user:list', 'user:item', 'trip:item', 'picture:read'])]
+    #[Groups(['user:list', 'user:item', 'trip:item', 'picture:read', 'document:read'])]
     private ?string $lastName;
 
     #[ORM\Column(type: 'datetime_immutable')]
@@ -83,6 +83,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'creator', targetEntity: Picture::class)]
     #[Groups(['user:list', 'user:item'])]
     private Collection $pictures;
+
+    #[ORM\OneToMany(mappedBy: 'creator', targetEntity: Document::class)]
+    #[Groups(['user:list', 'user:item'])]
+    private Collection $documents;
 
     #[ORM\OneToMany(mappedBy: 'creator', targetEntity: Task::class)]
     #[Groups(['user:list', 'user:item'])]
