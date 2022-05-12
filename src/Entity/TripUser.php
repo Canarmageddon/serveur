@@ -19,6 +19,7 @@ class TripUser
     private ?Trip $trip;
 
     #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'], inversedBy: 'tripUsers')]
+    #[Groups(['user:item'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user;
 

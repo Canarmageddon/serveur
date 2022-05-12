@@ -92,7 +92,16 @@ class TripController extends AbstractController
         /** @var Trip $trip */
         $trip = $entityManager->getRepository(Trip::class)->find($id);
         if ($trip != null) {
-            return $this->json($trip->getUsers(), 200, [], ['groups' => 'user:item']);
+//            return $this->json($trip->getUsers(), 200, [], ['groups' => 'user:item']);
+            $travelers = [];
+            $users = $trip->getUsers();
+            foreach($users as $user) {
+                $traveler = $entityManager->getRepository(TripUser::class)->findOneBy(['trip' => $trip->getId(), 'user' => $user->getId()]);
+                if ($traveler != null) {
+                    $travelers[] = $traveler;
+                }
+            }
+            return $this->json($travelers, 200, [], ['groups' => 'user:item']);
         } else {
             return $this->json([
                 'message' => 'Trip ' . $id . ' not found',

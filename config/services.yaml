@@ -10,6 +10,10 @@ services:
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+    App\DataPersister\UserDataPersister: ~
+        # Uncomment only if autoconfiguration is disabled
+        arguments: ['@App\DataPersister\UserDataPersister.inner']
+        tags: [ 'api_platform.data_persister' ]
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
