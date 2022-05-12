@@ -60,7 +60,7 @@ class UserController extends AbstractController
                     } else {
                         return $this->json([
                             'message' => 'Email or password is wrong !',
-                        ], 404);
+                        ], 401);
                     }
                 } else {
                     return $this->json([
