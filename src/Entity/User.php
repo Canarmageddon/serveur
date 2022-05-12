@@ -8,10 +8,10 @@ use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ApiResource(
@@ -30,7 +30,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
                     ]
                 ]
             ]
-        ]],
+        ],
+        'post' => ['denormalization_context' => ['groups' => 'user:write']]
+    ],
     itemOperations: [
         'get' => ['normalization_context' => ['groups' => 'user:item']],
         'trips' => [
@@ -46,30 +48,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(['user:list', 'user:item', 'trip:item'])]
-    private ?int $id;
+    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item'])]
+    private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
-    #[Groups(['user:list', 'user:item', 'trip:item'])]
+    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item'])]
     private ?string $email;
 
     #[ORM\Column(type: 'json')]
     #[Groups(['user:list', 'user:item'])]
-    private array $roles = [];
+    private array $roles;
 
     #[ORM\Column(type: 'string')]
     private string $password;
 
+    #[SerializedName("password")]
+    #[Groups(['user:write'])]
+    private ?string $plainPassword;
+
     #[ORM\Column(type: 'string', length: 50)]
-    #[Groups(['user:list', 'user:item', 'trip:item', 'picture:read', 'document:read'])]
+
+    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'picture:read', 'document:read'])]
     private ?string $firstName;
 
     #[ORM\Column(type: 'string', length: 50)]
-    #[Groups(['user:list', 'user:item', 'trip:item', 'picture:read', 'document:read'])]
+    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'picture:read'])]
     private ?string $lastName;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    #[Groups(['user:list', 'user:item'])]
+    #[Groups(['user:read', 'user:list', 'user:item'])]
     private DateTimeImmutable $creationDate;
 
     #[ORM\OneToMany(mappedBy: 'creator', targetEntity: PointOfInterest::class)]
@@ -161,12 +168,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
+     * @return string
+     */
+    public function getPlainPassword(): string
+    {
+        return $this->plainPassword;
+    }
+
+    /**
+     * @param string $plainPassword
+     */
+    public function setPlainPassword(string $plainPassword): void
+    {
+        $this->plainPassword = $plainPassword;
+    }
+
+    /**
      * @see UserInterface
      */
     public function eraseCredentials()
     {
         // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
+         $this->plainPassword = null;
     }
 
     public function getFirstName(): ?string
@@ -200,6 +223,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __construct(){
         $this->creationDate = new DateTimeImmutable('now');
+        $this->roles = ["ROLE_USER"];
         $this->pointOfInterests = new ArrayCollection();
         $this->steps = new ArrayCollection();
         $this->pictures = new ArrayCollection();
@@ -393,7 +417,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    #[Pure] public function getTrips(): array
+    public function getTrips(): array
     {
         $trips = [];
         foreach($this->getTripUsers() as $tripUser) {
