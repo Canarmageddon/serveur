@@ -43,7 +43,7 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
     ],
     paginationEnabled: false,
 )]
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+class User implements UserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -105,6 +105,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: TripUser::class, orphanRemoval: true)]
     private Collection $tripUsers;
+
+    #[ORM\OneToMany(mappedBy: 'creator', targetEntity: LogBookEntry::class, orphanRemoval: true)]
+    private Collection $logBookEntries;
 
     public function getId(): ?int
     {
@@ -230,6 +233,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->tasks = new ArrayCollection();
         $this->costs = new ArrayCollection();
         $this->tripUsers = new ArrayCollection();
+        $this->logBookEntries = new ArrayCollection();
     }
 
     /**
@@ -424,5 +428,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             $trips[] = $tripUser->getTrip();
         }
         return $trips;
+    }
+
+    /**
+     * @return Collection<int, LogBookEntry>
+     */
+    public function getLogBookEntries(): Collection
+    {
+        return $this->logBookEntries;
+    }
+
+    public function addLogBookEntry(LogBookEntry $logBookEntry): self
+    {
+        if (!$this->logBookEntries->contains($logBookEntry)) {
+            $this->logBookEntries[] = $logBookEntry;
+            $logBookEntry->setCreator($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLogBookEntry(LogBookEntry $logBookEntry): self
+    {
+        if ($this->logBookEntries->removeElement($logBookEntry)) {
+            // set the owning side to null (unless already changed)
+            if ($logBookEntry->getCreator() === $this) {
+                $logBookEntry->setCreator(null);
+            }
+        }
+
+        return $this;
     }
 }
