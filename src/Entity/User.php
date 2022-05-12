@@ -74,7 +74,7 @@ class User implements UserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item'])]
+    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'cost:list', 'cost:item'])]
     private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
@@ -93,11 +93,11 @@ class User implements UserInterface
     private ?string $plainPassword;
 
     #[ORM\Column(type: 'string', length: 50)]
-    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'picture:read'])]
+    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'picture:read', 'cost:list', 'cost:item'])]
     private ?string $firstName;
 
     #[ORM\Column(type: 'string', length: 50)]
-    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'picture:read'])]
+    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'picture:read', 'cost:list', 'cost:item'])]
     private ?string $lastName;
 
     #[ORM\Column(type: 'datetime_immutable')]
