@@ -171,6 +171,10 @@ class Trip
     #[Groups(['trip:list', 'trip:item'])]
     private Collection $toDoLists;
 
+    #[ORM\OneToMany(mappedBy: 'trip', targetEntity: Picture::class, cascade: ['persist', 'remove'])]
+    #[Groups(['trip:list', 'trip:item'])]
+    private Collection $pictures;
+
     #[ORM\OneToMany(mappedBy: 'trip', targetEntity: PointOfInterest::class, cascade: ['persist', 'remove'])]
     #[Groups(['trip:list', 'trip:item'])]
     private Collection $pointsOfInterest;
@@ -271,6 +275,14 @@ class Trip
     public function getToDoLists(): Collection
     {
         return $this->toDoLists;
+    }
+
+    /**
+     * @return Collection<int, Picture>
+     */
+    public function getPictures(): Collection
+    {
+        return $this->pictures;
     }
 
     public function addToDoList(ToDoList $toDoList): self
