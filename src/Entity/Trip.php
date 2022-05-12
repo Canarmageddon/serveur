@@ -9,11 +9,12 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 #[ORM\Entity(repositoryClass: TripRepository::class)]
 #[ApiResource(
     collectionOperations: [
-        'get' => ['normalization_context' => ['groups' => 'trip:list']],
+        'get' => ['normalization_context' => ['groups' => 'trip:list', "enable_max_depth" => true]],
         'new' => [
             'method' => 'POST',
             'route_name' => 'trip_new',
@@ -94,7 +95,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
         ]
     ],
     itemOperations: [
-        'get' => ['normalization_context' => ['groups' => 'trip:item']],
+        'get' => ['normalization_context' => ['groups' => 'trip:item', "enable_max_depth" => true]],
         'costs' => [
             'method' => 'GET',
             'route_name' => 'costs_by_trip',
@@ -161,6 +162,7 @@ class Trip
 
     #[ORM\OneToOne(mappedBy: 'trip', targetEntity: Album::class, cascade: ['persist', 'remove'])]
     #[Groups(['trip:list', 'trip:item'])]
+    #[MaxDepth(1)]
     private ?Album $album;
 
     #[ORM\OneToMany(mappedBy: 'trip', targetEntity: Cost::class,  cascade: ['persist', 'remove'])]
@@ -177,14 +179,17 @@ class Trip
 
     #[ORM\OneToMany(mappedBy: 'trip', targetEntity: Picture::class, cascade: ['persist', 'remove'])]
     #[Groups(['trip:list', 'trip:item'])]
+    #[MaxDepth(1)]
     private Collection $pictures;
 
     #[ORM\OneToMany(mappedBy: 'trip', targetEntity: PointOfInterest::class, cascade: ['persist', 'remove'])]
     #[Groups(['trip:list', 'trip:item'])]
+    #[MaxDepth(1)]
     private Collection $pointsOfInterest;
 
     #[ORM\OneToMany(mappedBy: 'trip', targetEntity: Step::class, cascade: ['persist', 'remove'])]
     #[Groups(['trip:list', 'trip:item'])]
+    #[MaxDepth(1)]
     private Collection $steps;
 
     #[ORM\OneToMany(mappedBy: 'trip', targetEntity: Travel::class, cascade: ['persist', 'remove'])]
