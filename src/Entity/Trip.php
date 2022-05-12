@@ -184,12 +184,12 @@ class Trip
 
     #[ORM\OneToMany(mappedBy: 'trip', targetEntity: PointOfInterest::class, cascade: ['persist', 'remove'])]
     #[Groups(['trip:list', 'trip:item'])]
-    #[MaxDepth(1)]
+    #[MaxDepth(2)]
     private Collection $pointsOfInterest;
 
     #[ORM\OneToMany(mappedBy: 'trip', targetEntity: Step::class, cascade: ['persist', 'remove'])]
     #[Groups(['trip:list', 'trip:item'])]
-    #[MaxDepth(1)]
+    #[MaxDepth(2)]
     private Collection $steps;
 
     #[ORM\OneToMany(mappedBy: 'trip', targetEntity: Travel::class, cascade: ['persist', 'remove'])]
