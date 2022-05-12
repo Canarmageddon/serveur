@@ -186,6 +186,9 @@ class Trip
     #[ORM\OneToMany(mappedBy: 'trip', targetEntity: TripUser::class, orphanRemoval: true)]
     private Collection $tripUsers;
 
+    #[ORM\OneToMany(mappedBy: 'trip', targetEntity: LogBookEntry::class, orphanRemoval: true)]
+    private Collection $logBookEntries;
+
     #[Pure] public function __construct()
     {
         $this->costs = new ArrayCollection();
@@ -194,6 +197,7 @@ class Trip
         $this->steps = new ArrayCollection();
         $this->travels = new ArrayCollection();
         $this->tripUsers = new ArrayCollection();
+        $this->logBookEntries = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -422,5 +426,35 @@ class Trip
             $travelers[] = $tripUser->getUser();
         }
         return $travelers;
+    }
+
+    /**
+     * @return Collection<int, LogBookEntry>
+     */
+    public function getLogBookEntries(): Collection
+    {
+        return $this->logBookEntries;
+    }
+
+    public function addLogBookEntry(LogBookEntry $logBookEntry): self
+    {
+        if (!$this->logBookEntries->contains($logBookEntry)) {
+            $this->logBookEntries[] = $logBookEntry;
+            $logBookEntry->setTrip($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLogBookEntry(LogBookEntry $logBookEntry): self
+    {
+        if ($this->logBookEntries->removeElement($logBookEntry)) {
+            // set the owning side to null (unless already changed)
+            if ($logBookEntry->getTrip() === $this) {
+                $logBookEntry->setTrip(null);
+            }
+        }
+
+        return $this;
     }
 }
