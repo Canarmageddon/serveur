@@ -34,7 +34,7 @@ class UserDataPersister implements ContextAwareDataPersisterInterface
     /**
      * @param User $data
      */
-    public function persist($data, array $context = [])
+    public function persist($data, array $context = []): void
     {
         if ($data->getPlainPassword()) {
             $data->setPassword(

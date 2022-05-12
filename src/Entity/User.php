@@ -39,6 +39,7 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
             'method' => 'GET',
             'route_name' => 'trips_by_user',
         ],
+        'put' => ['denormalization_context' => ['groups' => 'user:put']],
         'delete',
     ],
     paginationEnabled: false,
@@ -48,7 +49,7 @@ class User implements UserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item'])]
+    #[Groups(['user:read', 'user:list', 'user:item', 'trip:item'])]
     private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
@@ -67,11 +68,11 @@ class User implements UserInterface
     private ?string $plainPassword;
 
     #[ORM\Column(type: 'string', length: 50)]
-    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'picture:read'])]
+    #[Groups(['user:read', 'user:write', 'user:put', 'user:list', 'user:item', 'trip:item', 'picture:read'])]
     private ?string $firstName;
 
     #[ORM\Column(type: 'string', length: 50)]
-    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'picture:read'])]
+    #[Groups(['user:read', 'user:write', 'user:put', 'user:list', 'user:item', 'trip:item', 'picture:read'])]
     private ?string $lastName;
 
     #[ORM\Column(type: 'datetime_immutable')]
