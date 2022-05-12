@@ -30,6 +30,20 @@ class TripController extends AbstractController
         }
     }
 
+    #[Route('/api/trips/{id}/logBookEntries', name: 'log_book_entries_by_trip', methods: 'GET')]
+    public function logBookEntries(EntityManagerInterface $entityManager, int $id): Response
+    {
+        /** @var Trip $trip */
+        $trip = $entityManager->getRepository(Trip::class)->find($id);
+        if ($trip != null) {
+            return $this->json($trip->getLogBookEntries(), 200, [], ['groups' => 'logBookEntry:item']);
+        } else {
+            return $this->json([
+                'message' => 'Trip ' . $id . ' not found',
+            ], 404);
+        }
+    }
+
     #[Route('/api/trips/{id}/poi', name: 'poi_by_trip', methods: 'GET')]
     public function poi(EntityManagerInterface $entityManager, int $id): Response
     {

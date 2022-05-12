@@ -99,6 +99,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
             'method' => 'GET',
             'route_name' => 'costs_by_trip',
         ],
+        'log_book_entries' => [
+            'method' => 'GET',
+            'route_name' => 'log_book_entries_by_trip',
+        ],
         'poi' => [
             'method' => 'GET',
             'route_name' => 'poi_by_trip',
