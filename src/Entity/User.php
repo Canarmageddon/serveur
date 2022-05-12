@@ -31,7 +31,33 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
                 ]
             ]
         ],
-        'post' => ['denormalization_context' => ['groups' => 'user:write']]
+        'post' => ['denormalization_context' => ['groups' => 'user:write']],
+        'checkCredentials' => [
+            'method' => 'POST',
+            'route_name' => 'check_credentials',
+            'openapi_context' => [
+                'summary'     => 'Check the credentials email and password',
+                'description' => "If the credentials fit, returns the User",
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema'  => [
+                                'type' => 'object',
+                                'properties' =>
+                                    [
+                                        'email' => ['type' => 'string'],
+                                        'password' => ['type' => 'string']
+                                    ],
+                            ],
+                            'example' => [
+                                'email' => "root@root.fr",
+                                'password' => "mdp"
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
     ],
     itemOperations: [
         'get' => ['normalization_context' => ['groups' => 'user:item']],
