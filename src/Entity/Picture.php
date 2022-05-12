@@ -34,9 +34,17 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
                                 'type' => 'object',
                                 'properties' => [
                                     'file' => [
-                                        'type' => 'string',
+                                        'type' => 'file',
                                         'format' => 'binary',
                                     ],
+                                    'creator' => [
+                                        'type' => 'creatorId',
+                                        'format' => 'int'
+                                    ],
+                                    'trip' => [
+                                        'type' => 'tripId',
+                                        'format' => 'int'
+                                    ]
                                 ],
                             ],
                         ],
@@ -51,9 +59,10 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
             'path' => '/pictures/file/{id}',
             'method' => 'GET',
             'read' => false
-        ]
+        ],
     ],
     normalizationContext: ['groups' => ['picture:read']],
+    denormalizationContext: ['groups' => ['picture:write']],
     order: ['album' => 'ASC'],
     paginationEnabled: false,
 )]
@@ -62,24 +71,28 @@ class Picture
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(['picture:list', 'picture:item', 'picture:read'])]
+    #[Groups(['picture:list', 'picture:item', 'picture:read', 'trip:list', 'trip:item'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'pictures')]
-    #[Groups(['picture:list', 'picture:item', 'picture:read'])]
+    #[Groups(['picture:list', 'picture:item', 'picture:read', 'trip:list', 'trip:item'])]
     private ?User $creator;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    #[Groups(['picture:list', 'picture:item'])]
+    #[Groups(['picture:list', 'picture:item', 'trip:list', 'trip:item'])]
     private ?DateTimeImmutable $creationDate;
 
     #[ORM\ManyToOne(targetEntity: Location::class, inversedBy: 'pictures')]
-    #[Groups(['picture:list', 'picture:item', 'picture:read'])]
+    #[Groups(['picture:list', 'picture:item', 'picture:read', 'picture:write'])]
     private ?Location $location;
 
     #[ORM\ManyToOne(targetEntity: Album::class, inversedBy: 'pictures')]
-    #[Groups(['picture:list', 'picture:item', 'picture:read'])]
+    #[Groups(['picture:list', 'picture:item', 'picture:read', 'picture:write', 'trip:list', 'trip:item'])]
     private ?Album $album;
+
+    #[ORM\ManyToOne(targetEntity: Trip::class, inversedBy: 'pictures')]
+    #[Groups(['picture:list', 'picture:item', 'picture:read'])]
+    private ?Trip $trip;
 
 
     /**
@@ -138,11 +151,22 @@ class Picture
         return $this;
     }
 
-    public function __construct(User $creator, Location $location, Album $album){
+    public function getTrip(): ?Trip
+    {
+        return $this->trip;
+    }
+
+    public function setTrip(?Trip $trip): self
+    {
+        $this->trip = $trip;
+
+        return $this;
+    }
+
+    public function __construct(User $creator, Trip $trip){
         $this->creationDate = new DateTimeImmutable('now');
         $this->creator = $creator;
-        $this->location = $location;
-        $this->album = $album;
+        $this->trip = $trip;
     }
 
     public function setCreationDate(\DateTimeImmutable $creationDate): self

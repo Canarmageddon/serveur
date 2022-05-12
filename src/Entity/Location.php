@@ -127,7 +127,7 @@ class Location
     private Collection $steps;
 
     #[ORM\OneToMany(mappedBy: 'location', targetEntity: Picture::class)]
-    #[Groups(['location:list', 'location:item'])]
+    #[Groups(['location:list', 'location:item', 'trip:list', 'trip:item'])]
     private Collection $pictures;
 
     #[Pure] public function __construct()

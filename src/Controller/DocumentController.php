@@ -2,37 +2,31 @@
 
 namespace App\Controller;
 
-
-use App\Entity\Picture;
+use App\Entity\Document;
 use App\Entity\User;
-use App\Entity\Album;
-use App\Entity\Location;
-use App\Entity\Trip;
+use App\Entity\MapElement;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Doctrine\ORM\EntityManagerInterface;
-
 
 #[AsController]
-final class PictureController extends AbstractController
+final class DocumentController extends AbstractController
 {
-
-
-    public function __invoke(Request $request, EntityManagerInterface $entityManager): Picture
+    public function __invoke(Request $request, EntityManagerInterface $entityManager): Document
     {
         $creatorId = $request->request->get('creator');
-        $tripId = $request->request->get('trip');
+        $mapElementId = $request->request->get('mapElement');
+        $name = $request->request->get('name');
 
         /** @var User $creator */
         $creator = $entityManager->getRepository(User::class)->find($creatorId);
 
-        /** @var Location $location */
-        $trip = $entityManager->getRepository(Trip::class)->find($tripId);
-
+        /** @var mapElement $mapElement */
+        $mapElement = $entityManager->getRepository(MapElement::class)->find($mapElementId);
 
 
         
@@ -44,11 +38,9 @@ final class PictureController extends AbstractController
             throw new BadRequestHttpException('"file" is required');
         }
 
-        $picture = new Picture($creator, $trip);
-        $picture->file = $uploadedFile;
+        $document = new Document($creator, $mapElement, $name);
+        $document->file = $uploadedFile;
 
-        return $picture;
+        return $document;
     }
-
-    
 }
