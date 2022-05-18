@@ -31,7 +31,33 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
                 ]
             ]
         ],
-        'post' => ['denormalization_context' => ['groups' => 'user:write']]
+        'post' => ['denormalization_context' => ['groups' => 'user:write']],
+        'checkCredentials' => [
+            'method' => 'POST',
+            'route_name' => 'check_credentials',
+            'openapi_context' => [
+                'summary'     => 'Check the credentials email and password',
+                'description' => "If the credentials fit, returns the User",
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema'  => [
+                                'type' => 'object',
+                                'properties' =>
+                                    [
+                                        'email' => ['type' => 'string'],
+                                        'password' => ['type' => 'string']
+                                    ],
+                            ],
+                            'example' => [
+                                'email' => "root@root.fr",
+                                'password' => "mdp"
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
     ],
     itemOperations: [
         'get' => ['normalization_context' => ['groups' => 'user:item']],
@@ -43,12 +69,12 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
     ],
     paginationEnabled: false,
 )]
-class User implements UserInterface
+class User implements PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'cost:list'])]
+    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'cost:list', 'cost:item'])]
     private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
@@ -67,12 +93,11 @@ class User implements UserInterface
     private ?string $plainPassword;
 
     #[ORM\Column(type: 'string', length: 50)]
-
-    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'picture:read', 'document:read', 'cost:list'])]
+    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'picture:read', 'cost:list', 'cost:item'])]
     private ?string $firstName;
 
     #[ORM\Column(type: 'string', length: 50)]
-    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'picture:read', 'cost:list'])]
+    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'picture:read', 'cost:list', 'cost:item'])]
     private ?string $lastName;
 
     #[ORM\Column(type: 'datetime_immutable')]
