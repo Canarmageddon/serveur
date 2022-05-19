@@ -17,7 +17,7 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ApiResource(
     collectionOperations: [
-        'get' => ['normalization_context' => ['groups' => 'user:list', "enable_max_depth" => true]],
+        'get' => ['normalization_context' => ['groups' => 'user:list']],
         'byEmail' => [
             'method' => 'GET',
             'route_name' => 'user_by_email',
@@ -61,7 +61,7 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
         ],
     ],
     itemOperations: [
-        'get' => ['normalization_context' => ['groups' => 'user:item',"enable_max_depth" => true]],
+        'get' => ['normalization_context' => ['groups' => 'user:item']],
         'trips' => [
             'method' => 'GET',
             'route_name' => 'trips_by_user',
@@ -129,7 +129,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user:list', 'user:item'])]
     private Collection $costs;
 
-    #[MaxDepth(1)]
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: TripUser::class, orphanRemoval: true)]
     private Collection $tripUsers;
 

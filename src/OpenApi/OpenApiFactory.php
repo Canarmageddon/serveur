@@ -18,6 +18,12 @@ class OpenApiFactory implements OpenApiFactoryInterface
     {
         $openApi = $this->decorated->__invoke($context);
 
+        foreach ($openApi->getPaths()->getPaths() as $key => $path) {
+            if ($path->getGet() && $path->getGet()->getSummary() === 'hidden') {
+                $openApi->getPaths()->addPath($key, $path->withGet(null));
+            }
+        }
+
         $schemas = $openApi->getComponents()->getSecuritySchemes();
         $schemas['cookieAuth'] = new \ArrayObject([
             'type' => 'apiKey',
