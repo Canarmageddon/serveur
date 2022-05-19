@@ -21,7 +21,12 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 #[ORM\Entity(repositoryClass: PictureRepository::class)]
 #[ApiResource(
     collectionOperations: [
-        'get',
+        'get' => [
+            'security' => "is_granted('ROLE_USER')",
+            'openapi_context' => [
+                'security' => ['cookieAuth' => []]
+            ]
+        ],
         'post' => [
             'controller' => PictureController::class,
             'deserialize' => false,
@@ -61,8 +66,8 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
             'read' => false
         ],
     ],
-    normalizationContext: ['groups' => ['picture:read']],
     denormalizationContext: ['groups' => ['picture:write']],
+    normalizationContext: ['groups' => ['picture:read']],
     order: ['album' => 'ASC'],
     paginationEnabled: false,
 )]

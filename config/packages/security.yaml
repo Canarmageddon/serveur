@@ -14,10 +14,23 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
-            json_login:
+            entry_point: App\Security\AuthenticationEntryPoint
+#            json_login:
+#                check_path: app_login
+#                username_path: email
+#                password_path: password
+
+            form_login:
                 check_path: app_login
-                username_path: email
-                password_path: password
+                username_parameter: email
+                password_parameter: password
+                always_use_default_target_path: true
+                default_target_path: whoami
+                failure_path: login_failed
+
+            logout:
+                path: app_logout
+                target: logout_success
 
             remember_me:
                 secret: '%kernel.secret%'
