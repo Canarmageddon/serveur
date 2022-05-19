@@ -69,7 +69,7 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
     ],
     paginationEnabled: false,
 )]
-class User implements PasswordAuthenticatedUserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
