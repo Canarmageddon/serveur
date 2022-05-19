@@ -12,11 +12,12 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ApiResource(
     collectionOperations: [
-        'get' => ['normalization_context' => ['groups' => 'user:list']],
+        'get' => ['normalization_context' => ['groups' => 'user:list', "enable_max_depth" => true]],
         'byEmail' => [
             'method' => 'GET',
             'route_name' => 'user_by_email',
@@ -60,7 +61,7 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
         ],
     ],
     itemOperations: [
-        'get' => ['normalization_context' => ['groups' => 'user:item']],
+        'get' => ['normalization_context' => ['groups' => 'user:item',"enable_max_depth" => true]],
         'trips' => [
             'method' => 'GET',
             'route_name' => 'trips_by_user',
@@ -128,6 +129,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user:list', 'user:item'])]
     private Collection $costs;
 
+    #[MaxDepth(1)]
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: TripUser::class, orphanRemoval: true)]
     private Collection $tripUsers;
 
