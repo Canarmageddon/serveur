@@ -25,15 +25,10 @@ class OpenApiFactory implements OpenApiFactoryInterface
         }
 
         $schemas = $openApi->getComponents()->getSecuritySchemes();
-        $schemas['cookieAuth'] = new \ArrayObject([
-            'type' => 'apiKey',
-            'in' => 'cookie',
-            'name' => 'PHPSESSID'
-        ]);
-        $schemas['cookieAuth2'] = new \ArrayObject([
-            'type' => 'apiKey',
-            'in' => 'cookie',
-            'name' => 'REMEMBERME'
+        $schemas['bearerAuth'] = new \ArrayObject([
+            'type' => 'http',
+            'scheme' => 'bearer',
+            'bearerFormat' => 'JWT'
         ]);
 
         $schemas = $openApi->getComponents()->getSchemas();
@@ -45,9 +40,25 @@ class OpenApiFactory implements OpenApiFactoryInterface
                 ],
                 'password' => [
                     'type' => 'string'
+                ]
+            ]
+        ]);
+        $schemas['Token'] = new \ArrayObject([
+            'type' => 'object',
+            'properties' => [
+                'token' => [
+                    'type' => 'string'
                 ],
-                '_remember_me' => [
-                    'type' => 'boolean'
+                'refresh_token' => [
+                    'type' => 'string'
+                ]
+            ]
+        ]);
+        $schemas['RefToken'] = new \ArrayObject([
+            'type' => 'object',
+            'properties' => [
+                'refresh_token' => [
+                    'type' => 'string'
                 ]
             ]
         ]);
@@ -62,7 +73,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
                         'content' => [
                             'application/json' => [
                                 'schema' => [
-                                    '$ref' => '#/components/schemas/User-user.item'
+                                    '$ref' => '#/components/schemas/Token'
                                 ]
                             ]
                         ]
@@ -75,7 +86,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
                 description: 'Login using credentials',
                 requestBody: new RequestBody(
                     content: new \ArrayObject([
-                        'multipart/form-data' => [
+                        'application/json' => [
                             'schema' => [
                                 '$ref' => '#/components/schemas/Credentials'
                             ]
@@ -90,6 +101,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
             get: new Operation(
                 operationId: 'whoami',
                 tags: ['Auth'],
+                security: [['bearerAuth' => []]],
                 responses: [
                     '200' => [
                         'description' => 'Current logged as: {user or null}',
@@ -109,19 +121,38 @@ class OpenApiFactory implements OpenApiFactoryInterface
         $openApi->getPaths()->addPath('/api/whoami', $pathItem);
 
         $pathItem = new PathItem(
-            get: new Operation(
-                operationId: 'logout',
+            post: new Operation(
+                operationId: 'refreshToken',
                 tags: ['Auth'],
                 responses: [
                     '200' => [
-                        'description' => 'Logged out successfully'
+                        'description' => 'New access token',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    '$ref' => '#/components/schemas/Token'
+                                ]
+                            ]
+                        ]
+                    ],
+                    '401' => [
+                        'description' => 'Invalid refresh token'
                     ]
                 ],
-                summary: 'Logout',
-                description: 'Logout'
+                summary: 'Refresh access token using refresh_token',
+                description: 'Refresh access token using refresh_token',
+                requestBody: new RequestBody(
+                    content: new \ArrayObject([
+                        'application/json' => [
+                            'schema' => [
+                                '$ref' => '#/components/schemas/RefToken'
+                            ]
+                        ]
+                    ])
+                )
             )
         );
-        $openApi->getPaths()->addPath('/api/logout', $pathItem);
+        $openApi->getPaths()->addPath('/api/token/refresh', $pathItem);
         return $openApi;
     }
 }

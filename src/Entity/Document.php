@@ -22,7 +22,7 @@ use Symfony\Component\HttpFoundation\File\File;
         'get' => ['normalization_context' => ['groups' => 'document:list'],
             'security' => "is_granted('ROLE_USER')",
             'openapi_context' => [
-                'security' => ['cookieAuth' => []]
+                'security' => [['bearerAuth' => []]]
             ]],
         'post' => [
             'controller' => DocumentController::class,
