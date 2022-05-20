@@ -22,10 +22,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 #[ApiResource(
     collectionOperations: [
         'get' => [
-            'security' => "is_granted('ROLE_USER')",
-            'openapi_context' => [
-                'security' => ['cookieAuth' => []]
-            ]
+
         ],
         'post' => [
             'controller' => PictureController::class,

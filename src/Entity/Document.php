@@ -19,7 +19,11 @@ use Symfony\Component\HttpFoundation\File\File;
 #[ORM\Entity(repositoryClass: DocumentRepository::class)]
 #[ApiResource(
     collectionOperations: [
-        'get' => ['normalization_context' => ['groups' => 'document:list']],
+        'get' => ['normalization_context' => ['groups' => 'document:list'],
+            'security' => "is_granted('ROLE_USER')",
+            'openapi_context' => [
+                'security' => ['cookieAuth' => []]
+            ]],
         'post' => [
             'controller' => DocumentController::class,
             'deserialize' => false,
