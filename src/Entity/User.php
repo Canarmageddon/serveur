@@ -130,6 +130,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $costs;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: TripUser::class, orphanRemoval: true)]
+    #[Groups(['user:item'])]
     private Collection $tripUsers;
 
     #[ORM\OneToMany(mappedBy: 'creator', targetEntity: LogBookEntry::class, orphanRemoval: true)]
