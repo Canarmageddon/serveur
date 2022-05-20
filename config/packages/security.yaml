@@ -13,30 +13,54 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        main:
-            entry_point: App\Security\AuthenticationEntryPoint
+
+
+        login:
+            pattern: ^/api/login
+            stateless: true
+            json_login:
+                check_path: /api/login
+                username_path: email
+                password_path: password
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+
+        api:
+            pattern: ^/api
+            stateless: true
+            entry_point: jwt
+            jwt: ~
+            refresh_jwt:
+                check_path: /api/token/refresh
+                provider: app_user_provider
+
+#        main:
+#            lazy: true
+#            anonymous: true
+#            provider: app_user_provider
+##            entry_point: App\Security\AuthenticationEntryPoint
 #            json_login:
 #                check_path: app_login
 #                username_path: email
 #                password_path: password
 
-            form_login:
-                check_path: app_login
-                username_parameter: email
-                password_parameter: password
-                always_use_default_target_path: true
-                default_target_path: whoami
-                failure_path: login_failed
-
-            logout:
-                path: app_logout
-                target: logout_success
-
-            remember_me:
-                secret: '%kernel.secret%'
-                lifetime: 604800 # 1 week in seconds
-                token_provider:
-                    doctrine: true
+#            form_login:
+#                check_path: app_login
+#                username_parameter: email
+#                password_parameter: password
+#                always_use_default_target_path: true
+#                default_target_path: whoami
+#                failure_path: login_failed
+#
+#            logout:
+#                path: app_logout
+#                target: logout_success
+#
+#            remember_me:
+#                secret: '%kernel.secret%'
+#                lifetime: 604800 # 1 week in seconds
+#                token_provider:
+#                    doctrine: true
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall

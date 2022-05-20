@@ -14,27 +14,4 @@ class SecurityController extends AbstractController
         );
     }
 
-    #[Route('/api/logout', name: 'app_logout')]
-    public function logout()
-    {
-        throw new \Exception('should not be reached');
-    }
-
-    #[Route('/api/logoutRes', name: 'logout_success')]
-    public function logoutRes(): Response
-    {
-        $response = new Response();
-        $response->setStatusCode(Response::HTTP_OK);
-        return $response;
-    }
-
-    #[Route('/api/loginFailed', name: 'login_failed')]
-    public function loginFailed(): Response
-    {
-        $response = new Response();
-        $response->setStatusCode(Response::HTTP_UNAUTHORIZED);
-        $response->setContent('Invalid credentials');
-        $response->headers->set('Content-Type', 'text/html');
-        return $response;
-    }
 }
