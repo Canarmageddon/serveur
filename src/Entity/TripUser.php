@@ -2,11 +2,28 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\TripUserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: TripUserRepository::class)]
+#[ApiResource(
+    collectionOperations: [
+        'get' => [
+            "openapi_context"=>[
+                "summary"=>"hidden"
+            ]
+        ]
+    ],
+    itemOperations: [
+        'get' => [
+            "openapi_context"=>[
+                "summary"=>"hidden"
+            ]
+        ]
+    ]
+)]
 class TripUser
 {
     #[ORM\Id]

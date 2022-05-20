@@ -12,6 +12,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ApiResource(
@@ -31,7 +32,33 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
                 ]
             ]
         ],
-        'post' => ['denormalization_context' => ['groups' => 'user:write']]
+        'post' => ['denormalization_context' => ['groups' => 'user:write']],
+        'checkCredentials' => [
+            'method' => 'POST',
+            'route_name' => 'check_credentials',
+            'openapi_context' => [
+                'summary'     => 'Check the credentials email and password',
+                'description' => "If the credentials fit, returns the User",
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema'  => [
+                                'type' => 'object',
+                                'properties' =>
+                                    [
+                                        'email' => ['type' => 'string'],
+                                        'password' => ['type' => 'string']
+                                    ],
+                            ],
+                            'example' => [
+                                'email' => "root@root.fr",
+                                'password' => "mdp"
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
     ],
     itemOperations: [
         'get' => ['normalization_context' => ['groups' => 'user:item']],
@@ -48,7 +75,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item'])]
+    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'cost:list', 'cost:item'])]
     private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
@@ -67,12 +94,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $plainPassword;
 
     #[ORM\Column(type: 'string', length: 50)]
-
-    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'picture:read', 'document:read'])]
+    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'picture:read', 'cost:list', 'cost:item'])]
     private ?string $firstName;
 
     #[ORM\Column(type: 'string', length: 50)]
-    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'picture:read'])]
+    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'picture:read', 'cost:list', 'cost:item'])]
     private ?string $lastName;
 
     #[ORM\Column(type: 'datetime_immutable')]
@@ -106,6 +132,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: TripUser::class, orphanRemoval: true)]
     #[Groups(['user:item'])]
     private Collection $tripUsers;
+
+    #[ORM\OneToMany(mappedBy: 'creator', targetEntity: LogBookEntry::class, orphanRemoval: true)]
+    private Collection $logBookEntries;
 
     public function getId(): ?int
     {
@@ -231,6 +260,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->tasks = new ArrayCollection();
         $this->costs = new ArrayCollection();
         $this->tripUsers = new ArrayCollection();
+        $this->logBookEntries = new ArrayCollection();
     }
 
     /**
@@ -425,5 +455,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             $trips[] = $tripUser->getTrip();
         }
         return $trips;
+    }
+
+    /**
+     * @return Collection<int, LogBookEntry>
+     */
+    public function getLogBookEntries(): Collection
+    {
+        return $this->logBookEntries;
+    }
+
+    public function addLogBookEntry(LogBookEntry $logBookEntry): self
+    {
+        if (!$this->logBookEntries->contains($logBookEntry)) {
+            $this->logBookEntries[] = $logBookEntry;
+            $logBookEntry->setCreator($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLogBookEntry(LogBookEntry $logBookEntry): self
+    {
+        if ($this->logBookEntries->removeElement($logBookEntry)) {
+            // set the owning side to null (unless already changed)
+            if ($logBookEntry->getCreator() === $this) {
+                $logBookEntry->setCreator(null);
+            }
+        }
+
+        return $this;
     }
 }

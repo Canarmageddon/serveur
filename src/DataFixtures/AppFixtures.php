@@ -42,9 +42,9 @@ class AppFixtures extends Fixture
         $costCategories = array('Hygiène', 'Hygiène', 'Alimentaire', 'Loisir', 'Alimentaire/Loisir', 'Elevé');
 
         $users = [];
-        $users[] = array('root@root.fr', 'Poisson', 'd\'Avril', 'mdp', (array)'ROLE_ADMIN');
-        $users[] = array('canartichaud@duck.com', 'Canard', 'Tichaut', 'mdp', (array)'ROLE_USER');
-        $users[] = array('XxWumpa69CortexSlayerxX@gmail.com', 'Crash', 'Bandicoot', 'mdp', (array)'ROLE_USER');
+        $users[] = array('root@root.fr', 'Poisson', 'd\'Avril', '$2y$13$UAilrJLf.FlNU7naMk0LnefUVowtMg0Q3ojpYpK.RX1tQdPsbOCXS', (array)'ROLE_ADMIN');
+        $users[] = array('canartichaud@duck.com', 'Canard', 'Tichaut', '$2y$13$UAilrJLf.FlNU7naMk0LnefUVowtMg0Q3ojpYpK.RX1tQdPsbOCXS', (array)'ROLE_USER');
+        $users[] = array('XxWumpa69CortexSlayerxX@gmail.com', 'Crash', 'Bandicoot', '$2y$13$UAilrJLf.FlNU7naMk0LnefUVowtMg0Q3ojpYpK.RX1tQdPsbOCXS', (array)'ROLE_USER');
         #endregion
 
         #region Factory

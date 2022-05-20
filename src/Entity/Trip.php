@@ -9,11 +9,12 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 #[ORM\Entity(repositoryClass: TripRepository::class)]
 #[ApiResource(
     collectionOperations: [
-        'get' => ['normalization_context' => ['groups' => 'trip:list']],
+        'get' => ['normalization_context' => ['groups' => 'trip:list', "enable_max_depth" => true]],
         'new' => [
             'method' => 'POST',
             'route_name' => 'trip_new',
@@ -94,10 +95,14 @@ use Symfony\Component\Serializer\Annotation\Groups;
         ]
     ],
     itemOperations: [
-        'get' => ['normalization_context' => ['groups' => 'trip:item']],
+        'get' => ['normalization_context' => ['groups' => 'trip:item', "enable_max_depth" => true]],
         'costs' => [
             'method' => 'GET',
             'route_name' => 'costs_by_trip',
+        ],
+        'log_book_entries' => [
+            'method' => 'GET',
+            'route_name' => 'log_book_entries_by_trip',
         ],
         'poi' => [
             'method' => 'GET',
@@ -157,6 +162,7 @@ class Trip
 
     #[ORM\OneToOne(mappedBy: 'trip', targetEntity: Album::class, cascade: ['persist', 'remove'])]
     #[Groups(['trip:list', 'trip:item'])]
+    #[MaxDepth(1)]
     private ?Album $album;
 
     #[ORM\OneToMany(mappedBy: 'trip', targetEntity: Cost::class,  cascade: ['persist', 'remove'])]
@@ -171,12 +177,19 @@ class Trip
     #[Groups(['trip:list', 'trip:item'])]
     private Collection $toDoLists;
 
+    #[ORM\OneToMany(mappedBy: 'trip', targetEntity: Picture::class, cascade: ['persist', 'remove'])]
+    #[Groups(['trip:list', 'trip:item'])]
+    #[MaxDepth(1)]
+    private Collection $pictures;
+
     #[ORM\OneToMany(mappedBy: 'trip', targetEntity: PointOfInterest::class, cascade: ['persist', 'remove'])]
     #[Groups(['trip:list', 'trip:item'])]
+    #[MaxDepth(2)]
     private Collection $pointsOfInterest;
 
     #[ORM\OneToMany(mappedBy: 'trip', targetEntity: Step::class, cascade: ['persist', 'remove'])]
     #[Groups(['trip:list', 'trip:item'])]
+    #[MaxDepth(2)]
     private Collection $steps;
 
     #[ORM\OneToMany(mappedBy: 'trip', targetEntity: Travel::class, cascade: ['persist', 'remove'])]
@@ -186,6 +199,9 @@ class Trip
     #[ORM\OneToMany(mappedBy: 'trip', targetEntity: TripUser::class, orphanRemoval: true)]
     private Collection $tripUsers;
 
+    #[ORM\OneToMany(mappedBy: 'trip', targetEntity: LogBookEntry::class, orphanRemoval: true)]
+    private Collection $logBookEntries;
+
     #[Pure] public function __construct()
     {
         $this->costs = new ArrayCollection();
@@ -194,6 +210,7 @@ class Trip
         $this->steps = new ArrayCollection();
         $this->travels = new ArrayCollection();
         $this->tripUsers = new ArrayCollection();
+        $this->logBookEntries = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -271,6 +288,14 @@ class Trip
     public function getToDoLists(): Collection
     {
         return $this->toDoLists;
+    }
+
+    /**
+     * @return Collection<int, Picture>
+     */
+    public function getPictures(): Collection
+    {
+        return $this->pictures;
     }
 
     public function addToDoList(ToDoList $toDoList): self
@@ -422,5 +447,35 @@ class Trip
             $travelers[] = $tripUser->getUser();
         }
         return $travelers;
+    }
+
+    /**
+     * @return Collection<int, LogBookEntry>
+     */
+    public function getLogBookEntries(): Collection
+    {
+        return $this->logBookEntries;
+    }
+
+    public function addLogBookEntry(LogBookEntry $logBookEntry): self
+    {
+        if (!$this->logBookEntries->contains($logBookEntry)) {
+            $this->logBookEntries[] = $logBookEntry;
+            $logBookEntry->setTrip($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLogBookEntry(LogBookEntry $logBookEntry): self
+    {
+        if ($this->logBookEntries->removeElement($logBookEntry)) {
+            // set the owning side to null (unless already changed)
+            if ($logBookEntry->getTrip() === $this) {
+                $logBookEntry->setTrip(null);
+            }
+        }
+
+        return $this;
     }
 }
