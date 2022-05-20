@@ -36,7 +36,6 @@ security:
                 secret: '%kernel.secret%'
                 lifetime: 604800 # 1 week in seconds
                 samesite: none
-                secure: true
                 token_provider:
                     doctrine: true
 
