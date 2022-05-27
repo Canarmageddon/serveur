@@ -150,7 +150,7 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
         ],
         'delete'
     ],
-    paginationEnabled: false,
+    attributes: ["pagination_items_per_page" => 10] 
 )]
 class Trip
 {
