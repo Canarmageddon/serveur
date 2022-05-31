@@ -12,6 +12,7 @@ services:
       - db
     volumes:
       - ./:/server/
+    tty: true
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.php.rule=Host(`vm-26.iutrs.unistra.fr`)"
