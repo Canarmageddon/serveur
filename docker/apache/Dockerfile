@@ -4,7 +4,7 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 WORKDIR /server
 
 COPY ./docker/apache/server.sh /startScript/
-COPY ./docker/apache/server.sh /usr/local/etc/php/php.ini
+COPY ./docker/apache/php.ini-production /usr/local/etc/php/php.ini
 
 RUN apt-get update && apt-get install -my \
     git \
