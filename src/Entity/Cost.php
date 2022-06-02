@@ -89,7 +89,7 @@ class Cost
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     #[Groups(['cost:list', 'cost:item', 'trip:item'])]
-    private ?int $id;
+    private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'], inversedBy: 'costs')]
     #[Groups(['cost:list', 'cost:item', 'trip:item'])]
@@ -201,6 +201,13 @@ class Cost
     public function setValue(float $value): self
     {
         $this->value = $value;
+
+        return $this;
+    }
+
+    public function setCreationDate(\DateTimeImmutable $creationDate): self
+    {
+        $this->creationDate = $creationDate;
 
         return $this;
     }

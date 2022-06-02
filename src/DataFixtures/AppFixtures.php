@@ -72,20 +72,15 @@ class AppFixtures extends Fixture
             $locations[] = $location;
         }
 
-        $roles = ['admin', 'editor', 'guest'];
-
         for($a = 0 ; $a < 3 ; $a++) {
             $trip = new Trip();
             $trip->setName($tripNames[$a]);
 
-            $idRole = 0;
             foreach($createdUsers as $traveler) {
                 $tripUser = new TripUser();
                 $trip->addTripUser($tripUser);
                 $traveler->addTripUser($tripUser);
-                $tripUser->setRole($roles[$idRole]);
                 $manager->persist($tripUser);
-                $idRole++;
             }
 
             for($tdl = 0 ; $tdl < 3 ; $tdl++){

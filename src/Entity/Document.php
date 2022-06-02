@@ -149,4 +149,16 @@ class Document
 
         return $this;
     }
+
+    public function getCreator(): ?User
+    {
+        return $this->creator;
+    }
+
+    public function setCreator(?User $creator): self
+    {
+        $this->creator = $creator;
+
+        return $this;
+    }
 }

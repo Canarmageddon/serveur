@@ -101,7 +101,6 @@ class OpenApiFactory implements OpenApiFactoryInterface
             get: new Operation(
                 operationId: 'whoami',
                 tags: ['Auth'],
-                security: [['bearerAuth' => []]],
                 responses: [
                     '200' => [
                         'description' => 'Current logged as: {user or null}',
@@ -115,7 +114,8 @@ class OpenApiFactory implements OpenApiFactoryInterface
                     ]
                 ],
                 summary: 'Get user you are logged as',
-                description: 'Get user you are logged as'
+                description: 'Get user you are logged as',
+                security: [['bearerAuth' => []]]
             )
         );
         $openApi->getPaths()->addPath('/api/whoami', $pathItem);
