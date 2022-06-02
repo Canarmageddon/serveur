@@ -6,10 +6,6 @@ class UserInput {
 
     private ?string $email;
 
-    private ?int $trip;
-
-    private ?string $role = 'guest';
-
     public function getEmail(): ?string
     {
         return $this->email;
@@ -21,34 +17,4 @@ class UserInput {
 
         return $this;
     }
-
-    public function getTrip(): ?int
-    {
-        return $this->trip;
-    }
-
-    public function setTrip(?int $trip): self
-    {
-        $this->trip = $trip;
-
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getRole(): ?string
-    {
-        return $this->role;
-    }
-
-    /**
-     * @param string|null $role
-     */
-    public function setRole(?string $role): void
-    {
-        $this->role = $role;
-    }
-
-
 }

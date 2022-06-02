@@ -29,7 +29,7 @@ class TripUser
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Trip::class, cascade: ['persist'], inversedBy: 'tripUsers')]
     #[ORM\JoinColumn(nullable: false)]
@@ -39,10 +39,6 @@ class TripUser
     #[Groups(['user:item'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user;
-
-    #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(['user:item'])]
-    private ?string $role;
 
     public function getId(): ?int
     {
@@ -69,18 +65,6 @@ class TripUser
     public function setUser(?User $user): self
     {
         $this->user = $user;
-
-        return $this;
-    }
-
-    public function getRole(): ?string
-    {
-        return $this->role;
-    }
-
-    public function setRole(string $role): self
-    {
-        $this->role = $role;
 
         return $this;
     }

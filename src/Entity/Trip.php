@@ -38,60 +38,6 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
                     ],
                 ],
             ],
-        ],
-        'addUser' => [
-            'method' => 'POST',
-            'route_name' => 'trip_add_user',
-            'openapi_context' => [
-                'summary'     => 'Add a User to a Trip',
-                'description' => "Nécessite l'email et l'id du trip, si aucun rôle précisé, rôle = 'guest'",
-                'requestBody' => [
-                    'content' => [
-                        'application/json' => [
-                            'schema'  => [
-                                'type' => 'object',
-                                'properties' =>
-                                    [
-                                        'email' => ['type' => 'string'],
-                                        'trip' => ['type' => 'int'],
-                                        'role' => ['type' => 'string']
-                                    ],
-                            ],
-                            'example' => [
-                                'email' => "root@root.fr",
-                                'trip' => 1,
-                                'role' => 'editor'
-                            ],
-                        ],
-                    ],
-                ],
-            ],
-        ],
-        'removeUser' => [
-            'method' => 'POST',
-            'route_name' => 'trip_remove_user',
-            'openapi_context' => [
-                'summary'     => 'Remove a User from a Trip',
-                'description' => "Vérifie si les deux données correspondent à des entités, puis l'enlève",
-                'requestBody' => [
-                    'content' => [
-                        'application/json' => [
-                            'schema'  => [
-                                'type' => 'object',
-                                'properties' =>
-                                    [
-                                        'email' => ['type' => 'string'],
-                                        'trip' => ['type' => 'int'],
-                                    ],
-                            ],
-                            'example' => [
-                                'email' => "root@root.fr",
-                                'trip' => 1,
-                            ],
-                        ],
-                    ],
-                ],
-            ],
         ]
     ],
     itemOperations: [
@@ -142,6 +88,54 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
                             ],
                             'example' => [
                                 'name' => "Vacances au soleil",
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
+        'addUser' => [
+            'method' => 'PUT',
+            'route_name' => 'trip_add_user',
+            'openapi_context' => [
+                'summary'     => 'Add a User to a Trip',
+                'description' => "Nécessite l'email et l'id du trip, si aucun rôle précisé, rôle = 'guest'",
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema'  => [
+                                'type' => 'object',
+                                'properties' =>
+                                    [
+                                        'email' => ['type' => 'string'],
+                                    ],
+                            ],
+                            'example' => [
+                                'email' => "root@root.fr",
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
+        'removeUser' => [
+            'method' => 'PUT',
+            'route_name' => 'trip_remove_user',
+            'openapi_context' => [
+                'summary'     => 'Remove a User from a Trip',
+                'description' => "Vérifie si les deux données correspondent à des entités, puis l'enlève",
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema'  => [
+                                'type' => 'object',
+                                'properties' =>
+                                    [
+                                        'email' => ['type' => 'string'],
+                                    ],
+                            ],
+                            'example' => [
+                                'email' => "root@root.fr",
                             ],
                         ],
                     ],
@@ -211,6 +205,7 @@ class Trip
         $this->travels = new ArrayCollection();
         $this->tripUsers = new ArrayCollection();
         $this->logBookEntries = new ArrayCollection();
+        $this->pictures = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -473,6 +468,28 @@ class Trip
             // set the owning side to null (unless already changed)
             if ($logBookEntry->getTrip() === $this) {
                 $logBookEntry->setTrip(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function addPicture(Picture $picture): self
+    {
+        if (!$this->pictures->contains($picture)) {
+            $this->pictures[] = $picture;
+            $picture->setTrip($this);
+        }
+
+        return $this;
+    }
+
+    public function removePicture(Picture $picture): self
+    {
+        if ($this->pictures->removeElement($picture)) {
+            // set the owning side to null (unless already changed)
+            if ($picture->getTrip() === $this) {
+                $picture->setTrip(null);
             }
         }
 

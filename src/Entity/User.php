@@ -261,6 +261,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->costs = new ArrayCollection();
         $this->tripUsers = new ArrayCollection();
         $this->logBookEntries = new ArrayCollection();
+        $this->documents = new ArrayCollection();
     }
 
     /**
@@ -481,6 +482,43 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($logBookEntry->getCreator() === $this) {
                 $logBookEntry->setCreator(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function setCreationDate(\DateTimeImmutable $creationDate): self
+    {
+        $this->creationDate = $creationDate;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Document>
+     */
+    public function getDocuments(): Collection
+    {
+        return $this->documents;
+    }
+
+    public function addDocument(Document $document): self
+    {
+        if (!$this->documents->contains($document)) {
+            $this->documents[] = $document;
+            $document->setCreator($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDocument(Document $document): self
+    {
+        if ($this->documents->removeElement($document)) {
+            // set the owning side to null (unless already changed)
+            if ($document->getCreator() === $this) {
+                $document->setCreator(null);
             }
         }
 

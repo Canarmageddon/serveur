@@ -143,19 +143,18 @@ class TripController extends AbstractController
         }
     }
 
-    #[Route('/api/trips/addUser', name: 'trip_add_user', methods: 'POST')]
-    public function addUser(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer): Response
+    #[Route('/api/trips/{id}/addUser', name: 'trip_add_user', methods: 'PUT')]
+    public function addUser(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer, int $id): Response
     {
         try {
             $data = $request->getContent();
             /** @var UserInput $userInput */
             $userInput = $serializer->deserialize($data, UserInput::class, 'json');
             $emailUser = $userInput->getEmail();
-            $idTrip = $userInput->getTrip();
             /** @var User $user */
             $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $emailUser]);
             /** @var Trip $trip */
-            $trip = $entityManager->getRepository(Trip::class)->find($idTrip);
+            $trip = $entityManager->getRepository(Trip::class)->find($id);
 
             if($user != null && $trip != null) {
 
@@ -167,22 +166,21 @@ class TripController extends AbstractController
                     $tripUser = new TripUser();
                     $trip->addTripUser($tripUser);
                     $user->addTripUser($tripUser);
-                    $tripUser->setRole($userInput->getRole());
                     $entityManager->persist($tripUser);
                     $entityManager->flush();
                     return $this->json([
-                        'message' => 'User ' . $emailUser . ' added to Trip ' . $idTrip,
+                        'message' => 'User ' . $emailUser . ' added to Trip ' . $id,
                     ], 202);
 
                 } else {
                     return $this->json([
-                        'message' => 'User ' . $emailUser . ' already member of Trip ' . $idTrip,
+                        'message' => 'User ' . $emailUser . ' already member of Trip ' . $id,
                     ], 200);
                 }
 
             } elseif ($user == null && $trip == null) {
                 return $this->json([
-                    'message' => 'Trip ' . $idTrip . ' and User ' . $emailUser . ' not found',
+                    'message' => 'Trip ' . $id . ' and User ' . $emailUser . ' not found',
                 ], 404);
 
             } elseif ($user == null) {
@@ -192,7 +190,7 @@ class TripController extends AbstractController
 
             } else {
                 return $this->json([
-                    'message' => 'Trip ' . $idTrip . ' not found',
+                    'message' => 'Trip ' . $id . ' not found',
                 ], 404);
             }
         }
@@ -205,19 +203,18 @@ class TripController extends AbstractController
         }
     }
 
-    #[Route('/api/trips/removeUser', name: 'trip_remove_user', methods: 'POST')]
-    public function removeUser(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer): Response
+    #[Route('/api/trips/{id}/removeUser', name: 'trip_remove_user', methods: 'PUT')]
+    public function removeUser(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer, int $id): Response
     {
         try {
             $data = $request->getContent();
             /** @var UserInput $userInput */
             $userInput = $serializer->deserialize($data, UserInput::class, 'json');
             $emailUser = $userInput->getEmail();
-            $idTrip = $userInput->getTrip();
             /** @var User $user */
             $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $emailUser]);
             /** @var Trip $trip */
-            $trip = $entityManager->getRepository(Trip::class)->find($idTrip);
+            $trip = $entityManager->getRepository(Trip::class)->find($id);
 
             if($user != null && $trip != null) {
 
@@ -231,18 +228,18 @@ class TripController extends AbstractController
                     $entityManager->remove($tripUser);
                     $entityManager->flush();
                     return $this->json([
-                        'message' => 'User ' . $emailUser . ' removed from ' . $idTrip . ' Trip',
+                        'message' => 'User ' . $emailUser . ' removed from ' . $id . ' Trip',
                     ], 202);
 
                 } else {
                     return $this->json([
-                        'message' => 'User ' . $emailUser . ' already member of ' . $idTrip . ' Trip',
+                        'message' => 'User ' . $emailUser . ' already member of ' . $id . ' Trip',
                     ]);
                 }
 
             } elseif ($user == null && $trip == null) {
                 return $this->json([
-                    'message' => 'Trip ' . $idTrip . ' and User ' . $emailUser . ' not found',
+                    'message' => 'Trip ' . $id . ' and User ' . $emailUser . ' not found',
                 ], 404);
 
             } elseif ($user == null) {
@@ -252,7 +249,7 @@ class TripController extends AbstractController
 
             } else {
                 return $this->json([
-                    'message' => 'Trip ' . $idTrip . ' not found',
+                    'message' => 'Trip ' . $id . ' not found',
                 ], 404);
             }
         }
