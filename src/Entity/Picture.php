@@ -104,7 +104,7 @@ class Picture
     public ?File $file = null;
 
     #[ORM\Column(nullable: true)] 
-    #[Groups(['picture:read'])]
+    #[Groups(['picture:read', 'trip:item'])]
     public ?string $filePath = null;
 
     public function getId(): ?int
