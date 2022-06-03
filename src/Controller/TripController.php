@@ -16,6 +16,20 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class TripController extends AbstractController
 {
+    #[Route('/api/trips/{id}/album', name: 'album_by_trip', methods: 'GET')]
+    public function album(EntityManagerInterface $entityManager, int $id): Response
+    {
+        /** @var Trip $trip */
+        $trip = $entityManager->getRepository(Trip::class)->find($id);
+        if ($trip != null) {
+            return $this->json($trip->getAlbum(), 200, [], ['groups' => 'album:item']);
+        } else {
+            return $this->json([
+                'message' => 'Trip ' . $id . ' not found',
+            ], 404);
+        }
+    }
+
     #[Route('/api/trips/{id}/costs', name: 'costs_by_trip', methods: 'GET')]
     public function costs(EntityManagerInterface $entityManager, int $id): Response
     {
@@ -37,6 +51,20 @@ class TripController extends AbstractController
         $trip = $entityManager->getRepository(Trip::class)->find($id);
         if ($trip != null) {
             return $this->json($trip->getLogBookEntries(), 200, [], ['groups' => 'logBookEntry:item']);
+        } else {
+            return $this->json([
+                'message' => 'Trip ' . $id . ' not found',
+            ], 404);
+        }
+    }
+
+    #[Route('/api/trips/{id}/pictures', name: 'pictures_by_trip', methods: 'GET')]
+    public function pictures(EntityManagerInterface $entityManager, int $id): Response
+    {
+        /** @var Trip $trip */
+        $trip = $entityManager->getRepository(Trip::class)->find($id);
+        if ($trip != null) {
+            return $this->json($trip->getPictures(), 200, [], ['groups' => 'picture:item']);
         } else {
             return $this->json([
                 'message' => 'Trip ' . $id . ' not found',
@@ -293,6 +321,73 @@ class TripController extends AbstractController
                 'status' => 400,
                 'message' => $e->getMessage()
             ], 400);
+        }
+    }
+
+    #[Route('/api/trips/{id}/generateLink', name: 'trip_generate_link', methods: 'PUT')]
+    public function generateLink(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer, int $id): Response
+    {
+        /** @var Trip $trip */
+        $trip = $entityManager->getRepository(Trip::class)->find($id);
+
+        if ($trip == null) {
+            return $this->json([
+                'status' => 400,
+                'message' => 'Trip not found',
+            ], 400);
+        } else {
+            $trip->generateLink();
+            $entityManager->persist($trip);
+            $entityManager->flush();
+            return $this->json([
+                'status' => 200,
+                'message' => 'Link ' . $trip->getLink() . ' generated',
+            ], 200);
+        }
+    }
+
+    #[Route('/api/trips/{id}/removeLink', name: 'trip_remove_link', methods: 'PUT')]
+    public function removeLink(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer, int $id): Response
+    {
+        /** @var Trip $trip */
+        $trip = $entityManager->getRepository(Trip::class)->find($id);
+
+        if ($trip == null) {
+            return $this->json([
+                'status' => 400,
+                'message' => 'Trip not found',
+            ], 400);
+        } else {
+            $trip->setLink(null);
+            $entityManager->persist($trip);
+            $entityManager->flush();
+            return $this->json([
+                'status' => 200,
+                'message' => 'Link removed',
+            ], 200);
+        }
+    }
+
+    #[Route('/api/trips/{id}/checkLink/{link}', name: 'trip_check_link', methods: 'GET')]
+    public function checkLink(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer, int $id, string $link): Response
+    {
+        /** @var Trip $trip */
+        $trip = $entityManager->getRepository(Trip::class)->find($id);
+
+        if ($trip == null) {
+            return $this->json([
+                'status' => 400,
+                'message' => 'Trip not found',
+            ], 400);
+        } else {
+            if ($trip->getLink() == $link) {
+                return $this->json($trip, 200, [], ['groups' => 'trip:item']);
+            } else {
+                return $this->json([
+                    'status' => 401,
+                    'message' => 'Wrong link',
+                ], 401);
+            }
         }
     }
 }
