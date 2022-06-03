@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\StepRepository;
 use DateTimeImmutable;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -30,6 +31,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
                                         'latitude' => ['type' => 'float'],
                                         'longitude' => ['type' => 'float'],
                                         'name' => ['type' => 'string'],
+                                        'date' => ['type' => 'string'],
                                         'type' => ['type' => 'string'],
                                         'title' => ['type' => 'string'],
                                         'description' => ['type' => 'string'],
@@ -41,6 +43,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
                                 'latitude' => 48.123,
                                 'longitude' => 7.123,
                                 'name' => "Nom du lieu",
+                                'date' => '01-01-2000',
                                 'type' => "Type du lieu",
                                 'title' => "Title",
                                 'description' => "Brief Step description",
@@ -79,6 +82,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
                                         'latitude' => ['type' => 'float'],
                                         'longitude' => ['type' => 'float'],
                                         'name' => ['type' => 'string'],
+                                        'date' => ['type' => 'string'],
                                         'type' => ['type' => 'string'],
                                         'title' => ['type' => 'string'],
                                         'description' => ['type' => 'string'],
@@ -88,6 +92,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
                                 'latitude' => 48.123,
                                 'longitude' => 7.123,
                                 'name' => "Nom du lieu",
+                                'date' => '01-01-2000',
                                 'type' => "Type du lieu",
                                 'title' => "Titre de l'étape",
                                 'description' => "Brief Step description",
@@ -137,6 +142,9 @@ class Step extends MapElement
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     #[Groups(['step:list', 'step:item', 'trip:list', 'trip:item'])]
     private ?string $title;
+
+    #[ORM\Column(type: 'date', nullable: true)]
+    private $date;
 
     public function getLocation(): ?Location
     {
@@ -301,9 +309,21 @@ class Step extends MapElement
         return $this;
     }
 
-    public function setCreationDate(\DateTimeImmutable $creationDate): self
+    public function setCreationDate(DateTimeImmutable $creationDate): self
     {
         $this->creationDate = $creationDate;
+
+        return $this;
+    }
+
+    public function getDate(): ?DateTimeInterface
+    {
+        return $this->date;
+    }
+
+    public function setDate(?DateTimeInterface $date): self
+    {
+        $this->date = $date;
 
         return $this;
     }

@@ -10,6 +10,8 @@ class StepInput
 
     private ?string $name = null;
 
+    private ?string $date = null;
+
     private ?string $type = null;
 
     private ?string $title = null;
@@ -66,6 +68,22 @@ class StepInput
     public function setName(?string $name): void
     {
         $this->name = $name;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getDate(): ?string
+    {
+        return $this->date;
+    }
+
+    /**
+     * @param string|null $date
+     */
+    public function setDate(?string $date): void
+    {
+        $this->date = $date;
     }
 
     /**
