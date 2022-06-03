@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Dto\TripDto\TripInput;
 use App\Dto\TripDto\UserInput;
 use App\Entity\Trip;
 use App\Entity\TripUser;
@@ -156,7 +157,21 @@ class TripController extends AbstractController
     {
         try {
             $data = $request->getContent();
-            $trip = $serializer->deserialize($data, Trip::class, 'json');
+            /** @var TripInput $tripInput */
+            $tripInput = $serializer->deserialize($data, TripInput::class, 'json');
+            $trip = new Trip();
+            if ($tripInput->getName() != null) {
+                $trip->setName($tripInput->getName());
+            }
+            if ($tripInput->getCreator() != null) {
+                $creator = $entityManager->getRepository(User::class)->find($tripInput->getCreator());
+                if ($creator != null) {
+                    $tripUser = new TripUser();
+                    $trip->addTripUser($tripUser);
+                    $creator->addTripUser($tripUser);
+                    $entityManager->persist($tripUser);
+                }
+            }
             $entityManager->persist($trip);
             $entityManager->flush();
 

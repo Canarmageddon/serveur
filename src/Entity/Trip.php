@@ -29,10 +29,12 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
                                 'properties' =>
                                     [
                                         'name' => ['type' => 'string'],
+                                        'creator' => ['type' => 'int']
                                     ],
                             ],
                             'example' => [
                                 'name' => "Vacances au soleil",
+                                'creator' => 1,
                             ],
                         ],
                     ],
@@ -261,6 +263,7 @@ class Trip
 
     #[Pure] public function __construct()
     {
+        $this->album = new Album();
         $this->costs = new ArrayCollection();
         $this->toDoLists = new ArrayCollection();
         $this->pointsOfInterest = new ArrayCollection();
