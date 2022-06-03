@@ -29,10 +29,12 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
                                 'properties' =>
                                     [
                                         'name' => ['type' => 'string'],
+                                        'creator' => ['type' => 'int']
                                     ],
                             ],
                             'example' => [
                                 'name' => "Vacances au soleil",
+                                'creator' => 1,
                             ],
                         ],
                     ],
@@ -42,6 +44,10 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
     ],
     itemOperations: [
         'get' => ['normalization_context' => ['groups' => 'trip:item', "enable_max_depth" => true]],
+        'album' => [
+            'method' => 'GET',
+            'route_name' => 'album_by_trip',
+        ],
         'costs' => [
             'method' => 'GET',
             'route_name' => 'costs_by_trip',
@@ -49,6 +55,10 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
         'log_book_entries' => [
             'method' => 'GET',
             'route_name' => 'log_book_entries_by_trip',
+        ],
+        'pictures' => [
+            'method' => 'GET',
+            'route_name' => 'pictures_by_trip',
         ],
         'poi' => [
             'method' => 'GET',
@@ -142,6 +152,58 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
                 ],
             ],
         ],
+        'generateLink' => [
+            'method' => 'PUT',
+            'route_name' => 'trip_generate_link',
+            'openapi_context' => [
+                'summary'     => 'Generate a link to see the trip without having an account',
+                'description' => "",
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema'  => [
+                                'type' => 'object',
+                            ],
+                            'example' => [
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
+        'removeLink' => [
+            'method' => 'PUT',
+            'route_name' => 'trip_remove_link',
+            'openapi_context' => [
+                'summary'     => 'Remove the link',
+                'description' => "",
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema'  => [
+                            ],
+                            'example' => [
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
+        'checkLink' => [
+            'method' => 'GET',
+            'route_name' => 'trip_check_link',
+            'openapi_context' => [
+                'parameters' => [
+                    [
+                        'name' => 'link',
+                        'in' => 'path',
+                        'description' => 'link',
+                        'required' => true,
+                        'type' => 'string',
+                    ]
+                ]
+            ]
+        ],
         'delete'
     ],
     attributes: ["pagination_items_per_page" => 10] 
@@ -196,8 +258,12 @@ class Trip
     #[ORM\OneToMany(mappedBy: 'trip', targetEntity: LogBookEntry::class, orphanRemoval: true)]
     private Collection $logBookEntries;
 
+    #[ORM\Column(type: 'string', length: 30, nullable: true)]
+    private ?string $link = null;
+
     #[Pure] public function __construct()
     {
+        $this->album = new Album();
         $this->costs = new ArrayCollection();
         $this->toDoLists = new ArrayCollection();
         $this->pointsOfInterest = new ArrayCollection();
@@ -494,5 +560,23 @@ class Trip
         }
 
         return $this;
+    }
+
+    public function getLink(): ?string
+    {
+        return $this->link;
+    }
+
+    public function setLink(?string $link): self
+    {
+        $this->link = $link;
+
+        return $this;
+    }
+
+    public function generateLink(): void
+    {
+        $length = 12;
+        $this->setLink(substr(str_shuffle(str_repeat($x='0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil($length/strlen($x)) )),1,$length));
     }
 }
