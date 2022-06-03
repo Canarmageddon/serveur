@@ -271,12 +271,12 @@ class TripController extends AbstractController
                     $entityManager->remove($tripUser);
                     $entityManager->flush();
                     return $this->json([
-                        'message' => 'User ' . $emailUser . ' removed from ' . $id . ' Trip',
+                        'message' => 'User ' . $emailUser . ' removed from Trip ' . $id,
                     ], 202);
 
                 } else {
                     return $this->json([
-                        'message' => 'User ' . $emailUser . ' already member of ' . $id . ' Trip',
+                        'message' => 'User ' . $emailUser . ' already not member of Trip ' . $id,
                     ]);
                 }
 

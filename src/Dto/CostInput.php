@@ -6,8 +6,6 @@ class CostInput
 {
     private ?int $creator = null;
 
-    private ?string $beneficiaries = null;
-
     private ?int $trip = null;
 
     private ?string $label = null;
@@ -46,22 +44,6 @@ class CostInput
     public function setCategory(?string $category): void
     {
         $this->category = $category;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getBeneficiaries(): ?string
-    {
-        return $this->beneficiaries;
-    }
-
-    /**
-     * @param string|null $beneficiaries
-     */
-    public function setBeneficiaries(?string $beneficiaries): void
-    {
-        $this->beneficiaries = $beneficiaries;
     }
 
     /**
