@@ -61,7 +61,7 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
         ],
     ],
     itemOperations: [
-        'get' => ['normalization_context' => ['groups' => 'user:item']],
+        'get' => ['normalization_context' => ['groups' => 'user:item:read']],
         'trips' => [
             'method' => 'GET',
             'route_name' => 'trips_by_user',
@@ -79,7 +79,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
-    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item'])]
+    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'user:item:read'])]
     private ?string $email;
 
     #[ORM\Column(type: 'json')]
@@ -94,11 +94,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $plainPassword;
 
     #[ORM\Column(type: 'string', length: 50)]
-    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'picture:read', 'cost:list', 'cost:item'])]
+    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'picture:read', 'cost:list', 'cost:item', 'user:item:read'])]
     private ?string $firstName;
 
     #[ORM\Column(type: 'string', length: 50)]
-    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'picture:read', 'cost:list', 'cost:item'])]
+    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'picture:read', 'cost:list', 'cost:item', 'user:item:read'])]
     private ?string $lastName;
 
     #[ORM\Column(type: 'datetime_immutable')]
