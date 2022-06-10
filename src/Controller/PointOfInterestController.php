@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Dto\PointOfInterestInput;
 use App\Entity\Location;
 use App\Entity\PointOfInterest;
+use App\Entity\Step;
 use App\Entity\Trip;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
@@ -113,6 +114,24 @@ class PointOfInterestController extends AbstractController
             }
             if ($pointOfInterestInput->getDescription() != null) {
                 $poi->setDescription($pointOfInterestInput->getDescription());
+            }
+
+            if ($pointOfInterestInput->getStep() != null) {
+                /** @var Step $step */
+                $step = $entityManager->getRepository(Step::class)->find($pointOfInterestInput->getStep());
+                if ($step != null) {
+                    if (!$step->getPointsOfInterest()->contains($poi)) {
+                        if ($step->getTrip() === $poi->getTrip()) {
+                            $step->addPointsOfInterest($poi);
+                        } else {
+                            return $this->json([
+                                'status' => 400,
+                                'message' => "Step and POI are not from the same Trip",
+                            ], 400);
+                        }
+                    }
+                    $entityManager->persist($step);
+                }
             }
 
             $entityManager->persist($poi);

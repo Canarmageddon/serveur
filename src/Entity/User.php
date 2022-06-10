@@ -33,12 +33,19 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
             ]
         ],
         'post' => ['denormalization_context' => ['groups' => 'user:write']],
-        'checkCredentials' => [
-            'method' => 'POST',
-            'route_name' => 'check_credentials',
+    ],
+    itemOperations: [
+        'get' => ['normalization_context' => ['groups' => 'user:item:read']],
+        'trips' => [
+            'method' => 'GET',
+            'route_name' => 'trips_by_user',
+        ],
+        'edit' => [
+            'method' => 'PUT',
+            'route_name' => 'user_edit',
             'openapi_context' => [
-                'summary'     => 'Check the credentials email and password',
-                'description' => "If the credentials fit, returns the User",
+                'summary'     => 'Edit a User',
+                'description' => "Edit a User",
                 'requestBody' => [
                     'content' => [
                         'application/json' => [
@@ -46,25 +53,18 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
                                 'type' => 'object',
                                 'properties' =>
                                     [
-                                        'email' => ['type' => 'string'],
-                                        'password' => ['type' => 'string']
+                                        'firstName' => ['type' => 'string'],
+                                        'lastName' => ['type' => 'string'],
                                     ],
                             ],
                             'example' => [
-                                'email' => "root@root.fr",
-                                'password' => "mdp"
+                                'firstName' => "Prénom",
+                                'lastName' => "Nom",
                             ],
                         ],
                     ],
                 ],
             ],
-        ],
-    ],
-    itemOperations: [
-        'get' => ['normalization_context' => ['groups' => 'user:item:read']],
-        'trips' => [
-            'method' => 'GET',
-            'route_name' => 'trips_by_user',
         ],
         'delete',
     ],

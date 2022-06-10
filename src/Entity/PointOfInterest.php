@@ -78,6 +78,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
                                         'type' => ['type' => 'string'],
                                         'title' => ['type' => 'string'],
                                         'description' => ['type' => 'string'],
+                                        'step' => ['type' => 'int'],
                                     ],
                             ],
                             'example' => [
@@ -87,6 +88,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
                                 'type' => "Type du lieu",
                                 'title' => "Titre du POI",
                                 'description' => "Brief POI description",
+                                'step' => 1,
                             ],
                         ],
                     ],
