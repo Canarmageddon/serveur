@@ -20,6 +20,8 @@ class PointOfInterestInput {
 
     private ?int $trip = null;
 
+    private ?int $step = null;
+
     public function getLatitude(): ?float
     {
         return $this->latitude;
@@ -120,6 +122,18 @@ class PointOfInterestInput {
     public function setTrip(?int $trip): self
     {
         $this->trip = $trip;
+
+        return $this;
+    }
+
+    public function getStep(): ?int
+    {
+        return $this->step;
+    }
+
+    public function setStep(?int $step): self
+    {
+        $this->step = $step;
 
         return $this;
     }

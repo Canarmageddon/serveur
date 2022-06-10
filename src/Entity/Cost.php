@@ -5,6 +5,8 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\CostRepository;
 use DateTimeImmutable;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -28,7 +30,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
                                         'label' => ['type' => 'string'],
                                         'value' => ['type' => 'float'],
                                         'category' => ['type' => 'string'],
-                                        'beneficiaries' => ['type' => 'string'],
                                         'creator' => ['type' => 'int'],
                                         'trip' => ['type' => 'int'],
                                     ],
@@ -37,7 +38,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
                                 'label' => "Motif du coût",
                                 'value' => 13.37,
                                 'category' => "Hygiène",
-                                'beneficiaries' => "Adresses mails des Users concernés (sera changé bientôt)",
                                 'creator' => 1,
                                 'trip' => 1,
                             ],
@@ -64,15 +64,61 @@ use Symfony\Component\Serializer\Annotation\Groups;
                                     [
                                         'label' => ['type' => 'string'],
                                         'value' => ['type' => 'float'],
-                                        'beneficiaries' => ['type' => 'string'],
                                         'category' => ['type' => 'string']
                                     ],
                             ],
                             'example' => [
                                 'label' => "Motif du coût",
                                 'value' => 13.37,
-                                'beneficiaries' => "Adresses mails des Users concernés (sera changé bientôt)",
                                 'category' => "Hygiène"
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
+        'addBeneficiary' => [
+            'method' => 'PUT',
+            'route_name' => 'cost_add_beneficiary',
+            'openapi_context' => [
+                'summary'     => 'Add a Beneficiary to a Cost',
+                'description' => "",
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema'  => [
+                                'type' => 'object',
+                                'properties' =>
+                                    [
+                                        'email' => ['type' => 'string'],
+                                    ],
+                            ],
+                            'example' => [
+                                'email' => "root@root.fr",
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
+        'removeBeneficiary' => [
+            'method' => 'PUT',
+            'route_name' => 'cost_remove_beneficiary',
+            'openapi_context' => [
+                'summary'     => 'Remove a Beneficiary from a Cost',
+                'description' => "",
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema'  => [
+                                'type' => 'object',
+                                'properties' =>
+                                    [
+                                        'email' => ['type' => 'string'],
+                                    ],
+                            ],
+                            'example' => [
+                                'email' => "root@root.fr",
                             ],
                         ],
                     ],
@@ -103,10 +149,6 @@ class Cost
     #[Groups(['cost:list', 'cost:item', 'trip:item'])]
     private ?string $category;
 
-    #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(['cost:list', 'cost:item', 'trip:item'])]
-    private ?string $beneficiaries;
-
     #[ORM\ManyToOne(targetEntity: Trip::class, cascade: ['persist'], inversedBy: 'costs')]
     #[Groups(['cost:list', 'cost:item'])]
     private ?Trip $trip;
@@ -118,6 +160,9 @@ class Cost
     #[ORM\Column(type: 'float')]
     #[Groups(['cost:list', 'cost:item', 'trip:item'])]
     private ?float $value;
+
+    #[ORM\OneToMany(mappedBy: 'cost', targetEntity: CostUser::class, orphanRemoval: true)]
+    private Collection $costUsers;
 
     public function getId(): ?int
     {
@@ -153,18 +198,6 @@ class Cost
         return $this;
     }
 
-    public function getBeneficiaries(): ?string
-    {
-        return $this->beneficiaries;
-    }
-
-    public function setBeneficiaries(string $beneficiaries): self
-    {
-        $this->beneficiaries = $beneficiaries;
-
-        return $this;
-    }
-
     public function getTrip(): ?Trip
     {
         return $this->trip;
@@ -179,6 +212,7 @@ class Cost
 
     public function __construct(){
         $this->creationDate = new DateTimeImmutable('now');
+        $this->costUsers = new ArrayCollection();
     }
 
     public function getLabel(): ?string
@@ -210,5 +244,44 @@ class Cost
         $this->creationDate = $creationDate;
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, CostUser>
+     */
+    public function getCostUsers(): Collection
+    {
+        return $this->costUsers;
+    }
+
+    public function addCostUser(CostUser $costUser): self
+    {
+        if (!$this->costUsers->contains($costUser)) {
+            $this->costUsers[] = $costUser;
+            $costUser->setCost($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCostUser(CostUser $costUser): self
+    {
+        if ($this->costUsers->removeElement($costUser)) {
+            // set the owning side to null (unless already changed)
+            if ($costUser->getCost() === $this) {
+                $costUser->setCost(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getBeneficiaries(): array
+    {
+        $beneficiaries = [];
+        foreach($this->getCostUsers() as $costUser) {
+            $beneficiaries[] = $costUser->getUser();
+        }
+        return $beneficiaries;
     }
 }

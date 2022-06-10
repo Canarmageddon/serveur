@@ -33,12 +33,19 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
             ]
         ],
         'post' => ['denormalization_context' => ['groups' => 'user:write']],
-        'checkCredentials' => [
-            'method' => 'POST',
-            'route_name' => 'check_credentials',
+    ],
+    itemOperations: [
+        'get' => ['normalization_context' => ['groups' => 'user:item:read']],
+        'trips' => [
+            'method' => 'GET',
+            'route_name' => 'trips_by_user',
+        ],
+        'edit' => [
+            'method' => 'PUT',
+            'route_name' => 'user_edit',
             'openapi_context' => [
-                'summary'     => 'Check the credentials email and password',
-                'description' => "If the credentials fit, returns the User",
+                'summary'     => 'Edit a User',
+                'description' => "Edit a User",
                 'requestBody' => [
                     'content' => [
                         'application/json' => [
@@ -46,25 +53,18 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
                                 'type' => 'object',
                                 'properties' =>
                                     [
-                                        'email' => ['type' => 'string'],
-                                        'password' => ['type' => 'string']
+                                        'firstName' => ['type' => 'string'],
+                                        'lastName' => ['type' => 'string'],
                                     ],
                             ],
                             'example' => [
-                                'email' => "root@root.fr",
-                                'password' => "mdp"
+                                'firstName' => "Prénom",
+                                'lastName' => "Nom",
                             ],
                         ],
                     ],
                 ],
             ],
-        ],
-    ],
-    itemOperations: [
-        'get' => ['normalization_context' => ['groups' => 'user:item:read']],
-        'trips' => [
-            'method' => 'GET',
-            'route_name' => 'trips_by_user',
         ],
         'delete',
     ],
@@ -135,6 +135,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToMany(mappedBy: 'creator', targetEntity: LogBookEntry::class, orphanRemoval: true)]
     private Collection $logBookEntries;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: CostUser::class, orphanRemoval: true)]
+    private Collection $costUsers;
 
     public function getId(): ?int
     {
@@ -262,6 +265,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->tripUsers = new ArrayCollection();
         $this->logBookEntries = new ArrayCollection();
         $this->documents = new ArrayCollection();
+        $this->costUsers = new ArrayCollection();
     }
 
     /**
@@ -523,5 +527,46 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, CostUser>
+     */
+    public function getCostUsers(): Collection
+    {
+        return $this->costUsers;
+    }
+
+    public function addCostUser(CostUser $costUser): self
+    {
+        if (!$this->costUsers->contains($costUser)) {
+            $this->costUsers[] = $costUser;
+            $costUser->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCostUser(CostUser $costUser): self
+    {
+        if ($this->costUsers->removeElement($costUser)) {
+            // set the owning side to null (unless already changed)
+            if ($costUser->getUser() === $this) {
+                $costUser->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function isMemberOf(int $id): bool
+    {
+        foreach($this->getTrips() as $trip) {
+            if ($trip->getId() == $id) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

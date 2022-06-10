@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Dto\CredentialsInput;
+use App\Dto\TripDto\UserInput;
+use App\Dto\UserEditInput;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -43,35 +45,35 @@ class UserController extends AbstractController
         }
     }
 
-    #[Route('/api/users/checkCredentials', name: 'check_credentials', methods: 'POST')]
-    public function checkCredentials(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer, UserPasswordHasherInterface $passwordEncoder): Response
+    #[Route('/api/users/{id}/edit', name: 'user_edit', methods: 'PUT')]
+    public function edit(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer, int $id): Response
     {
         try {
             $data = $request->getContent();
-            /** @var CredentialsInput $credentialsInput */
-            $credentialsInput = $serializer->deserialize($data, CredentialsInput::class, 'json');
-            $email = $credentialsInput->getEmail();
-            if ($email != null) {
-                $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
-                if ($user != null) {
-                    $userExists = $passwordEncoder->isPasswordValid($user, $credentialsInput->getPassword());
-                    if ($userExists) {
-                        return $this->json($user, 200, [], ['groups' => 'user:item']);
-                    } else {
-                        return $this->json([
-                            'message' => 'Email or password is wrong !',
-                        ], 401);
-                    }
-                } else {
-                    return $this->json([
-                        'message' => 'User ' . $email . ' not found',
-                    ], 404);
-                }
-            } else {
+            /** @var UserEditInput $userInput */
+            $userInput = $serializer->deserialize($data, UserEditInput::class, 'json');
+
+            /** @var User $user */
+            $user = $entityManager->getRepository(User::class)->find($id);
+            if ($user == null) {
                 return $this->json([
-                    'message' => 'No email given !',
+                    'status' => 400,
+                    'message' => "User " . $id . " not found"
                 ], 400);
             }
+
+            if ($userInput->getFirstName() != null) {
+                $user->setFirstName($userInput->getFirstName());
+            }
+
+            if ($userInput->getLastName() != null) {
+                $user->setLastName($userInput->getLastName());
+            }
+
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            return $this->json($user, 201, [], ['groups' => 'user:item']);
         }
         catch (NotEncodableValueException $e)
         {
