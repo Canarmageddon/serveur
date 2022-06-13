@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Dto\LogBookEntryInput;
+use App\Entity\Album;
 use App\Entity\LogBookEntry;
 use App\Entity\Trip;
 use App\Entity\User;
@@ -28,11 +29,17 @@ class LogBookEntryController extends AbstractController
 
             /** @var User $creator */
             $creator = $entityManager->getRepository(User::class)->find($logBookEntryInput->getCreator());
-            $creator?->addLogBookEntry($logBookEntry);
+            $creator?->addAlbumElement($logBookEntry);
 
             /** @var Trip $trip */
             $trip = $entityManager->getRepository(Trip::class)->find($logBookEntryInput->getTrip());
-            $trip?->addLogBookEntry($logBookEntry);
+            $trip?->addAlbumElement($logBookEntry);
+
+            /** @var Album $album */
+            if ($logBookEntryInput->getAlbum()) {
+                $album = $entityManager->getRepository(Album::class)->find($logBookEntryInput->getAlbum());
+                $album?->addAlbumElement($logBookEntry);
+            }
 
             $entityManager->persist($logBookEntry);
             $entityManager->flush();

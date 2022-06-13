@@ -10,6 +10,8 @@ class LogBookEntryInput
 
     private ?int $creator = null;
 
+    private ?int $album = null;
+
     /**
      * @return string|null
      */
@@ -58,5 +60,19 @@ class LogBookEntryInput
         $this->creator = $creator;
     }
 
+    /**
+     * @return int|null
+     */
+    public function getAlbum(): ?int
+    {
+        return $this->album;
+    }
 
+    /**
+     * @param int|null $album
+     */
+    public function setAlbum(?int $album): void
+    {
+        $this->album = $album;
+    }
 }

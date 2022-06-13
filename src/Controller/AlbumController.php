@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Dto\AlbumInput;
 use App\Entity\Album;
+use App\Entity\LogBookEntry;
+use App\Entity\Picture;
 use App\Entity\Trip;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,13 +19,43 @@ use Symfony\Component\Serializer\SerializerInterface;
 #[AsController]
 class AlbumController extends AbstractController
 {
+    #[Route('/api/albums/{id}/albumElements', name: 'album_elements_by_album', methods: 'GET')]
+    public function albumElements(EntityManagerInterface $entityManager, int $id): Response
+    {
+        /** @var Album $album */
+        $album = $entityManager->getRepository(Album::class)->find($id);
+        if ($album != null) {
+            return $this->json($album->getAlbumElements(), 200, [], ['groups' => 'albumElement:item']);
+        } else {
+            return $this->json([
+                'message' => 'Album ' . $id . ' not found',
+            ], 404);
+        }
+    }
+
     #[Route('/api/albums/{id}/pictures', name: 'pictures_by_album', methods: 'GET')]
     public function pictures(EntityManagerInterface $entityManager, int $id): Response
     {
         /** @var Album $album */
         $album = $entityManager->getRepository(Album::class)->find($id);
         if ($album != null) {
-            return $this->json($album->getPictures(), 200, [], ['groups' => 'picture:item']);
+            $pictures = $entityManager->getRepository(Picture::class)->findBy(['album' => $album->getId()]);
+            return $this->json($pictures, 200, [], ['groups' => 'picture:item']);
+        } else {
+            return $this->json([
+                'message' => 'Album ' . $id . ' not found',
+            ], 404);
+        }
+    }
+
+    #[Route('/api/albums/{id}/logBookEntries', name: 'log_book_entries_by_album', methods: 'GET')]
+    public function logBookEntries(EntityManagerInterface $entityManager, int $id): Response
+    {
+        /** @var Album $album */
+        $album = $entityManager->getRepository(Album::class)->find($id);
+        if ($album != null) {
+            $logBookEntries = $entityManager->getRepository(LogBookEntry::class)->findBy(['album' => $album->getId()]);
+            return $this->json($logBookEntries, 200, [], ['groups' => 'logBookEntry:item']);
         } else {
             return $this->json([
                 'message' => 'Album ' . $id . ' not found',

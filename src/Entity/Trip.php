@@ -48,6 +48,10 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
             'method' => 'GET',
             'route_name' => 'album_by_trip',
         ],
+        'albumElements' => [
+            'method' => 'GET',
+            'route_name' => 'album_elements_by_trip',
+        ],
         'costs' => [
             'method' => 'GET',
             'route_name' => 'costs_by_trip',
@@ -233,11 +237,6 @@ class Trip
     #[Groups(['trip:list', 'trip:item'])]
     private Collection $toDoLists;
 
-    #[ORM\OneToMany(mappedBy: 'trip', targetEntity: Picture::class, cascade: ['persist', 'remove'])]
-    #[Groups(['trip:list', 'trip:item'])]
-    #[MaxDepth(1)]
-    private Collection $pictures;
-
     #[ORM\OneToMany(mappedBy: 'trip', targetEntity: PointOfInterest::class, cascade: ['persist', 'remove'])]
     #[Groups(['trip:list', 'trip:item'])]
     #[MaxDepth(2)]
@@ -255,8 +254,10 @@ class Trip
     #[ORM\OneToMany(mappedBy: 'trip', targetEntity: TripUser::class, orphanRemoval: true)]
     private Collection $tripUsers;
 
-    #[ORM\OneToMany(mappedBy: 'trip', targetEntity: LogBookEntry::class, orphanRemoval: true)]
-    private Collection $logBookEntries;
+    #[ORM\OneToMany(mappedBy: 'trip', targetEntity: AlbumElement::class, orphanRemoval: true)]
+    #[Groups(['trip:list', 'trip:item'])]
+    #[MaxDepth(1)]
+    private Collection $albumElements;
 
     #[ORM\Column(type: 'string', length: 30, nullable: true)]
     private ?string $link = null;
@@ -270,8 +271,7 @@ class Trip
         $this->steps = new ArrayCollection();
         $this->travels = new ArrayCollection();
         $this->tripUsers = new ArrayCollection();
-        $this->logBookEntries = new ArrayCollection();
-        $this->pictures = new ArrayCollection();
+        $this->albumElements = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -349,14 +349,6 @@ class Trip
     public function getToDoLists(): Collection
     {
         return $this->toDoLists;
-    }
-
-    /**
-     * @return Collection<int, Picture>
-     */
-    public function getPictures(): Collection
-    {
-        return $this->pictures;
     }
 
     public function addToDoList(ToDoList $toDoList): self
@@ -511,51 +503,29 @@ class Trip
     }
 
     /**
-     * @return Collection<int, LogBookEntry>
+     * @return Collection<int, AlbumElement>
      */
-    public function getLogBookEntries(): Collection
+    public function getAlbumElements(): Collection
     {
-        return $this->logBookEntries;
+        return $this->albumElements;
     }
 
-    public function addLogBookEntry(LogBookEntry $logBookEntry): self
+    public function addAlbumElement(AlbumElement $albumElement): self
     {
-        if (!$this->logBookEntries->contains($logBookEntry)) {
-            $this->logBookEntries[] = $logBookEntry;
-            $logBookEntry->setTrip($this);
+        if (!$this->albumElements->contains($albumElement)) {
+            $this->albumElements[] = $albumElement;
+            $albumElement->setTrip($this);
         }
 
         return $this;
     }
 
-    public function removeLogBookEntry(LogBookEntry $logBookEntry): self
+    public function removeAlbumElement(AlbumElement $albumElement): self
     {
-        if ($this->logBookEntries->removeElement($logBookEntry)) {
+        if ($this->albumElements->removeElement($albumElement)) {
             // set the owning side to null (unless already changed)
-            if ($logBookEntry->getTrip() === $this) {
-                $logBookEntry->setTrip(null);
-            }
-        }
-
-        return $this;
-    }
-
-    public function addPicture(Picture $picture): self
-    {
-        if (!$this->pictures->contains($picture)) {
-            $this->pictures[] = $picture;
-            $picture->setTrip($this);
-        }
-
-        return $this;
-    }
-
-    public function removePicture(Picture $picture): self
-    {
-        if ($this->pictures->removeElement($picture)) {
-            // set the owning side to null (unless already changed)
-            if ($picture->getTrip() === $this) {
-                $picture->setTrip(null);
+            if ($albumElement->getTrip() === $this) {
+                $albumElement->setTrip(null);
             }
         }
 

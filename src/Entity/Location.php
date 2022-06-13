@@ -56,6 +56,14 @@ use Symfony\Component\Serializer\Annotation\Groups;
             'method' => 'GET',
             'route_name' => 'steps_by_location',
         ],
+        'albumElements' => [
+            'method' => 'GET',
+            'route_name' => 'album_elements_by_location',
+        ],
+        'logBookEntries' => [
+            'method' => 'GET',
+            'route_name' => 'log_book_entries_by_location',
+        ],
         'pictures' => [
             'method' => 'GET',
             'route_name' => 'pictures_by_location',
@@ -126,15 +134,15 @@ class Location
     #[Groups(['location:list', 'location:item'])]
     private Collection $steps;
 
-    #[ORM\OneToMany(mappedBy: 'location', targetEntity: Picture::class)]
+    #[ORM\OneToMany(mappedBy: 'location', targetEntity: AlbumElement::class)]
     #[Groups(['location:list', 'location:item', 'trip:list', 'trip:item'])]
-    private Collection $pictures;
+    private Collection $albumElements;
 
     #[Pure] public function __construct()
     {
         $this->pointOfInterests = new ArrayCollection();
         $this->steps = new ArrayCollection();
-        $this->pictures = new ArrayCollection();
+        $this->albumElements = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -251,29 +259,29 @@ class Location
     }
 
     /**
-     * @return Collection<int, Picture>
+     * @return Collection<int, AlbumElement>
      */
-    public function getPictures(): Collection
+    public function getAlbumElements(): Collection
     {
-        return $this->pictures;
+        return $this->albumElements;
     }
 
-    public function addPicture(Picture $picture): self
+    public function addAlbumElement(AlbumElement $albumElement): self
     {
-        if (!$this->pictures->contains($picture)) {
-            $this->pictures[] = $picture;
-            $picture->setLocation($this);
+        if (!$this->albumElements->contains($albumElement)) {
+            $this->albumElements[] = $albumElement;
+            $albumElement->setLocation($this);
         }
 
         return $this;
     }
 
-    public function removePicture(Picture $picture): self
+    public function removeAlbumElement(AlbumElement $albumElement): self
     {
-        if ($this->pictures->removeElement($picture)) {
+        if ($this->albumElements->removeElement($albumElement)) {
             // set the owning side to null (unless already changed)
-            if ($picture->getLocation() === $this) {
-                $picture->setLocation(null);
+            if ($albumElement->getTrip() === $this) {
+                $albumElement->setTrip(null);
             }
         }
 

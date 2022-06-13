@@ -113,9 +113,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user:list', 'user:item'])]
     private Collection $steps;
 
-    #[ORM\OneToMany(mappedBy: 'creator', targetEntity: Picture::class)]
+    #[ORM\OneToMany(mappedBy: 'creator', targetEntity: AlbumElement::class)]
     #[Groups(['user:list', 'user:item'])]
-    private Collection $pictures;
+    private Collection $albumElements;
 
     #[ORM\OneToMany(mappedBy: 'creator', targetEntity: Document::class)]
     #[Groups(['user:list', 'user:item'])]
@@ -132,9 +132,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: TripUser::class, orphanRemoval: true)]
     #[Groups(['user:item'])]
     private Collection $tripUsers;
-
-    #[ORM\OneToMany(mappedBy: 'creator', targetEntity: LogBookEntry::class, orphanRemoval: true)]
-    private Collection $logBookEntries;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: CostUser::class, orphanRemoval: true)]
     private Collection $costUsers;
@@ -259,11 +256,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->roles = ["ROLE_USER"];
         $this->pointOfInterests = new ArrayCollection();
         $this->steps = new ArrayCollection();
-        $this->pictures = new ArrayCollection();
+        $this->albumElements = new ArrayCollection();
         $this->tasks = new ArrayCollection();
         $this->costs = new ArrayCollection();
         $this->tripUsers = new ArrayCollection();
-        $this->logBookEntries = new ArrayCollection();
         $this->documents = new ArrayCollection();
         $this->costUsers = new ArrayCollection();
     }
@@ -322,36 +318,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($step->getCreator() === $this) {
                 $step->setCreator(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Picture>
-     */
-    public function getPictures(): Collection
-    {
-        return $this->pictures;
-    }
-
-    public function addPicture(Picture $picture): self
-    {
-        if (!$this->pictures->contains($picture)) {
-            $this->pictures[] = $picture;
-            $picture->setCreator($this);
-        }
-
-        return $this;
-    }
-
-    public function removePicture(Picture $picture): self
-    {
-        if ($this->pictures->removeElement($picture)) {
-            // set the owning side to null (unless already changed)
-            if ($picture->getCreator() === $this) {
-                $picture->setCreator(null);
             }
         }
 
@@ -463,29 +429,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, LogBookEntry>
+     * @return Collection<int, AlbumElement>
      */
-    public function getLogBookEntries(): Collection
+    public function getAlbumElements(): Collection
     {
-        return $this->logBookEntries;
+        return $this->albumElements;
     }
 
-    public function addLogBookEntry(LogBookEntry $logBookEntry): self
+    public function addAlbumElement(AlbumElement $albumElement): self
     {
-        if (!$this->logBookEntries->contains($logBookEntry)) {
-            $this->logBookEntries[] = $logBookEntry;
-            $logBookEntry->setCreator($this);
+        if (!$this->albumElements->contains($albumElement)) {
+            $this->albumElements[] = $albumElement;
+            $albumElement->setCreator($this);
         }
 
         return $this;
     }
 
-    public function removeLogBookEntry(LogBookEntry $logBookEntry): self
+    public function removeAlbumElement(AlbumElement $albumElement): self
     {
-        if ($this->logBookEntries->removeElement($logBookEntry)) {
+        if ($this->albumElements->removeElement($albumElement)) {
             // set the owning side to null (unless already changed)
-            if ($logBookEntry->getCreator() === $this) {
-                $logBookEntry->setCreator(null);
+            if ($albumElement->getTrip() === $this) {
+                $albumElement->setTrip(null);
             }
         }
 
