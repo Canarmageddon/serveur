@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Cost;
+use App\Entity\CostUser;
 use App\Entity\Location;
 use App\Entity\PointOfInterest;
 use App\Entity\Step;
@@ -110,10 +111,14 @@ class AppFixtures extends Fixture
                 $cost->setLabel($costNames[$i]);
                 $cost->setValue(10 * $i + 5);
                 $cost->setCategory($costCategories[$i]);
-                $cost->setBeneficiaries($user);
                 $cost->setCreator($user);
+
+                $costUser = new CostUser();
+                $cost->addCostUser($costUser);
+                $user->addCostUser($costUser);
                 $trip->addCost($cost);
                 $manager->persist($cost);
+                $manager->persist($costUser);
             }
 
             /*********** MAP ELEMENTS ***********/

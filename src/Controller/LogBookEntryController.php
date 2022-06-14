@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Dto\LogBookEntryInput;
+use App\Entity\Album;
+use App\Entity\Location;
 use App\Entity\LogBookEntry;
 use App\Entity\Trip;
 use App\Entity\User;
@@ -28,11 +30,28 @@ class LogBookEntryController extends AbstractController
 
             /** @var User $creator */
             $creator = $entityManager->getRepository(User::class)->find($logBookEntryInput->getCreator());
-            $creator?->addLogBookEntry($logBookEntry);
+            $creator?->addAlbumElement($logBookEntry);
 
             /** @var Trip $trip */
             $trip = $entityManager->getRepository(Trip::class)->find($logBookEntryInput->getTrip());
-            $trip?->addLogBookEntry($logBookEntry);
+            $trip?->addAlbumElement($logBookEntry);
+
+            /** @var Album $album */
+            if ($logBookEntryInput->getAlbum()) {
+                $album = $entityManager->getRepository(Album::class)->find($logBookEntryInput->getAlbum());
+                $album?->addAlbumElement($logBookEntry);
+            }
+
+            /** @var Location $location */
+            if ($logBookEntryInput->getLocation()) {
+                $location = $entityManager->getRepository(Location::class)->find($logBookEntryInput->getLocation());
+                $location?->addAlbumElement($logBookEntry);
+            } else if ($logBookEntryInput->getLatitude() != null && $logBookEntryInput->getLongitude() != null) {
+                $location = new Location();
+                $location->setLatitude($logBookEntryInput->getLatitude());
+                $location->setLongitude($logBookEntryInput->getLongitude());
+                $entityManager->persist($location);
+            }
 
             $entityManager->persist($logBookEntry);
             $entityManager->flush();

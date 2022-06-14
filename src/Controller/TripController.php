@@ -4,6 +4,9 @@ namespace App\Controller;
 
 use App\Dto\TripDto\TripInput;
 use App\Dto\TripDto\UserInput;
+use App\Entity\Album;
+use App\Entity\LogBookEntry;
+use App\Entity\Picture;
 use App\Entity\Trip;
 use App\Entity\TripUser;
 use App\Entity\User;
@@ -31,6 +34,20 @@ class TripController extends AbstractController
         }
     }
 
+    #[Route('/api/trips/{id}/data', name: 'album_elements_by_trip', methods: 'GET')]
+    public function albumElements(EntityManagerInterface $entityManager, int $id): Response
+    {
+        /** @var Trip $trip */
+        $trip = $entityManager->getRepository(Trip::class)->find($id);
+        if ($trip != null) {
+            return $this->json($trip->getAlbumElements(), 200, [], ['groups' => 'albumElement:item']);
+        } else {
+            return $this->json([
+                'message' => 'Trip ' . $id . ' not found',
+            ], 404);
+        }
+    }
+
     #[Route('/api/trips/{id}/costs', name: 'costs_by_trip', methods: 'GET')]
     public function costs(EntityManagerInterface $entityManager, int $id): Response
     {
@@ -51,7 +68,8 @@ class TripController extends AbstractController
         /** @var Trip $trip */
         $trip = $entityManager->getRepository(Trip::class)->find($id);
         if ($trip != null) {
-            return $this->json($trip->getLogBookEntries(), 200, [], ['groups' => 'logBookEntry:item']);
+            $logBookEntries = $entityManager->getRepository(LogBookEntry::class)->findBy(['trip' => $trip->getId()]);
+            return $this->json($logBookEntries, 200, [], ['groups' => 'logBookEntry:item']);
         } else {
             return $this->json([
                 'message' => 'Trip ' . $id . ' not found',
@@ -65,7 +83,8 @@ class TripController extends AbstractController
         /** @var Trip $trip */
         $trip = $entityManager->getRepository(Trip::class)->find($id);
         if ($trip != null) {
-            return $this->json($trip->getPictures(), 200, [], ['groups' => 'picture:item']);
+            $pictures = $entityManager->getRepository(Picture::class)->findBy(['trip' => $trip->getId()]);
+            return $this->json($pictures, 200, [], ['groups' => 'picture:item']);
         } else {
             return $this->json([
                 'message' => 'Trip ' . $id . ' not found',
@@ -218,7 +237,7 @@ class TripController extends AbstractController
                 } else {
                     return $this->json([
                         'message' => 'User ' . $emailUser . ' already member of Trip ' . $id,
-                    ], 200);
+                    ]);
                 }
 
             } elseif ($user == null && $trip == null) {
@@ -340,7 +359,7 @@ class TripController extends AbstractController
     }
 
     #[Route('/api/trips/{id}/generateLink', name: 'trip_generate_link', methods: 'PUT')]
-    public function generateLink(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer, int $id): Response
+    public function generateLink(EntityManagerInterface $entityManager, int $id): Response
     {
         /** @var Trip $trip */
         $trip = $entityManager->getRepository(Trip::class)->find($id);
@@ -357,12 +376,12 @@ class TripController extends AbstractController
             return $this->json([
                 'status' => 200,
                 'message' => 'Link ' . $trip->getLink() . ' generated',
-            ], 200);
+            ]);
         }
     }
 
     #[Route('/api/trips/{id}/removeLink', name: 'trip_remove_link', methods: 'PUT')]
-    public function removeLink(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer, int $id): Response
+    public function removeLink(EntityManagerInterface $entityManager, int $id): Response
     {
         /** @var Trip $trip */
         $trip = $entityManager->getRepository(Trip::class)->find($id);
@@ -379,12 +398,12 @@ class TripController extends AbstractController
             return $this->json([
                 'status' => 200,
                 'message' => 'Link removed',
-            ], 200);
+            ]);
         }
     }
 
     #[Route('/api/trips/{id}/checkLink/{link}', name: 'trip_check_link', methods: 'GET')]
-    public function checkLink(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer, int $id, string $link): Response
+    public function checkLink(EntityManagerInterface $entityManager, int $id, string $link): Response
     {
         /** @var Trip $trip */
         $trip = $entityManager->getRepository(Trip::class)->find($id);

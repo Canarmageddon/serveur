@@ -42,9 +42,20 @@ use Symfony\Component\Serializer\Annotation\Groups;
     ],
     itemOperations: [
         'get' => ['normalization_context' => ['groups' => 'album:item']],
+        'data' => [
+            'method' => 'GET',
+            'route_name' => 'album_elements_by_album',
+            "order" => ["creationDate" => "ASC"]
+        ],
         'pictures' => [
             'method' => 'GET',
             'route_name' => 'pictures_by_album',
+            "order" => ["creationDate" => "ASC"]
+        ],
+        'logBookEntries' => [
+            'method' => 'GET',
+            'route_name' => 'log_book_entries_by_album',
+            "order" => ["creationDate" => "ASC"]
         ],
         'delete'
     ],
@@ -62,15 +73,9 @@ class Album
     #[Groups(['album:list', 'album:item'])]
     private ?Trip $trip;
 
-    #[ORM\OneToMany(mappedBy: 'album', targetEntity: Picture::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(mappedBy: 'album', targetEntity: AlbumElement::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     #[Groups(['album:list', 'album:item'])]
-
-    private Collection $pictures;
-
-    #[Pure] public function __construct()
-    {
-        $this->pictures = new ArrayCollection();
-    }
+    private Collection $albumElements;
 
     public function getId(): ?int
     {
@@ -90,32 +95,37 @@ class Album
     }
 
     /**
-     * @return Collection<int, Picture>
+     * @return Collection<int, AlbumElement>
      */
-    public function getPictures(): Collection
+    public function getAlbumElements(): Collection
     {
-        return $this->pictures;
+        return $this->albumElements;
     }
 
-    public function addPicture(Picture $picture): self
+    public function addAlbumElement(AlbumElement $albumElement): self
     {
-        if (!$this->pictures->contains($picture)) {
-            $this->pictures[] = $picture;
-            $picture->setAlbum($this);
+        if (!$this->albumElements->contains($albumElement)) {
+            $this->albumElements[] = $albumElement;
+            $albumElement->setAlbum($this);
         }
 
         return $this;
     }
 
-    public function removePicture(Picture $picture): self
+    public function removeAlbumElement(AlbumElement $albumElement): self
     {
-        if ($this->pictures->removeElement($picture)) {
+        if ($this->albumElements->removeElement($albumElement)) {
             // set the owning side to null (unless already changed)
-            if ($picture->getAlbum() === $this) {
-                $picture->setAlbum(null);
+            if ($albumElement->getAlbum() === $this) {
+                $albumElement->setAlbum(null);
             }
         }
 
         return $this;
+    }
+
+    #[Pure] public function __construct()
+    {
+        $this->albumElements = new ArrayCollection();
     }
 }
