@@ -34,9 +34,14 @@ abstract class MapElement
     #[Groups(['pointOfInterest:list', 'pointOfInterest:item', 'step:list', 'step:item', 'travel:list', 'travel:item', 'trip:list', 'trip:item'])]
     private Collection $documents;
 
+    #[ORM\OneToMany(mappedBy: 'mapElement', targetEntity: Task::class)]
+    #[Groups(['pointOfInterest:list', 'pointOfInterest:item', 'step:list', 'step:item', 'travel:list', 'travel:item', 'trip:list', 'trip:item'])]
+    private Collection $tasks;
+
     #[Pure] public function __construct()
     {
         $this->documents = new ArrayCollection();
+        $this->tasks = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -84,6 +89,36 @@ abstract class MapElement
             // set the owning side to null (unless already changed)
             if ($document->getMapElement() === $this) {
                 $document->setMapElement(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Task>
+     */
+    public function getTasks(): Collection
+    {
+        return $this->tasks;
+    }
+
+    public function addTask(Task $task): self
+    {
+        if (!$this->tasks->contains($task)) {
+            $this->tasks[] = $task;
+            $task->setMapElement($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTask(Task $task): self
+    {
+        if ($this->tasks->removeElement($task)) {
+            // set the owning side to null (unless already changed)
+            if ($task->getMapElement() === $this) {
+                $task->setMapElement(null);
             }
         }
 
