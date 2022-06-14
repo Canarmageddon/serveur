@@ -424,4 +424,44 @@ class TripController extends AbstractController
             }
         }
     }
+
+    #[Route('/api/trips/{id}/emptyPoi', name: 'trip_empty_poi', methods: 'PUT')]
+    public function emptyPoi(EntityManagerInterface $entityManager, int $id): Response
+    {
+        /** @var Trip $trip */
+        $trip = $entityManager->getRepository(Trip::class)->find($id);
+
+        if ($trip == null) {
+            return $this->json([
+                'status' => 400,
+                'message' => 'Trip not found',
+            ], 400);
+        } else {
+            $trip->emptyPointsOfInterest($entityManager);
+            return $this->json([
+                'status' => 200,
+                'message' => 'Points of Interest deleted',
+            ]);
+        }
+    }
+
+    #[Route('/api/trips/{id}/emptySteps', name: 'trip_empty_steps', methods: 'PUT')]
+    public function emptySteps(EntityManagerInterface $entityManager, int $id): Response
+    {
+        /** @var Trip $trip */
+        $trip = $entityManager->getRepository(Trip::class)->find($id);
+
+        if ($trip == null) {
+            return $this->json([
+                'status' => 400,
+                'message' => 'Trip not found',
+            ], 400);
+        } else {
+            $trip->emptySteps($entityManager);
+            return $this->json([
+                'status' => 200,
+                'message' => 'Steps deleted',
+            ]);
+        }
+    }
 }

@@ -6,6 +6,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\TripRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -208,6 +209,42 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
                     ]
                 ]
             ]
+        ],
+        'emptyPoi' => [
+            'method' => 'PUT',
+            'route_name' => 'trip_empty_poi',
+            'openapi_context' => [
+                'summary'     => 'Empty points of interest',
+                'description' => "",
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema'  => [
+                            ],
+                            'example' => [
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
+        'emptyStep' => [
+            'method' => 'PUT',
+            'route_name' => 'trip_empty_steps',
+            'openapi_context' => [
+                'summary'     => 'Empty steps',
+                'description' => "",
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema'  => [
+                            ],
+                            'example' => [
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ],
         'delete'
     ],
@@ -549,5 +586,32 @@ class Trip
     {
         $length = 12;
         $this->setLink(substr(str_shuffle(str_repeat($x='0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil($length/strlen($x)) )),1,$length));
+    }
+
+    public function emptyPointsOfInterest(EntityManagerInterface $em): void
+    {
+        /** @var PointOfInterest $pointOfInterest */
+        foreach ($this->getPointsOfInterest() as $pointOfInterest) {
+            $this->getPointsOfInterest()->removeElement($pointOfInterest);
+            $em->remove($pointOfInterest);
+        }
+        $em->flush();
+    }
+
+    public function emptySteps(EntityManagerInterface $em): void
+    {
+        /** @var Step $step */
+        foreach ($this->getSteps() as $step) {
+            $this->getSteps()->removeElement($step);
+            $em->remove($step);
+        }
+
+        /** @var Travel $travel */
+        foreach ($this->getTravels() as $travel) {
+            $this->getTravels()->removeElement($travel);
+            $em->remove($travel);
+        }
+
+        $em->flush();
     }
 }
