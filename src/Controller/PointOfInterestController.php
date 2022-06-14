@@ -6,8 +6,10 @@ use App\Dto\PointOfInterestInput;
 use App\Entity\Location;
 use App\Entity\PointOfInterest;
 use App\Entity\Step;
+use App\Entity\Travel;
 use App\Entity\Trip;
 use App\Entity\User;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -145,6 +147,61 @@ class PointOfInterestController extends AbstractController
                 'status' => 400,
                 'message' => $e->getMessage()
             ], 400);
+        }
+    }
+
+    #[Route('/api/point_of_interests/{id}/toStep', name: 'point_of_interest_to_step', methods: 'PUT')]
+    public function toStep(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer, int $id): Response
+    {
+        /** @var PointOfInterest $poi */
+        $poi = $entityManager->getRepository(PointOfInterest::class)->find($id);
+        if ($poi == null) {
+            return $this->json([
+                'status' => 400,
+                'message' => "Point of Interest " . $id . " not found"
+            ], 400);
+        }
+
+        $step = new Step();
+
+        $location = $poi->getLocation();
+        $location->addStep($step);
+        $entityManager->persist($location);
+
+        $step->setDescription($poi->getDescription());
+        $step->setTitle($poi->getTitle());
+
+        /** @var User $creator */
+        $creator = $entityManager->getRepository(User::class)->find($poi->getCreator());
+        $creator?->addStep($step);
+
+        /** @var Trip $trip */
+        $trip = $entityManager->getRepository(Trip::class)->find($poi->getTrip());
+        $start = $trip?->getSteps()->last();
+        $trip?->addStep($step);
+
+        $entityManager->persist($step);
+        $entityManager->remove($poi);
+        $entityManager->flush();
+
+        $this->createTravel($step, $start, $entityManager);
+
+        return $this->json($poi, 201, [], ['groups' => 'step:item']);
+    }
+
+    public function createTravel(Step $step, ?Step $start, EntityManagerInterface $entityManager) : void
+    {
+        $trip = $step->getTrip();
+
+        if ($trip != null) {
+            if ($start != null) {
+                $travel = new Travel();
+                $start->addStart($travel);
+                $step->addEnd($travel);
+                $start->getTrip()->addTravel($travel);
+                $entityManager->persist($travel);
+                $entityManager->flush();
+            }
         }
     }
 }

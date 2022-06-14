@@ -95,6 +95,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
                 ],
             ],
         ],
+        'toStep' => [
+            'method' => 'PUT',
+            'route_name' => 'point_of_interest_to_step',
+        ],
         'delete',
     ],
     paginationEnabled: false,
