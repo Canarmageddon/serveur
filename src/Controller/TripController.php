@@ -4,15 +4,14 @@ namespace App\Controller;
 
 use App\Dto\TripDto\TripInput;
 use App\Dto\TripDto\UserInput;
-use App\Entity\Album;
 use App\Entity\LogBookEntry;
 use App\Entity\Picture;
-use App\Entity\PointOfInterest;
 use App\Entity\Step;
 use App\Entity\Travel;
 use App\Entity\Trip;
 use App\Entity\TripUser;
 use App\Entity\User;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -157,7 +156,6 @@ class TripController extends AbstractController
         /** @var Trip $trip */
         $trip = $entityManager->getRepository(Trip::class)->find($id);
         if ($trip != null) {
-//            return $this->json($trip->getUsers(), 200, [], ['groups' => 'user:item']);
             $travelers = [];
             $users = $trip->getUsers();
             foreach($users as $user) {
@@ -172,6 +170,22 @@ class TripController extends AbstractController
                 'message' => 'Trip ' . $id . ' not found',
             ], 404);
         }
+    }
+
+    #[Route('/api/trips/{isEnded}/ended', name: 'api_trip_ended', methods: 'GET')]
+    public function tripsEnded(EntityManagerInterface $entityManager, bool $isEnded): Response
+    {
+        $trips = $entityManager->getRepository(Trip::class)->findAll();
+        $tripsReturned = [];
+        $now = new DateTime('now');
+        /** @var Trip $trip */
+        foreach ($trips as $trip) {
+            if ($trip->getSteps()->last()->getCreationDate() > $now == $isEnded) {
+                $tripsReturned[] = $trip;
+            }
+        }
+
+        return $this->json($tripsReturned, 200, [], ['groups' => 'trip:item']);
     }
 
     #[Route('/api/trips/new', name: 'trip_new', methods: 'POST')]

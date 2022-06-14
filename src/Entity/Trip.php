@@ -15,7 +15,27 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 #[ORM\Entity(repositoryClass: TripRepository::class)]
 #[ApiResource(
     collectionOperations: [
-        'get' => ['normalization_context' => ['groups' => 'trip:list', "enable_max_depth" => true]],
+        'get' => [
+            'normalization_context' => [
+                'groups' => 'trip:list',
+                "enable_max_depth" => true
+            ]
+        ],
+        'tripsEnded' => [
+            'method' => 'GET',
+            'route_name' => 'api_trip_ended',
+            'openapi_context' => [
+                'parameters' => [
+                    [
+                        'name' => 'isEnded',
+                        'in' => 'path',
+                        'description' => 'Condition identifier : is the trip ended ? (0 or 1)',
+                        'required' => true,
+                        'type' => 'bool',
+                    ]
+                ]
+            ]
+        ],
         'new' => [
             'method' => 'POST',
             'route_name' => 'trip_new',
@@ -274,7 +294,7 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
         ],
         'delete'
     ],
-    attributes: ["pagination_items_per_page" => 10] 
+    attributes: ["pagination_items_per_page" => 10]
 )]
 class Trip
 {
