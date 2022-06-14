@@ -12,6 +12,12 @@ class LogBookEntryInput
 
     private ?int $album = null;
 
+    private ?int $location = null;
+
+    private ?float $latitude = null;
+
+    private ?float $longitude = null;
+
     /**
      * @return string|null
      */
@@ -74,5 +80,53 @@ class LogBookEntryInput
     public function setAlbum(?int $album): void
     {
         $this->album = $album;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getLocation(): ?int
+    {
+        return $this->location;
+    }
+
+    /**
+     * @param int|null $location
+     */
+    public function setLocation(?int $location): void
+    {
+        $this->location = $location;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getLatitude(): ?float
+    {
+        return $this->latitude;
+    }
+
+    /**
+     * @param float|null $latitude
+     */
+    public function setLatitude(?float $latitude): void
+    {
+        $this->latitude = $latitude;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getLongitude(): ?float
+    {
+        return $this->longitude;
+    }
+
+    /**
+     * @param float|null $longitude
+     */
+    public function setLongitude(?float $longitude): void
+    {
+        $this->longitude = $longitude;
     }
 }

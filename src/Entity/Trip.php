@@ -48,9 +48,10 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
             'method' => 'GET',
             'route_name' => 'album_by_trip',
         ],
-        'albumElements' => [
+        'data' => [
             'method' => 'GET',
             'route_name' => 'album_elements_by_trip',
+            "order" => ["creationDate" => "ASC"]
         ],
         'costs' => [
             'method' => 'GET',

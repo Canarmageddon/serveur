@@ -19,7 +19,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 #[AsController]
 class AlbumController extends AbstractController
 {
-    #[Route('/api/albums/{id}/albumElements', name: 'album_elements_by_album', methods: 'GET')]
+    #[Route('/api/albums/{id}/data', name: 'album_elements_by_album', methods: 'GET')]
     public function albumElements(EntityManagerInterface $entityManager, int $id): Response
     {
         /** @var Album $album */

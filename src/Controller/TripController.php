@@ -34,7 +34,7 @@ class TripController extends AbstractController
         }
     }
 
-    #[Route('/api/trips/{id}/albumElements', name: 'album_elements_by_trip', methods: 'GET')]
+    #[Route('/api/trips/{id}/data', name: 'album_elements_by_trip', methods: 'GET')]
     public function albumElements(EntityManagerInterface $entityManager, int $id): Response
     {
         /** @var Trip $trip */

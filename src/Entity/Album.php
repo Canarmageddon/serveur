@@ -42,17 +42,20 @@ use Symfony\Component\Serializer\Annotation\Groups;
     ],
     itemOperations: [
         'get' => ['normalization_context' => ['groups' => 'album:item']],
-        'albumElements' => [
+        'data' => [
             'method' => 'GET',
             'route_name' => 'album_elements_by_album',
+            "order" => ["creationDate" => "ASC"]
         ],
         'pictures' => [
             'method' => 'GET',
             'route_name' => 'pictures_by_album',
+            "order" => ["creationDate" => "ASC"]
         ],
         'logBookEntries' => [
             'method' => 'GET',
             'route_name' => 'log_book_entries_by_album',
+            "order" => ["creationDate" => "ASC"]
         ],
         'delete'
     ],
