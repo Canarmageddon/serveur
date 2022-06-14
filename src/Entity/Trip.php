@@ -246,6 +246,32 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
                 ],
             ],
         ],
+        'clone' => [
+            'method' => 'PUT',
+            'route_name' => 'trip_clone',
+            'openapi_context' => [
+                'summary'     => 'Clone a Trip',
+                'description' => "Clone a Trip",
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema'  => [
+                                'type' => 'object',
+                                'properties' =>
+                                    [
+                                        'name' => ['type' => 'string'],
+                                        'creator' => ['type' => 'int']
+                                    ],
+                            ],
+                            'example' => [
+                                'name' => "Vacances au soleil",
+                                'creator' => 1,
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
         'delete'
     ],
     attributes: ["pagination_items_per_page" => 10] 

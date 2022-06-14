@@ -7,6 +7,9 @@ use App\Dto\TripDto\UserInput;
 use App\Entity\Album;
 use App\Entity\LogBookEntry;
 use App\Entity\Picture;
+use App\Entity\PointOfInterest;
+use App\Entity\Step;
+use App\Entity\Travel;
 use App\Entity\Trip;
 use App\Entity\TripUser;
 use App\Entity\User;
@@ -462,6 +465,81 @@ class TripController extends AbstractController
                 'status' => 200,
                 'message' => 'Steps deleted',
             ]);
+        }
+    }
+
+    #[Route('/api/trips/{id}/clone', name: 'trip_clone', methods: 'PUT')]
+    public function clone(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer, int $id): Response
+    {
+        /** @var Trip $oldTrip */
+        $oldTrip = $entityManager->getRepository(Trip::class)->find($id);
+
+        if ($oldTrip == null) {
+            return $this->json([
+                'status' => 400,
+                'message' => 'Trip not found',
+            ], 400);
+        } else {
+            try {
+                $data = $request->getContent();
+                /** @var TripInput $tripInput */
+                $tripInput = $serializer->deserialize($data, TripInput::class, 'json');
+                $trip = new Trip();
+                if ($tripInput->getName() != null) {
+                    $trip->setName($tripInput->getName());
+                }
+                /** @var User $creator */
+                $creator = null;
+                if ($tripInput->getCreator() != null) {
+                    $creator = $entityManager->getRepository(User::class)->find($tripInput->getCreator());
+                    if ($creator != null) {
+                        $tripUser = new TripUser();
+                        $trip->addTripUser($tripUser);
+                        $creator->addTripUser($tripUser);
+                        $entityManager->persist($tripUser);
+                    }
+                }
+
+                $oldStart = $oldTrip->getTravels()->first()->getStart();
+                $start = new Step();
+                $start->setTitle($oldStart?->getTitle());
+                $creator?->addStep($start);
+                $trip->addStep($start);
+                $location = $oldStart->getLocation();
+                $location?->addStep($start);
+                $entityManager->persist($start);
+
+                foreach ($oldTrip->getTravels() as $oldTravel) {
+                    $travel = new Travel();
+
+                    $oldEnd = $oldTravel->getEnd();
+                    $end = new Step();
+                    $end->setTitle($oldEnd?->getTitle());
+                    $creator?->addStep($end);
+                    $trip->addStep($end);
+                    $location = $oldEnd->getLocation();
+                    $location?->addStep($end);
+                    $entityManager->persist($end);
+
+                    $start->addStart($travel);
+                    $end->addEnd($travel);
+                    $trip->addTravel($travel);
+                    $entityManager->persist($travel);
+                    $start = $end;
+                }
+
+                $entityManager->persist($trip);
+                $entityManager->flush();
+
+                return $this->json($trip, 201, [], ['groups' => 'trip:item']);
+            }
+            catch (NotEncodableValueException $e)
+            {
+                return $this->json([
+                    'status' => 400,
+                    'message' => $e->getMessage()
+                ], 400);
+            }
         }
     }
 }
