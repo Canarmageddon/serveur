@@ -208,6 +208,8 @@ class TripController extends AbstractController
                     $entityManager->persist($tripUser);
                 }
             }
+            //Access control
+            $this->denyAccessUnlessGranted('TRIP_EDIT', $trip);
             $entityManager->persist($trip);
             $entityManager->flush();
 
@@ -234,6 +236,9 @@ class TripController extends AbstractController
             $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $emailUser]);
             /** @var Trip $trip */
             $trip = $entityManager->getRepository(Trip::class)->find($id);
+
+            //Access control
+            $this->denyAccessUnlessGranted('TRIP_EDIT', $trip);
 
             if($user != null && $trip != null) {
 
@@ -294,6 +299,9 @@ class TripController extends AbstractController
             $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $emailUser]);
             /** @var Trip $trip */
             $trip = $entityManager->getRepository(Trip::class)->find($id);
+
+            //Access control
+            $this->denyAccessUnlessGranted('TRIP_EDIT', $trip);
 
             if($user != null && $trip != null) {
 
@@ -356,6 +364,8 @@ class TripController extends AbstractController
                     'message' => "Trip " . $id . " not found"
                 ], 400);
             }
+            //Access control
+            $this->denyAccessUnlessGranted('TRIP_EDIT', $trip);
 
             if ($tripInput->getName() != null) {
                 $trip->setName($tripInput->getName());
@@ -387,6 +397,8 @@ class TripController extends AbstractController
                 'message' => 'Trip not found',
             ], 400);
         } else {
+            //Access control
+            $this->denyAccessUnlessGranted('TRIP_EDIT', $trip);
             $trip->generateLink();
             $entityManager->persist($trip);
             $entityManager->flush();
@@ -409,6 +421,8 @@ class TripController extends AbstractController
                 'message' => 'Trip not found',
             ], 400);
         } else {
+            //Access control
+            $this->denyAccessUnlessGranted('TRIP_EDIT', $trip);
             $trip->setLink(null);
             $entityManager->persist($trip);
             $entityManager->flush();

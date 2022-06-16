@@ -27,6 +27,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
             'deserialize' => false,
             'validation_groups' => ['Default', 'picture'],
             'openapi_context' => [
+                'security' => [['bearerAuth' => []]],
                 'requestBody' => [
                     'content' => [
                         'multipart/form-data' => [
@@ -76,6 +77,12 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
             'method' => 'GET',
             'read' => false
         ],
+        'delete' => [
+            "security" => "is_granted('TRIP_EDIT', object)",
+            'openapi_context' => [
+                'security' => [['bearerAuth' => []]]
+            ]
+        ]
     ],
     denormalizationContext: ['groups' => ['picture:write']],
     normalizationContext: ['groups' => ['picture:read']],

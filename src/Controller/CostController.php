@@ -39,6 +39,8 @@ class CostController extends AbstractController
             /** @var Trip $trip */
             $trip = $entityManager->getRepository(Trip::class)->find($costInput->getTrip());
             $trip?->addCost($cost);
+            //Access control
+            $this->denyAccessUnlessGranted('TRIP_EDIT', $cost);
 
             $entityManager->persist($cost);
             $entityManager->flush();

@@ -17,6 +17,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             'route_name' => 'log_book_entry_new',
             'openapi_context' => [
                 'summary'     => 'Create a Logbook Entry',
+                'security' => [['bearerAuth' => []]],
                 'description' => "Create a Logbook Entry",
                 'requestBody' => [
                     'content' => [
@@ -55,6 +56,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             'route_name' => 'log_book_entry_edit',
             'openapi_context' => [
                 'summary'     => 'Edit a logbook Entry',
+                'security' => [['bearerAuth' => []]],
                 'description' => "Edit a logbook Entry",
                 'requestBody' => [
                     'content' => [
@@ -74,7 +76,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
                 ],
             ],
         ],
-        'delete',
+        'delete'  => [
+            'security' => "isGranted('TRIP_EDIT', object)",
+            'openapi_context' => [
+                'security' => [['bearerAuth' => []]]
+            ]
+        ],
     ],
     paginationEnabled: false
 )]

@@ -53,6 +53,8 @@ class TravelController extends AbstractController
             /** @var Step $end */
             $end = $entityManager->getRepository(Step::class)->find($travelInput->getEnd());
             $end?->addEnd($travel);
+            //Access control
+            $this->denyAccessUnlessGranted('TRIP_EDIT', $travel);
 
             $entityManager->persist($travel);
             $entityManager->flush();
@@ -83,6 +85,8 @@ class TravelController extends AbstractController
                     'message' => "Travel " . $id . " not found"
                 ], 400);
             }
+            //Access control
+            $this->denyAccessUnlessGranted('TRIP_EDIT', $travel);
 
             if ($travelInput->getDuration() != null) {
                 $travel->setDuration($travelInput->getDuration());
