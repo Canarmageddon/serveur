@@ -18,6 +18,8 @@ class TaskInput
 
     private ?bool $isDone = null;
 
+    private ?int $mapElement = null;
+
     /**
      * @return string|null
      */
@@ -112,5 +114,21 @@ class TaskInput
     public function setIsDone(?bool $isDone): void
     {
         $this->isDone = $isDone;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getMapElement(): ?int
+    {
+        return $this->mapElement;
+    }
+
+    /**
+     * @param int|null $mapElement
+     */
+    public function setMapElement(?int $mapElement): void
+    {
+        $this->mapElement = $mapElement;
     }
 }

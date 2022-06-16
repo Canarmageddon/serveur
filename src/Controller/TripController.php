@@ -4,12 +4,14 @@ namespace App\Controller;
 
 use App\Dto\TripDto\TripInput;
 use App\Dto\TripDto\UserInput;
-use App\Entity\Album;
 use App\Entity\LogBookEntry;
 use App\Entity\Picture;
+use App\Entity\Step;
+use App\Entity\Travel;
 use App\Entity\Trip;
 use App\Entity\TripUser;
 use App\Entity\User;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -154,7 +156,6 @@ class TripController extends AbstractController
         /** @var Trip $trip */
         $trip = $entityManager->getRepository(Trip::class)->find($id);
         if ($trip != null) {
-//            return $this->json($trip->getUsers(), 200, [], ['groups' => 'user:item']);
             $travelers = [];
             $users = $trip->getUsers();
             foreach($users as $user) {
@@ -169,6 +170,22 @@ class TripController extends AbstractController
                 'message' => 'Trip ' . $id . ' not found',
             ], 404);
         }
+    }
+
+    #[Route('/api/trips/{isEnded}/ended', name: 'api_trip_ended', methods: 'GET')]
+    public function tripsEnded(EntityManagerInterface $entityManager, bool $isEnded): Response
+    {
+        $trips = $entityManager->getRepository(Trip::class)->findAll();
+        $tripsReturned = [];
+        $now = new DateTime('now');
+        /** @var Trip $trip */
+        foreach ($trips as $trip) {
+            if ($trip->getSteps()->last()->getCreationDate() > $now == $isEnded) {
+                $tripsReturned[] = $trip;
+            }
+        }
+
+        return $this->json($tripsReturned, 200, [], ['groups' => 'trip:item']);
     }
 
     #[Route('/api/trips/new', name: 'trip_new', methods: 'POST')]
@@ -421,6 +438,121 @@ class TripController extends AbstractController
                     'status' => 401,
                     'message' => 'Wrong link',
                 ], 401);
+            }
+        }
+    }
+
+    #[Route('/api/trips/{id}/emptyPoi', name: 'trip_empty_poi', methods: 'PUT')]
+    public function emptyPoi(EntityManagerInterface $entityManager, int $id): Response
+    {
+        /** @var Trip $trip */
+        $trip = $entityManager->getRepository(Trip::class)->find($id);
+
+        if ($trip == null) {
+            return $this->json([
+                'status' => 400,
+                'message' => 'Trip not found',
+            ], 400);
+        } else {
+            $trip->emptyPointsOfInterest($entityManager);
+            return $this->json([
+                'status' => 200,
+                'message' => 'Points of Interest deleted',
+            ]);
+        }
+    }
+
+    #[Route('/api/trips/{id}/emptySteps', name: 'trip_empty_steps', methods: 'PUT')]
+    public function emptySteps(EntityManagerInterface $entityManager, int $id): Response
+    {
+        /** @var Trip $trip */
+        $trip = $entityManager->getRepository(Trip::class)->find($id);
+
+        if ($trip == null) {
+            return $this->json([
+                'status' => 400,
+                'message' => 'Trip not found',
+            ], 400);
+        } else {
+            $trip->emptySteps($entityManager);
+            return $this->json([
+                'status' => 200,
+                'message' => 'Steps deleted',
+            ]);
+        }
+    }
+
+    #[Route('/api/trips/{id}/clone', name: 'trip_clone', methods: 'PUT')]
+    public function clone(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer, int $id): Response
+    {
+        /** @var Trip $oldTrip */
+        $oldTrip = $entityManager->getRepository(Trip::class)->find($id);
+
+        if ($oldTrip == null) {
+            return $this->json([
+                'status' => 400,
+                'message' => 'Trip not found',
+            ], 400);
+        } else {
+            try {
+                $data = $request->getContent();
+                /** @var TripInput $tripInput */
+                $tripInput = $serializer->deserialize($data, TripInput::class, 'json');
+                $trip = new Trip();
+                if ($tripInput->getName() != null) {
+                    $trip->setName($tripInput->getName());
+                }
+                /** @var User $creator */
+                $creator = null;
+                if ($tripInput->getCreator() != null) {
+                    $creator = $entityManager->getRepository(User::class)->find($tripInput->getCreator());
+                    if ($creator != null) {
+                        $tripUser = new TripUser();
+                        $trip->addTripUser($tripUser);
+                        $creator->addTripUser($tripUser);
+                        $entityManager->persist($tripUser);
+                    }
+                }
+
+                $oldStart = $oldTrip->getTravels()->first()->getStart();
+                $start = new Step();
+                $start->setTitle($oldStart?->getTitle());
+                $creator?->addStep($start);
+                $trip->addStep($start);
+                $location = $oldStart->getLocation();
+                $location?->addStep($start);
+                $entityManager->persist($start);
+
+                foreach ($oldTrip->getTravels() as $oldTravel) {
+                    $travel = new Travel();
+
+                    $oldEnd = $oldTravel->getEnd();
+                    $end = new Step();
+                    $end->setTitle($oldEnd?->getTitle());
+                    $creator?->addStep($end);
+                    $trip->addStep($end);
+                    $location = $oldEnd->getLocation();
+                    $location?->addStep($end);
+                    $entityManager->persist($end);
+
+                    $start->addStart($travel);
+                    $end->addEnd($travel);
+                    $trip->addTravel($travel);
+                    $entityManager->persist($travel);
+                    $start = $end;
+                }
+
+                $entityManager->persist($trip);
+                $entityManager->flush();
+
+                return $this->json($trip, 201, [], ['groups' => 'trip:item']);
+            }
+            catch (NotEncodableValueException $e)
+            {
+                return $this->json([
+                    'status' => 400,
+                    'message' => $e->getMessage()
+                ], 400);
             }
         }
     }

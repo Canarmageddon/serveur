@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Dto\TaskInput;
+use App\Entity\MapElement;
 use App\Entity\Task;
 use App\Entity\ToDoList;
 use App\Entity\User;
@@ -38,6 +39,11 @@ class TaskController extends AbstractController
             $creator = $entityManager->getRepository(User::class)->find($taskInput->getCreator());
             $creator?->addTask($task);
 
+            if ($taskInput->getMapElement()) {
+                /** @var MapElement $mapElement */
+                $mapElement = $entityManager->getRepository(MapElement::class)->find($taskInput->getMapElement());
+                $mapElement?->addTask($task);
+            }
 
             $entityManager->persist($task);
             $entityManager->flush();
@@ -79,6 +85,15 @@ class TaskController extends AbstractController
             }
             if ($taskInput->getIsDone() != null) {
                 $task->setIsDone($taskInput->getIsDone());
+            }
+
+            if ($taskInput->getMapElement()) {
+                /** @var MapElement $mapElement */
+                $mapElement = $entityManager->getRepository(MapElement::class)->find($taskInput->getMapElement());
+                if ($task->getMapElement() != null && $task->getMapElement()->getTasks()->contains($task)) {
+                    $task->getMapElement()->removeTask($task);
+                }
+                $mapElement?->addTask($task);
             }
 
             $entityManager->persist($task);

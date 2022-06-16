@@ -102,7 +102,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
                 ],
             ],
         ],
-        'delete'
+        'delete' => [
+            'method' => 'DELETE',
+            'route_name' => 'delete_step',
+        ]
     ],
     paginationEnabled: false,
 )]

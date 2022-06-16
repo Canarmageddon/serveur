@@ -6,6 +6,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\TripRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -14,7 +15,27 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 #[ORM\Entity(repositoryClass: TripRepository::class)]
 #[ApiResource(
     collectionOperations: [
-        'get' => ['normalization_context' => ['groups' => 'trip:list', "enable_max_depth" => true]],
+        'get' => [
+            'normalization_context' => [
+                'groups' => 'trip:list',
+                "enable_max_depth" => true
+            ]
+        ],
+        'tripsEnded' => [
+            'method' => 'GET',
+            'route_name' => 'api_trip_ended',
+            'openapi_context' => [
+                'parameters' => [
+                    [
+                        'name' => 'isEnded',
+                        'in' => 'path',
+                        'description' => 'Condition identifier : is the trip ended ? (0 or 1)',
+                        'required' => true,
+                        'type' => 'bool',
+                    ]
+                ]
+            ]
+        ],
         'new' => [
             'method' => 'POST',
             'route_name' => 'trip_new',
@@ -209,9 +230,71 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
                 ]
             ]
         ],
+        'emptyPoi' => [
+            'method' => 'PUT',
+            'route_name' => 'trip_empty_poi',
+            'openapi_context' => [
+                'summary'     => 'Empty points of interest',
+                'description' => "",
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema'  => [
+                            ],
+                            'example' => [
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
+        'emptyStep' => [
+            'method' => 'PUT',
+            'route_name' => 'trip_empty_steps',
+            'openapi_context' => [
+                'summary'     => 'Empty steps',
+                'description' => "",
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema'  => [
+                            ],
+                            'example' => [
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
+        'clone' => [
+            'method' => 'PUT',
+            'route_name' => 'trip_clone',
+            'openapi_context' => [
+                'summary'     => 'Clone a Trip',
+                'description' => "Clone a Trip",
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema'  => [
+                                'type' => 'object',
+                                'properties' =>
+                                    [
+                                        'name' => ['type' => 'string'],
+                                        'creator' => ['type' => 'int']
+                                    ],
+                            ],
+                            'example' => [
+                                'name' => "Vacances au soleil",
+                                'creator' => 1,
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
         'delete'
     ],
-    attributes: ["pagination_items_per_page" => 10] 
+    attributes: ["pagination_items_per_page" => 10]
 )]
 class Trip
 {
@@ -549,5 +632,32 @@ class Trip
     {
         $length = 12;
         $this->setLink(substr(str_shuffle(str_repeat($x='0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil($length/strlen($x)) )),1,$length));
+    }
+
+    public function emptyPointsOfInterest(EntityManagerInterface $em): void
+    {
+        /** @var PointOfInterest $pointOfInterest */
+        foreach ($this->getPointsOfInterest() as $pointOfInterest) {
+            $this->getPointsOfInterest()->removeElement($pointOfInterest);
+            $em->remove($pointOfInterest);
+        }
+        $em->flush();
+    }
+
+    public function emptySteps(EntityManagerInterface $em): void
+    {
+        /** @var Step $step */
+        foreach ($this->getSteps() as $step) {
+            $this->getSteps()->removeElement($step);
+            $em->remove($step);
+        }
+
+        /** @var Travel $travel */
+        foreach ($this->getTravels() as $travel) {
+            $this->getTravels()->removeElement($travel);
+            $em->remove($travel);
+        }
+
+        $em->flush();
     }
 }

@@ -5,10 +5,13 @@ namespace App\Controller;
 use App\Dto\StepInput;
 use App\Entity\Location;
 use App\Entity\Step;
+use App\Entity\Travel;
 use App\Entity\Trip;
 use App\Entity\User;
 use DateTime;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use JetBrains\PhpStorm\Pure;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -75,10 +78,13 @@ class StepController extends AbstractController
 
             /** @var Trip $trip */
             $trip = $entityManager->getRepository(Trip::class)->find($stepInput->getTrip());
+            $start = $trip?->getSteps()->last();
             $trip?->addStep($step);
 
             $entityManager->persist($step);
             $entityManager->flush();
+
+            $this->createTravel($step, $start, $entityManager);
 
             return $this->json($step, 201, [], ['groups' => 'step:item']);
         }
@@ -144,5 +150,72 @@ class StepController extends AbstractController
                 'message' => $e->getMessage()
             ], 400);
         }
+    }
+
+    #[Route('/api/steps/{id}', name: 'delete_step', methods: 'DELETE')]
+    public function delete(EntityManagerInterface $entityManager, int $id): Response
+    {
+        /** @var Step $step */
+        $step = $entityManager->getRepository(Step::class)->find($id);
+        if ($step != null) {
+            $this->removeTravel($step, $entityManager);
+            $entityManager->remove($step);
+            $entityManager->flush();
+
+            return $this->json([
+                'message' => 'Step ' . $id . ' deleted',
+            ], 204);
+        } else {
+            return $this->json([
+                'message' => 'Step ' . $id . ' not found',
+            ], 404);
+        }
+    }
+
+    public function createTravel(Step $step, ?Step $start, EntityManagerInterface $entityManager) : void
+    {
+        $trip = $step->getTrip();
+
+        if ($trip != null) {
+            if ($start != null) {
+                $travel = new Travel();
+                $start->addStart($travel);
+                $step->addEnd($travel);
+                $start->getTrip()->addTravel($travel);
+                $entityManager->persist($travel);
+                $entityManager->flush();
+            }
+        }
+    }
+
+    public function removeTravel(Step $step, EntityManagerInterface $entityManager) : void
+    {
+        /** @var Travel $travel1 */
+        $travel1 = $entityManager->getRepository(Travel::class)->findOneBy(['end' => $step->getId()]);
+        /** @var Travel $travel2 */
+        $travel2 = $entityManager->getRepository(Travel::class)->findOneBy(['start' => $step->getId()]);
+
+        $start = null;
+        $end = null;
+
+        if ($travel1 != null) {
+            $start = $travel1->getStart();
+            $start->removeStart($travel1);
+            $travel1->getEnd()->removeEnd($travel1);
+            $entityManager->remove($travel1);
+        }
+
+        if ($travel2 != null) {
+            $end = $travel2->getEnd();
+            $travel2->getStart()->removeStart($travel2);
+            $end->removeEnd($travel1);
+            $entityManager->remove($travel2);
+        }
+
+        if ($start != null && $end != null) {
+            $this->createTravel($end, $start, $entityManager);
+        }
+
+        $entityManager->flush();
     }
 }
