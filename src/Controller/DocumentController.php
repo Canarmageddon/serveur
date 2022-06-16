@@ -39,6 +39,8 @@ final class DocumentController extends AbstractController
         }
 
         $document = new Document($creator, $mapElement, $name);
+        //Access control
+        $this->denyAccessUnlessGranted('TRIP_EDIT', $document);
         $document->file = $uploadedFile;
 
         return $document;

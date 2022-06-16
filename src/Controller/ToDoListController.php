@@ -44,6 +44,8 @@ class ToDoListController extends AbstractController
             /** @var Trip $trip */
             $trip = $entityManager->getRepository(Trip::class)->find($toDoListInput->getTrip());
             $trip?->addToDoList($toDoList);
+            //Access control
+            $this->denyAccessUnlessGranted('TRIP_EDIT', $toDoList);
             $entityManager->persist($toDoList);
             $entityManager->flush();
 

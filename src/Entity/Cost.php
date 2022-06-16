@@ -20,6 +20,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             'openapi_context' => [
                 'summary'     => 'Create a cost',
                 'description' => "Gestion des bénéficiaires changée prochainement",
+                'security' => [['bearerAuth' => []]],
                 'requestBody' => [
                     'content' => [
                         'application/json' => [
@@ -54,6 +55,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             'route_name' => 'cost_edit',
             'openapi_context' => [
                 'summary'     => 'Edit a cost',
+                'security' => [['bearerAuth' => []]],
                 'description' => "Gestion des bénéficiaires changée prochainement",
                 'requestBody' => [
                     'content' => [
@@ -83,6 +85,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             'openapi_context' => [
                 'summary'     => 'Add a Beneficiary to a Cost',
                 'description' => "",
+                'security' => [['bearerAuth' => []]],
                 'requestBody' => [
                     'content' => [
                         'application/json' => [
@@ -106,6 +109,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             'route_name' => 'cost_remove_beneficiary',
             'openapi_context' => [
                 'summary'     => 'Remove a Beneficiary from a Cost',
+                'security' => [['bearerAuth' => []]],
                 'description' => "",
                 'requestBody' => [
                     'content' => [
@@ -125,7 +129,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
                 ],
             ],
         ],
-        'delete'
+        'delete'  => [
+            'security' => "isGranted('TRIP_EDIT', object)",
+            'openapi_context' => [
+                'security' => [['bearerAuth' => []]]
+            ]
+        ]
     ],
     paginationEnabled: false,
 )]

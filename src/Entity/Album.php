@@ -20,6 +20,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             'route_name' => 'album_new',
             'openapi_context' => [
                 'summary'     => 'Create an album',
+                'security' => [['bearerAuth' => []]],
                 'description' => "Create an album and add it to a Trip",
                 'requestBody' => [
                     'content' => [
@@ -57,7 +58,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
             'route_name' => 'log_book_entries_by_album',
             "order" => ["creationDate" => "ASC"]
         ],
-        'delete'
+        'delete' => [
+            'security' => "isGranted('TRIP_EDIT', object)",
+            'openapi_context' => [
+                'security' => [['bearerAuth' => []]]
+            ]
+        ]
     ],
     paginationEnabled: false,
 )]

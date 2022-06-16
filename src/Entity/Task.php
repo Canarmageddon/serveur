@@ -18,6 +18,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             'route_name' => 'task_new',
             'openapi_context' => [
                 'summary'     => 'Create a task',
+                'security' => [['bearerAuth' => []]],
                 'description' => "Create a task and add it to a ToDoList",
                 'requestBody' => [
                     'content' => [
@@ -55,6 +56,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             'route_name' => 'task_edit',
             'openapi_context' => [
                 'summary'     => 'Edit a task',
+                'security' => [['bearerAuth' => []]],
                 'description' => "Edit a task",
                 'requestBody' => [
                     'content' => [
@@ -82,7 +84,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
                 ],
             ],
         ],
-        'delete'
+        'delete' => [
+            "security" => "is_granted('TRIP_EDIT', object)",
+            'openapi_context' => [
+                'security' => [['bearerAuth' => []]]
+            ]
+        ]
     ],
     paginationEnabled: false,
 )]

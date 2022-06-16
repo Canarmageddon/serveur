@@ -83,6 +83,8 @@ class UserController extends AbstractController
                     'message' => "User " . $id . " not found"
                 ], 400);
             }
+            //Access control
+            $this->denyAccessUnlessGranted('TRIP_EDIT', $user);
 
             if ($userInput->getFirstName() != null) {
                 $user->setFirstName($userInput->getFirstName());
