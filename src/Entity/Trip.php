@@ -346,9 +346,10 @@ class Trip
     #[ORM\Column(type: 'string', length: 30, nullable: true)]
     private ?string $link = null;
 
-    #[Pure] public function __construct()
+    public function __construct()
     {
         $this->album = new Album();
+        $this->album->setTrip($this);
         $this->costs = new ArrayCollection();
         $this->toDoLists = new ArrayCollection();
         $this->pointsOfInterest = new ArrayCollection();
