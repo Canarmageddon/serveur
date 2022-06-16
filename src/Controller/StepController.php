@@ -163,6 +163,8 @@ class StepController extends AbstractController
         /** @var Step $step */
         $step = $entityManager->getRepository(Step::class)->find($id);
         if ($step != null) {
+            //Access control
+            $this->denyAccessUnlessGranted('TRIP_EDIT', $step);
             $this->removeTravel($step, $entityManager);
             $entityManager->remove($step);
             $entityManager->flush();
