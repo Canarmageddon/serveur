@@ -86,9 +86,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
 )]
 class Travel extends MapElement
 {
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(type: 'integer', nullable: true)]
     #[Groups(['travel:list', 'travel:item', 'trip:list', 'trip:item'])]
-    private ?int $duration;
+    private ?int $duration = null;
 
     #[ORM\ManyToOne(targetEntity: Trip::class, inversedBy: 'travels')]
     #[Groups(['travel:list', 'travel:item'])]

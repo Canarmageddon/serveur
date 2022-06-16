@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Album;
+use App\Entity\Location;
 use App\Entity\Picture;
 use App\Entity\User;
 use App\Entity\Trip;
@@ -18,6 +20,11 @@ final class PictureController extends AbstractController
     {
         $creatorId = $request->request->get('creator');
         $tripId = $request->request->get('trip');
+        $albumId = $request->request->get('album');
+        $uploadedFile = $request->files->get('file');
+        $locationId = $request->request->get('location');
+        $latitude = $request->request->get('latitude');
+        $longitude = $request->request->get('longitude');
 
         /** @var User $creator */
         $creator = $entityManager->getRepository(User::class)->find($creatorId);
@@ -25,9 +32,23 @@ final class PictureController extends AbstractController
         /** @var Trip $trip */
         $trip = $entityManager->getRepository(Trip::class)->find($tripId);
 
-        $uploadedFile = $request->files->get('file');
+        /** @var Album $album */
+        $album = $entityManager->getRepository(Album::class)->find($albumId);
+
         if (!$uploadedFile) {
             throw new BadRequestHttpException('"file" is required');
+        }
+
+        if ($locationId != null) {
+            /** @var Location $location */
+            $location = $entityManager->getRepository(Location::class)->find($locationId);
+        } else if ($latitude != null && $longitude != null) {
+            $location = new Location();
+            $location->setLongitude($longitude);
+            $location->setLatitude($latitude);
+            $entityManager->persist($location);
+        } else {
+            $location = null;
         }
 
         $picture = new Picture();
@@ -35,6 +56,8 @@ final class PictureController extends AbstractController
 
         $creator?->addAlbumElement($picture);
         $trip?->addAlbumElement($picture);
+        $album?->addAlbumElement($picture);
+        $location?->addAlbumElement($picture);
 
         //Access control
         $this->denyAccessUnlessGranted('TRIP_EDIT', $picture);

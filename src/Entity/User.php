@@ -40,6 +40,21 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
             'method' => 'GET',
             'route_name' => 'trips_by_user',
         ],
+        'tripsEnded' => [
+            'method' => 'GET',
+            'route_name' => 'trips_ended_by_user',
+            'openapi_context' => [
+                'parameters' => [
+                    [
+                        'name' => 'isEnded',
+                        'in' => 'path',
+                        'description' => 'Condition identifier : is the trip ended ? (0 or 1)',
+                        'required' => true,
+                        'type' => 'bool',
+                    ]
+                ]
+            ]
+        ],
         'edit' => [
             'method' => 'PUT',
             'route_name' => 'user_edit',

@@ -105,7 +105,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
             ],
         ],
         'delete' => [
-            "security" => "is_granted('TRIP_EDIT', object)",
+            'method' => 'DELETE',
+            'route_name' => 'delete_step',
             'openapi_context' => [
                 'security' => [['bearerAuth' => []]]
             ]

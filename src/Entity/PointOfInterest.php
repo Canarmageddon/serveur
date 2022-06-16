@@ -97,6 +97,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
                 ],
             ],
         ],
+        'toStep' => [
+            'method' => 'PUT',
+            'route_name' => 'point_of_interest_to_step',
+        ],
         'delete' => [
             "security" => "is_granted('TRIP_EDIT', object)",
             'openapi_context' => [

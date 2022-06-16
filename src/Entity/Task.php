@@ -32,6 +32,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
                                         'creator' => ['type' => 'int'],
                                         'toDoList' => ['type' => 'int'],
                                         'date' => ['type' => 'string'],
+                                        'mapElement' => ['type' => 'int'],
                                     ],
                             ],
                             'example' => [
@@ -40,6 +41,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
                                 'creator' => 1,
                                 'toDoList' => 1,
                                 'date' => "01-09-1998 16:30",
+                                'mapElement' => 1,
                             ],
                         ],
                     ],
@@ -66,14 +68,16 @@ use Symfony\Component\Serializer\Annotation\Groups;
                                         'name' => ['type' => 'string'],
                                         'description' => ['type' => 'string'],
                                         'date' => ['type' => 'string'],
-                                        'isDone' => ['type' => 'bool']
+                                        'isDone' => ['type' => 'bool'],
+                                        'mapElement' => ['type' => 'int'],
                                     ],
                             ],
                             'example' => [
                                 'name' => "Intitulé de la tâche",
                                 'description' => "Courte description",
                                 'date' => "01-09-1998 16:30",
-                                'isDone' => false
+                                'isDone' => false,
+                                'mapElement' => 1,
                             ],
                         ],
                     ],
@@ -122,7 +126,12 @@ class Task
     private ?ToDoList $toDoList;
 
     #[ORM\Column(type: 'boolean')]
+    #[Groups(['task:list', 'task:item', 'trip:item', 'toDoList:list', 'toDoList:item'])]
     private ?bool $isDone = false;
+
+    #[ORM\ManyToOne(targetEntity: MapElement::class, inversedBy: 'tasks')]
+    #[Groups(['task:list', 'task:item', 'trip:item', 'toDoList:list', 'toDoList:item'])]
+    private ?MapElement $mapElement;
 
     public function getId(): ?int
     {
@@ -213,6 +222,18 @@ class Task
     public function setCreationDate(\DateTimeImmutable $creationDate): self
     {
         $this->creationDate = $creationDate;
+
+        return $this;
+    }
+
+    public function getMapElement(): ?MapElement
+    {
+        return $this->mapElement;
+    }
+
+    public function setMapElement(?MapElement $mapElement): self
+    {
+        $this->mapElement = $mapElement;
 
         return $this;
     }

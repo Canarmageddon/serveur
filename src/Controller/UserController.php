@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Dto\UserEditInput;
+use App\Entity\Trip;
 use App\Entity\User;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,12 +31,35 @@ class UserController extends AbstractController
     }
 
     #[Route('/api/users/{id}/trips', name: 'trips_by_user', methods: 'GET')]
-    public function users(EntityManagerInterface $entityManager, int $id): Response
+    public function trips(EntityManagerInterface $entityManager, int $id): Response
     {
         /** @var User $user */
         $user = $entityManager->getRepository(User::class)->find($id);
         if ($user != null) {
             return $this->json($user->getTrips(), 200, [], ['groups' => 'trip:item']);
+        } else {
+            return $this->json([
+                'message' => 'User ' . $id . ' not found',
+            ], 404);
+        }
+    }
+
+    #[Route('/api/users/{id}/trips/{isEnded}/ended', name: 'trips_ended_by_user', methods: 'GET')]
+    public function tripsEnded(EntityManagerInterface $entityManager, int $id, bool $isEnded): Response
+    {
+        /** @var User $user */
+        $user = $entityManager->getRepository(User::class)->find($id);
+        if ($user != null) {
+            $trips = $user->getTrips();
+            $tripsReturned = [];
+            $now = new DateTime('now');
+            /** @var Trip $trip */
+            foreach ($trips as $trip) {
+                if ($trip->getSteps()->last()->getCreationDate() > $now == $isEnded) {
+                    $tripsReturned[] = $trip;
+                }
+            }
+            return $this->json($tripsReturned, 200, [], ['groups' => 'trip:item']);
         } else {
             return $this->json([
                 'message' => 'User ' . $id . ' not found',
