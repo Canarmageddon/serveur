@@ -31,11 +31,14 @@ final class PictureController extends AbstractController
         }
 
         $picture = new Picture();
-        $picture->file = $uploadedFile;
+
 
         $creator?->addAlbumElement($picture);
         $trip?->addAlbumElement($picture);
 
+        //Access control
+        $this->denyAccessUnlessGranted('TRIP_EDIT', $picture);
+        $picture->file = $uploadedFile;
         $entityManager->persist($picture);
         $entityManager->flush();
 

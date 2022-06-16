@@ -14,6 +14,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
         'get' => ['normalization_context' => ['groups' => 'travel:list']],
         'new' => [
             'method' => 'POST',
+            'security' => [['bearerAuth' => []]],
             'route_name' => 'travel_new',
             'openapi_context' => [
                 'summary'     => 'Create a travel',
@@ -54,6 +55,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             'route_name' => 'travel_edit',
             'openapi_context' => [
                 'summary'     => 'Edit a travel',
+                'security' => [['bearerAuth' => []]],
                 'description' => "Edit a travel",
                 'requestBody' => [
                     'content' => [
@@ -73,7 +75,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
                 ],
             ],
         ],
-        'delete'
+        'delete' => [
+            "security" => "is_granted('TRIP_EDIT', object)",
+            'openapi_context' => [
+                'security' => [['bearerAuth' => []]]
+            ]
+        ]
     ],
     paginationEnabled: false,
 )]

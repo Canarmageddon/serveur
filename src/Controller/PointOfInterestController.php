@@ -64,6 +64,9 @@ class PointOfInterestController extends AbstractController
             if ($pointOfInterestInput->getDescription() != null) {
                 $poi->setDescription($pointOfInterestInput->getDescription());
             }
+            //Access control
+            $this->denyAccessUnlessGranted('TRIP_EDIT', $poi);
+
 
             $entityManager->persist($poi);
             $entityManager->flush();
@@ -95,6 +98,8 @@ class PointOfInterestController extends AbstractController
                     'message' => "Point of Interest " . $id . " not found"
                 ], 400);
             }
+            //Access control
+            $this->denyAccessUnlessGranted('TRIP_EDIT', $poi);
 
             if ($pointOfInterestInput->getLatitude() != null) {
                 $poi->getLocation()->setLatitude($pointOfInterestInput->getLatitude());

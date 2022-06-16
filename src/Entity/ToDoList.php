@@ -19,6 +19,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             'route_name' => 'to_do_list_new',
             'openapi_context' => [
                 'summary'     => 'Create a To Do List',
+                'security' => [['bearerAuth' => []]],
                 'description' => "Create a To Do List and add it to a Trip",
                 'requestBody' => [
                     'content' => [
@@ -52,6 +53,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             'route_name' => 'to_do_list_edit',
             'openapi_context' => [
                 'summary'     => 'Edit a To Do List',
+                'security' => [['bearerAuth' => []]],
                 'description' => "Edit a To Do List",
                 'requestBody' => [
                     'content' => [
@@ -71,7 +73,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
                 ],
             ],
         ],
-        'delete'
+        'delete' => [
+            "security" => "is_granted('TRIP_EDIT', object)",
+            'openapi_context' => [
+                'security' => [['bearerAuth' => []]]
+            ]
+        ]
     ],
     paginationEnabled: false,
 )]

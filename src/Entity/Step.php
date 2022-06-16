@@ -20,6 +20,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             'route_name' => 'step_new',
             'openapi_context' => [
                 'summary'     => 'Create a step',
+                'security' => [['bearerAuth' => []]],
                 'description' => "Longitude and latitude needed, others are nullable",
                 'requestBody' => [
                     'content' => [
@@ -72,6 +73,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             'openapi_context' => [
                 'summary'     => 'Edit a step',
                 'description' => "Edit a step",
+                'security' => [['bearerAuth' => []]],
                 'requestBody' => [
                     'content' => [
                         'application/json' => [
@@ -102,7 +104,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
                 ],
             ],
         ],
-        'delete'
+        'delete' => [
+            "security" => "is_granted('TRIP_EDIT', object)",
+            'openapi_context' => [
+                'security' => [['bearerAuth' => []]]
+            ]
+        ]
     ],
     paginationEnabled: false,
 )]

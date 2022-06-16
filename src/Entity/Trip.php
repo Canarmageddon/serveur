@@ -20,6 +20,7 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
             'route_name' => 'trip_new',
             'openapi_context' => [
                 'summary'     => 'Create a Trip',
+                'security' => [['bearerAuth' => []]],
                 'description' => "Create a Trip",
                 'requestBody' => [
                     'content' => [
@@ -90,6 +91,7 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
             'route_name' => 'trip_edit',
             'openapi_context' => [
                 'summary'     => 'Edit a Trip',
+                'security' => [['bearerAuth' => []]],
                 'description' => "Edit a Trip",
                 'requestBody' => [
                     'content' => [
@@ -114,6 +116,7 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
             'route_name' => 'trip_add_user',
             'openapi_context' => [
                 'summary'     => 'Add a User to a Trip',
+                'security' => [['bearerAuth' => []]],
                 'description' => "Nécessite l'email et l'id du trip, si aucun rôle précisé, rôle = 'guest'",
                 'requestBody' => [
                     'content' => [
@@ -138,6 +141,7 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
             'route_name' => 'trip_remove_user',
             'openapi_context' => [
                 'summary'     => 'Remove a User from a Trip',
+                'security' => [['bearerAuth' => []]],
                 'description' => "Vérifie si les deux données correspondent à des entités, puis l'enlève",
                 'requestBody' => [
                     'content' => [
@@ -162,6 +166,7 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
             'route_name' => 'trip_generate_link',
             'openapi_context' => [
                 'summary'     => 'Generate a link to see the trip without having an account',
+                'security' => [['bearerAuth' => []]],
                 'description' => "",
                 'requestBody' => [
                     'content' => [
@@ -181,6 +186,7 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
             'route_name' => 'trip_remove_link',
             'openapi_context' => [
                 'summary'     => 'Remove the link',
+                'security' => [['bearerAuth' => []]],
                 'description' => "",
                 'requestBody' => [
                     'content' => [
@@ -209,7 +215,12 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
                 ]
             ]
         ],
-        'delete'
+        'delete' => [
+            "security" => "is_granted('TRIP_EDIT', object)",
+            'openapi_context' => [
+                'security' => [['bearerAuth' => []]]
+            ]
+        ]
     ],
     attributes: ["pagination_items_per_page" => 10] 
 )]

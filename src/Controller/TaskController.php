@@ -37,6 +37,8 @@ class TaskController extends AbstractController
             /** @var User $creator */
             $creator = $entityManager->getRepository(User::class)->find($taskInput->getCreator());
             $creator?->addTask($task);
+            //Access control
+            $this->denyAccessUnlessGranted('TRIP_EDIT', $task);
 
 
             $entityManager->persist($task);
@@ -68,6 +70,8 @@ class TaskController extends AbstractController
                     'message' => "Task " . $id . " not found"
                 ], 400);
             }
+            //Access control
+            $this->denyAccessUnlessGranted('TRIP_EDIT', $task);
             if ($taskInput->getName() != null) {
                 $task->setName($taskInput->getName());
             }

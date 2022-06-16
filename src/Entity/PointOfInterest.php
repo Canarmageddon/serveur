@@ -19,6 +19,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             'route_name' => 'point_of_interest_new',
             'openapi_context' => [
                 'summary'     => 'Create a point of interest',
+                'security' => [['bearerAuth' => []]],
                 'description' => "Longitude and latitude needed, others are nullable",
                 'requestBody' => [
                     'content' => [
@@ -64,6 +65,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             'route_name' => 'point_of_interest_edit',
             'openapi_context' => [
                 'summary'     => 'Edit a point of interest',
+                'security' => [['bearerAuth' => []]],
                 'description' => "Edit a point of interest",
                 'requestBody' => [
                     'content' => [
@@ -95,7 +97,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
                 ],
             ],
         ],
-        'delete',
+        'delete' => [
+            "security" => "is_granted('TRIP_EDIT', object)",
+            'openapi_context' => [
+                'security' => [['bearerAuth' => []]]
+            ]
+        ],
     ],
     paginationEnabled: false,
 )]

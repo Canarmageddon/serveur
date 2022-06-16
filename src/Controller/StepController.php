@@ -77,6 +77,9 @@ class StepController extends AbstractController
             $trip = $entityManager->getRepository(Trip::class)->find($stepInput->getTrip());
             $trip?->addStep($step);
 
+            //Access control
+            $this->denyAccessUnlessGranted('TRIP_EDIT', $step);
+
             $entityManager->persist($step);
             $entityManager->flush();
 
@@ -106,6 +109,8 @@ class StepController extends AbstractController
                     'message' => "Step " . $id . " not found"
                 ], 400);
             }
+            //Access control
+            $this->denyAccessUnlessGranted('TRIP_EDIT', $step);
 
             if ($stepInput->getLatitude() != null) {
                 $step->getLocation()->setLatitude($stepInput->getLatitude());

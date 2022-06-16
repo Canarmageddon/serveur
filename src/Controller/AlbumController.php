@@ -77,7 +77,10 @@ class AlbumController extends AbstractController
 
             if ($trip != null) {
                 $album->setTrip($trip);
+                //Access control
+                $this->denyAccessUnlessGranted('TRIP_EDIT', $album);
                 $trip->setAlbum($album);
+
 
                 $entityManager->persist($album);
                 $entityManager->flush();

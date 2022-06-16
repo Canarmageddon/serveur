@@ -45,6 +45,7 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
             'route_name' => 'user_edit',
             'openapi_context' => [
                 'summary'     => 'Edit a User',
+                'security' => [['bearerAuth' => []]],
                 'description' => "Edit a User",
                 'requestBody' => [
                     'content' => [
@@ -66,7 +67,12 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
                 ],
             ],
         ],
-        'delete',
+        'delete' => [
+            'security' => "is_granted('ROLE_ADMIN')",
+            'openapi_context' => [
+                'security' => [['bearerAuth' => []]]
+            ]
+        ],
     ],
     paginationEnabled: false,
 )]

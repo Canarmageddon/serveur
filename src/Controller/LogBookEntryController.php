@@ -53,6 +53,9 @@ class LogBookEntryController extends AbstractController
                 $entityManager->persist($location);
             }
 
+            //Access control
+            $this->denyAccessUnlessGranted('TRIP_EDIT', $logBookEntry);
+
             $entityManager->persist($logBookEntry);
             $entityManager->flush();
 

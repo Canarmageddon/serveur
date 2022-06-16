@@ -29,6 +29,7 @@ use Symfony\Component\HttpFoundation\File\File;
             'deserialize' => false,
             'validation_groups' => ['Default', 'document'],
             'openapi_context' => [
+                'security' => [['bearerAuth' => []]],
                 'requestBody' => [
                     'content' => [
                         'multipart/form-data' => [
@@ -67,7 +68,12 @@ use Symfony\Component\HttpFoundation\File\File;
             'method' => 'GET',
             'read' => false
         ],
-        'delete'
+        'delete' => [
+            "security" => "is_granted('TRIP_EDIT', object)",
+            'openapi_context' => [
+                'security' => [['bearerAuth' => []]]
+            ]
+        ]
     ],
     normalizationContext: ['groups' => ['picture:read']],
     paginationEnabled: false,
