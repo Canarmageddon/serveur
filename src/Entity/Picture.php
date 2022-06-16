@@ -44,7 +44,23 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
                                     'trip' => [
                                         'type' => 'tripId',
                                         'format' => 'int'
-                                    ]
+                                    ],
+                                    'album' => [
+                                        'type' => 'albumId',
+                                        'format' => 'int'
+                                    ],
+                                    'location' => [
+                                        'type' => 'locationId',
+                                        'format' => 'int'
+                                    ],
+                                    'latitude' => [
+                                        'type' => 'latitude',
+                                        'format' => 'float'
+                                    ],
+                                    'longitude' => [
+                                        'type' => 'latitude',
+                                        'format' => 'float'
+                                    ],
                                 ],
                             ],
                         ],
