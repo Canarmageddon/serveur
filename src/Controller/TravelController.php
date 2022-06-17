@@ -32,7 +32,7 @@ class TravelController extends AbstractController
         }
     }
 
-    #[Route('/api/travel/new', name: 'travel_new', methods: 'POST')]
+    #[Route('/api/travel', name: 'travel_new', methods: 'POST')]
     public function new(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer): Response
     {
         try {
@@ -70,7 +70,7 @@ class TravelController extends AbstractController
         }
     }
 
-    #[Route('/api/travel/{id}/edit', name: 'travel_edit', methods: 'PUT')]
+    #[Route('/api/travel/{id}', name: 'travel_edit', methods: 'PUT')]
     public function edit(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer, int $id): Response
     {
         try {

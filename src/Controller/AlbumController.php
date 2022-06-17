@@ -63,7 +63,7 @@ class AlbumController extends AbstractController
         }
     }
 
-    #[Route('/api/albums/new', name: 'album_new', methods: 'POST')]
+    #[Route('/api/albums', name: 'album_new', methods: 'POST')]
     public function new(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer): Response
     {
         try {
