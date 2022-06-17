@@ -26,3 +26,19 @@ jobs:
     - name: Run containers
       run: |
           ssh ${{secrets.SSH_USER}}@${{secrets.SSH_HOST}} "cd ~/server && sudo docker-compose up -d"
+          
+  test-back:
+      runs-on: ubuntu-latest
+
+      steps:
+      - uses: actions/checkout@v2
+      - name: Setup SSH connection
+        uses: webfactory/ssh-agent@v0.5.1
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Adding Known Hosts
+        run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+      - name: Run containers
+        run: |
+            ssh ${{secrets.SSH_USER}}@${{secrets.SSH_HOST}} "newman run https://api.getpostman.com/collections/c7ec129a-16c2-4620-b651-7b488bc09e8a?apikey=PMAK-62acf042f3f4592decd020d9-16834c523aa6ab9320f682a55a856200e5 --environment https://api.getpostman.com/environments/07b9758b-53fd-4adf-83ce-fafbab4b956a?apikey=PMAK-62acf042f3f4592decd020d9-16834c523aa6ab9320f682a55a856200e5"
+      
