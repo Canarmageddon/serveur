@@ -28,6 +28,7 @@ jobs:
           ssh ${{secrets.SSH_USER}}@${{secrets.SSH_HOST}} "cd ~/server && sudo docker-compose up -d"
           
   test-back:
+      needs: deploy-back
       runs-on: ubuntu-latest
 
       steps:
