@@ -153,6 +153,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user:list', 'user:item'])]
     private Collection $tasks;
 
+    /** Costs where the User is the Creator */
     #[ORM\OneToMany(mappedBy: 'creator', targetEntity: Cost::class, cascade: ['persist', 'remove'])]
     #[Groups(['user:list', 'user:item'])]
     private Collection $costs;
@@ -161,6 +162,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user:item'])]
     private Collection $tripUsers;
 
+    /** Costs where the User is a beneficiary */
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: CostUser::class, orphanRemoval: true)]
     private Collection $costUsers;
 
@@ -226,9 +228,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return string
+     * @return ?string
      */
-    public function getPlainPassword(): string
+    public function getPlainPassword(): ?string
     {
         return $this->plainPassword;
     }

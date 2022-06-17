@@ -28,17 +28,18 @@ final class DocumentController extends AbstractController
         /** @var mapElement $mapElement */
         $mapElement = $entityManager->getRepository(MapElement::class)->find($mapElementId);
 
-
-        
-
-        
-        
         $uploadedFile = $request->files->get('file');
         if (!$uploadedFile) {
             throw new BadRequestHttpException('"file" is required');
         }
 
-        $document = new Document($creator, $mapElement, $name);
+        $document = new Document();
+        if ($name) {
+            $document->setName($name);
+        }
+        $creator?->addDocument($document);
+        $mapElement?->addDocument($document);
+
         //Access control
         $this->denyAccessUnlessGranted('TRIP_EDIT', $document);
         $document->file = $uploadedFile;
