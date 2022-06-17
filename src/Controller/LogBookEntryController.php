@@ -18,7 +18,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class LogBookEntryController extends AbstractController
 {
-    #[Route('/api/log_book_entries/new', name: 'log_book_entry_new', methods: 'POST')]
+    #[Route('/api/log_book_entries', name: 'log_book_entry_new', methods: 'POST')]
     public function new(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer): Response
     {
         try {
@@ -67,7 +67,7 @@ class LogBookEntryController extends AbstractController
         }
     }
 
-    #[Route('/api/log_book_entries/{id}/edit', name: 'log_book_entry_edit', methods: 'PUT')]
+    #[Route('/api/log_book_entries/{id}', name: 'log_book_entry_edit', methods: 'PUT')]
     public function edit(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer, int $id): Response
     {
         try {

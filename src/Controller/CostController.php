@@ -20,7 +20,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 #[AsController]
 class CostController extends AbstractController
 {
-    #[Route('/api/costs/new', name: 'cost_new', methods: 'POST')]
+    #[Route('/api/costs', name: 'cost_new', methods: 'POST')]
     public function new(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer): Response
     {
         try {
@@ -54,7 +54,7 @@ class CostController extends AbstractController
         }
     }
 
-    #[Route('/api/costs/{id}/edit', name: 'cost_edit', methods: 'PUT')]
+    #[Route('/api/costs/{id}', name: 'cost_edit', methods: 'PUT')]
     public function edit(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer, int $id): Response
     {
         try {

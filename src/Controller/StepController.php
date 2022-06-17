@@ -49,7 +49,7 @@ class StepController extends AbstractController
         }
     }
 
-    #[Route('/api/steps/new', name: 'step_new', methods: 'POST')]
+    #[Route('/api/steps', name: 'step_new', methods: 'POST')]
     public function new(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer): Response
     {
         try {
@@ -97,7 +97,7 @@ class StepController extends AbstractController
         }
     }
 
-    #[Route('/api/steps/{id}/edit', name: 'step_edit', methods: 'PUT')]
+    #[Route('/api/steps/{id}', name: 'step_edit', methods: 'PUT')]
     public function edit(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer, int $id): Response
     {
         try {

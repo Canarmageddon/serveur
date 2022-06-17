@@ -31,7 +31,7 @@ class ToDoListController extends AbstractController
         }
     }
 
-    #[Route('/api/to_do_lists/new', name: 'to_do_list_new', methods: 'POST')]
+    #[Route('/api/to_do_lists', name: 'to_do_list_new', methods: 'POST')]
     public function new(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer): Response
     {
         try {
@@ -58,7 +58,7 @@ class ToDoListController extends AbstractController
         }
     }
 
-    #[Route('/api/to_do_lists/{id}/edit', name: 'to_do_list_edit', methods: 'PUT')]
+    #[Route('/api/to_do_lists/{id}', name: 'to_do_list_edit', methods: 'PUT')]
     public function edit(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer, int $id): Response
     {
         try {

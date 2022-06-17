@@ -67,7 +67,7 @@ class UserController extends AbstractController
         }
     }
 
-    #[Route('/api/users/{id}/edit', name: 'user_edit', methods: 'PUT')]
+    #[Route('/api/users/{id}', name: 'user_edit', methods: 'PUT')]
     public function edit(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer, int $id): Response
     {
         try {
