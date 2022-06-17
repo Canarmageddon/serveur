@@ -28,9 +28,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
                             'schema'  => [
                                 'type' => 'object',
                                 'properties' =>
-                                    [
-                                        'trip' => ['type' => 'int'],
-                                    ],
+                                [
+                                    'trip' => ['type' => 'int'],
+                                ],
                             ],
                             'example' => [
                                 'trip' => 1,
@@ -72,7 +72,7 @@ class Album
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(['album:list', 'album:item', 'picture:read'])]
+    #[Groups(['album:list', 'album:item', 'picture:read', "trip:item", "trip:list"])]
     private ?int $id = null;
 
     #[ORM\OneToOne(inversedBy: 'album', targetEntity: Trip::class, cascade: ['persist'])]
