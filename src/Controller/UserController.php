@@ -22,6 +22,8 @@ class UserController extends AbstractController
         /** @var User $user */
         $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
         if ($user != null) {
+            //Access control
+            $this->denyAccessUnlessGranted('TRIP_EDIT', $user);
             return $this->json($user, 201, [], ['groups' => 'user:item']);
         } else {
             return $this->json([

@@ -17,11 +17,18 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ApiResource(
     collectionOperations: [
-        'get' => ['normalization_context' => ['groups' => 'user:list']],
+        'get' => [
+            'normalization_context' => ['groups' => 'user:list'],
+            'security' => "is_granted('TRIP_EDIT', object)",
+            'openapi_context' => [
+                'security' => [['bearerAuth' => []]]
+            ]
+        ],
         'byEmail' => [
             'method' => 'GET',
             'route_name' => 'user_by_email',
             "openapi_context" => [
+                'security' => [['bearerAuth' => []]],
                 "parameters" => [
                     [
                         "name" => "email",
@@ -83,7 +90,7 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
             ],
         ],
         'delete' => [
-            'security' => "is_granted('ROLE_ADMIN')",
+            'security' => "is_granted('TRIP_EDIT', object)",
             'openapi_context' => [
                 'security' => [['bearerAuth' => []]]
             ]
