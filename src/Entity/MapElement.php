@@ -60,9 +60,11 @@ abstract class MapElement
     /**
      * @param string|null $type
      */
-    public function setType(?string $type): void
+    public function setType(?string $type): self
     {
         $this->type = $type;
+
+        return $this;
     }
 
     /**

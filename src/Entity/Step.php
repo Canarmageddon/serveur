@@ -152,7 +152,7 @@ class Step extends MapElement
     private ?string $title;
 
     #[ORM\Column(type: 'date', nullable: true)]
-    private $date;
+    private ?DateTimeInterface $date;
 
     public function getLocation(): ?Location
     {
