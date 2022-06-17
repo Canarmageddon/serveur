@@ -158,7 +158,7 @@ class TripController extends AbstractController
         if ($trip != null) {
             $travelers = [];
             $users = $trip->getUsers();
-            foreach($users as $user) {
+            foreach ($users as $user) {
                 $traveler = $entityManager->getRepository(TripUser::class)->findOneBy(['trip' => $trip->getId(), 'user' => $user->getId()]);
                 if ($traveler != null) {
                     $travelers[] = $traveler;
@@ -214,9 +214,7 @@ class TripController extends AbstractController
             $entityManager->flush();
 
             return $this->json($trip, 201, [], ['groups' => 'trip:item']);
-        }
-        catch (NotEncodableValueException $e)
-        {
+        } catch (NotEncodableValueException $e) {
             return $this->json([
                 'status' => 400,
                 'message' => $e->getMessage()
@@ -240,7 +238,7 @@ class TripController extends AbstractController
             //Access control
             $this->denyAccessUnlessGranted('TRIP_EDIT', $trip);
 
-            if($user != null && $trip != null) {
+            if ($user != null && $trip != null) {
 
                 /** @var TripUser $tripUser */
                 $tripUser = $entityManager->getRepository(TripUser::class)->findOneBy(['trip' => $trip->getId(), 'user' => $user->getId()]);
@@ -255,31 +253,25 @@ class TripController extends AbstractController
                     return $this->json([
                         'message' => 'User ' . $emailUser . ' added to Trip ' . $id,
                     ], 202);
-
                 } else {
                     return $this->json([
                         'message' => 'User ' . $emailUser . ' already member of Trip ' . $id,
                     ]);
                 }
-
             } elseif ($user == null && $trip == null) {
                 return $this->json([
                     'message' => 'Trip ' . $id . ' and User ' . $emailUser . ' not found',
                 ], 404);
-
             } elseif ($user == null) {
                 return $this->json([
                     'message' => 'User ' . $emailUser . ' not found',
                 ], 404);
-
             } else {
                 return $this->json([
                     'message' => 'Trip ' . $id . ' not found',
                 ], 404);
             }
-        }
-        catch (NotEncodableValueException $e)
-        {
+        } catch (NotEncodableValueException $e) {
             return $this->json([
                 'status' => 400,
                 'message' => $e->getMessage()
@@ -303,7 +295,7 @@ class TripController extends AbstractController
             //Access control
             $this->denyAccessUnlessGranted('TRIP_EDIT', $trip);
 
-            if($user != null && $trip != null) {
+            if ($user != null && $trip != null) {
 
                 /** @var TripUser $tripUser */
                 $tripUser = $entityManager->getRepository(TripUser::class)->findOneBy(['trip' => $trip->getId(), 'user' => $user->getId()]);
@@ -317,31 +309,25 @@ class TripController extends AbstractController
                     return $this->json([
                         'message' => 'User ' . $emailUser . ' removed from Trip ' . $id,
                     ], 202);
-
                 } else {
                     return $this->json([
                         'message' => 'User ' . $emailUser . ' already not member of Trip ' . $id,
                     ]);
                 }
-
             } elseif ($user == null && $trip == null) {
                 return $this->json([
                     'message' => 'Trip ' . $id . ' and User ' . $emailUser . ' not found',
                 ], 404);
-
             } elseif ($user == null) {
                 return $this->json([
                     'message' => 'User ' . $emailUser . ' not found',
                 ], 404);
-
             } else {
                 return $this->json([
                     'message' => 'Trip ' . $id . ' not found',
                 ], 404);
             }
-        }
-        catch (NotEncodableValueException $e)
-        {
+        } catch (NotEncodableValueException $e) {
             return $this->json([
                 'status' => 400,
                 'message' => $e->getMessage()
@@ -375,9 +361,7 @@ class TripController extends AbstractController
             $entityManager->flush();
 
             return $this->json($trip, 201, [], ['groups' => 'trip:item']);
-        }
-        catch (NotEncodableValueException $e)
-        {
+        } catch (NotEncodableValueException $e) {
             return $this->json([
                 'status' => 400,
                 'message' => $e->getMessage()
@@ -404,7 +388,7 @@ class TripController extends AbstractController
             $entityManager->flush();
             return $this->json([
                 'status' => 200,
-                'message' => 'Link ' . $trip->getLink() . ' generated',
+                'message' => $trip->getLink(),
             ]);
         }
     }
@@ -560,9 +544,7 @@ class TripController extends AbstractController
                 $entityManager->flush();
 
                 return $this->json($trip, 201, [], ['groups' => 'trip:item']);
-            }
-            catch (NotEncodableValueException $e)
-            {
+            } catch (NotEncodableValueException $e) {
                 return $this->json([
                     'status' => 400,
                     'message' => $e->getMessage()
