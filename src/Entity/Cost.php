@@ -27,13 +27,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
                             'schema'  => [
                                 'type' => 'object',
                                 'properties' =>
-                                    [
-                                        'label' => ['type' => 'string'],
-                                        'value' => ['type' => 'float'],
-                                        'category' => ['type' => 'string'],
-                                        'creator' => ['type' => 'int'],
-                                        'trip' => ['type' => 'int'],
-                                    ],
+                                [
+                                    'label' => ['type' => 'string'],
+                                    'value' => ['type' => 'float'],
+                                    'category' => ['type' => 'string'],
+                                    'creator' => ['type' => 'int'],
+                                    'trip' => ['type' => 'int'],
+                                ],
                             ],
                             'example' => [
                                 'label' => "Motif du coût",
@@ -63,11 +63,11 @@ use Symfony\Component\Serializer\Annotation\Groups;
                             'schema'  => [
                                 'type' => 'object',
                                 'properties' =>
-                                    [
-                                        'label' => ['type' => 'string'],
-                                        'value' => ['type' => 'float'],
-                                        'category' => ['type' => 'string']
-                                    ],
+                                [
+                                    'label' => ['type' => 'string'],
+                                    'value' => ['type' => 'float'],
+                                    'category' => ['type' => 'string']
+                                ],
                             ],
                             'example' => [
                                 'label' => "Motif du coût",
@@ -92,9 +92,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
                             'schema'  => [
                                 'type' => 'object',
                                 'properties' =>
-                                    [
-                                        'email' => ['type' => 'string'],
-                                    ],
+                                [
+                                    'email' => ['type' => 'string'],
+                                ],
                             ],
                             'example' => [
                                 'email' => "root@root.fr",
@@ -117,9 +117,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
                             'schema'  => [
                                 'type' => 'object',
                                 'properties' =>
-                                    [
-                                        'email' => ['type' => 'string'],
-                                    ],
+                                [
+                                    'email' => ['type' => 'string'],
+                                ],
                             ],
                             'example' => [
                                 'email' => "root@root.fr",
@@ -171,6 +171,7 @@ class Cost
     private ?float $value;
 
     #[ORM\OneToMany(mappedBy: 'cost', targetEntity: CostUser::class, orphanRemoval: true)]
+    #[Groups(['cost:list', 'cost:item'])]
     private Collection $costUsers;
 
     public function getId(): ?int
@@ -219,7 +220,8 @@ class Cost
         return $this;
     }
 
-    public function __construct(){
+    public function __construct()
+    {
         $this->creationDate = new DateTimeImmutable('now');
         $this->costUsers = new ArrayCollection();
     }
@@ -288,7 +290,7 @@ class Cost
     public function getBeneficiaries(): array
     {
         $beneficiaries = [];
-        foreach($this->getCostUsers() as $costUser) {
+        foreach ($this->getCostUsers() as $costUser) {
             $beneficiaries[] = $costUser->getUser();
         }
         return $beneficiaries;
