@@ -25,15 +25,15 @@ use Symfony\Component\Serializer\Annotation\Groups;
                             'schema'  => [
                                 'type' => 'object',
                                 'properties' =>
-                                    [
-                                        'content' => ['type' => 'string'],
-                                        'creator' => ['type' => 'int'],
-                                        'trip' => ['type' => 'int'],
-                                        'location' => ['type' => 'int'],
-                                        'latitude' => ['type' => 'float'],
-                                        'longitude' => ['type' => 'float'],
+                                [
+                                    'content' => ['type' => 'string'],
+                                    'creator' => ['type' => 'int'],
+                                    'trip' => ['type' => 'int'],
+                                    'location' => ['type' => 'int'],
+                                    'latitude' => ['type' => 'float'],
+                                    'longitude' => ['type' => 'float'],
 
-                                    ],
+                                ],
                             ],
                             'example' => [
                                 'content' => "Contenu de l'entrée",
@@ -64,9 +64,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
                             'schema'  => [
                                 'type' => 'object',
                                 'properties' =>
-                                    [
-                                        'content' => ['type' => 'string'],
-                                    ],
+                                [
+                                    'content' => ['type' => 'string'],
+                                ],
                             ],
                             'example' => [
                                 'content' => "Contenu de l'entrée",
@@ -88,7 +88,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class LogBookEntry extends AlbumElement
 {
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(['albumElement:list', 'albumElement:item', 'logBookEntry:list', 'logBookEntry:item'])]
+    #[Groups(['albumElement:list', 'albumElement:item', 'logBookEntry:list', 'logBookEntry:item', 'album:list', 'album:item'])]
     private ?string $content;
 
     public function getContent(): ?string

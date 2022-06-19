@@ -19,9 +19,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 #[ORM\Entity(repositoryClass: PictureRepository::class)]
 #[ApiResource(
     collectionOperations: [
-        'get' => [
-
-        ],
+        'get' => [],
         'post' => [
             'controller' => PictureController::class,
             'deserialize' => false,
@@ -70,7 +68,8 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
             ],
         ],
     ],
-    itemOperations: ['get' => [],
+    itemOperations: [
+        'get' => [],
         'getPicture' => [
             'controller' => GetPicture::class,
             'path' => '/pictures/file/{id}',
@@ -96,8 +95,8 @@ class Picture extends AlbumElement
     #[Assert\NotNull(groups: ['picture_create'])]
     public ?File $file = null;
 
-    #[ORM\Column(nullable: true)] 
-    #[Groups(['albumElement:list', 'albumElement:item', 'picture:read', 'picture:item', 'trip:item'])]
+    #[ORM\Column(nullable: true)]
+    #[Groups(['albumElement:list', 'albumElement:item', 'picture:read', 'picture:item', 'trip:item', 'album:list', 'album:item'])]
     public ?string $filePath = null;
 
     public function getFilePath(): ?string
