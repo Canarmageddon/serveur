@@ -19,7 +19,7 @@ abstract class AlbumElement
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(['albumElement:list', 'albumElement:item', 'logBookEntry:list', 'logBookEntry:item', 'picture:list', 'picture:item', 'picture:read', 'trip:list', 'trip:item'])]
+    #[Groups(['albumElement:list', 'albumElement:item', 'logBookEntry:list', 'logBookEntry:item', 'picture:list', 'picture:item', 'picture:read', 'trip:list', 'trip:item', 'location:list', 'location:item'])]
     private ?int $id = null;
 
     private ?string $type;
