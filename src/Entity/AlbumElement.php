@@ -29,7 +29,7 @@ abstract class AlbumElement
     private ?Album $album = null;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    #[Groups(['albumElement:list', 'albumElement:item', 'logBookEntry:list', 'logBookEntry:item', 'picture:list', 'picture:item', 'trip:list', 'trip:item'])]
+    #[Groups(['albumElement:list', 'albumElement:item', 'logBookEntry:list', 'logBookEntry:item', 'picture:list', 'picture:item', 'trip:list', 'trip:item', 'location:list', 'location:item'])]
     private ?DateTimeImmutable $creationDate;
 
     #[ORM\ManyToOne(targetEntity: Trip::class, inversedBy: 'albumElements')]
@@ -38,7 +38,7 @@ abstract class AlbumElement
     private ?Trip $trip;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'albumElements')]
-    #[Groups(['albumElement:list', 'albumElement:item', 'logBookEntry:list', 'logBookEntry:item', 'picture:list', 'picture:item', 'picture:read', 'trip:list', 'trip:item'])]
+    #[Groups(['albumElement:list', 'albumElement:item', 'logBookEntry:list', 'logBookEntry:item', 'picture:list', 'picture:item', 'picture:read', 'trip:list', 'trip:item', 'location:list', 'location:item'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $creator;
 
