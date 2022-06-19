@@ -108,12 +108,6 @@ class Document
     #[Assert\NotNull(groups: ['document_create'])]
     public ?File $file = null;
 
-    public function __construct(User $creator, MapElement $mapElement, string $name){
-        $this->creator = $creator;
-        $this->mapElement = $mapElement;
-        $this->name = $name;
-    }
-
     public function getId(): ?int
     {
         return $this->id;

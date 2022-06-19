@@ -36,7 +36,7 @@ class PointOfInterestController extends AbstractController
         }
     }
 
-    #[Route('/api/point_of_interests/new', name: 'point_of_interest_new', methods: 'POST')]
+    #[Route('/api/point_of_interests', name: 'point_of_interest_new', methods: 'POST')]
     public function new(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer): Response
     {
         try {
@@ -84,7 +84,7 @@ class PointOfInterestController extends AbstractController
         }
     }
 
-    #[Route('/api/point_of_interests/{id}/edit', name: 'point_of_interest_edit', methods: 'PUT')]
+    #[Route('/api/point_of_interests/{id}', name: 'point_of_interest_edit', methods: 'PUT')]
     public function edit(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer, int $id): Response
     {
         try {

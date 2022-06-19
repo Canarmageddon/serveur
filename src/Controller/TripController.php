@@ -188,7 +188,7 @@ class TripController extends AbstractController
         return $this->json($tripsReturned, 200, [], ['groups' => 'trip:item']);
     }
 
-    #[Route('/api/trips/new', name: 'trip_new', methods: 'POST')]
+    #[Route('/api/trips', name: 'trip_new', methods: 'POST')]
     public function new(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer): Response
     {
         try {
@@ -335,7 +335,7 @@ class TripController extends AbstractController
         }
     }
 
-    #[Route('/api/trips/{id}/edit', name: 'trip_edit', methods: 'PUT')]
+    #[Route('/api/trips/{id}', name: 'trip_edit', methods: 'PUT')]
     public function edit(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer, int $id): Response
     {
         try {

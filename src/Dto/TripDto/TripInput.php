@@ -4,9 +4,9 @@ namespace App\Dto\TripDto;
 
 class TripInput {
 
-    private ?string $name;
+    private ?string $name = null;
 
-    private ?int $creator;
+    private ?int $creator = null;
 
     public function getName(): ?string
     {

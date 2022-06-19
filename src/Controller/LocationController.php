@@ -88,7 +88,7 @@ class LocationController extends AbstractController
         }
     }
 
-    #[Route('/api/locations/new', name: 'location_new', methods: 'POST')]
+    #[Route('/api/locations', name: 'location_new', methods: 'POST')]
     public function new(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer): Response
     {
         try {
@@ -109,7 +109,7 @@ class LocationController extends AbstractController
         }
     }
 
-    #[Route('/api/locations/{id}/edit', name: 'location_edit', methods: 'PUT')]
+    #[Route('/api/locations/{id}', name: 'location_edit', methods: 'PUT')]
     public function edit(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer, int $id): Response
     {
         try {

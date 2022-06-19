@@ -22,6 +22,8 @@ class UserController extends AbstractController
         /** @var User $user */
         $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
         if ($user != null) {
+            //Access control
+            $this->denyAccessUnlessGranted('TRIP_EDIT', $user);
             return $this->json($user, 201, [], ['groups' => 'user:item']);
         } else {
             return $this->json([
@@ -67,7 +69,7 @@ class UserController extends AbstractController
         }
     }
 
-    #[Route('/api/users/{id}/edit', name: 'user_edit', methods: 'PUT')]
+    #[Route('/api/users/{id}', name: 'user_edit', methods: 'PUT')]
     public function edit(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer, int $id): Response
     {
         try {
