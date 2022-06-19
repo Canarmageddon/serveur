@@ -88,7 +88,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class LogBookEntry extends AlbumElement
 {
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(['albumElement:list', 'albumElement:item', 'logBookEntry:list', 'logBookEntry:item', 'album:list', 'album:item'])]
+    #[Groups(['albumElement:list', 'albumElement:item', 'logBookEntry:list', 'logBookEntry:item', 'album:list', 'album:item', 'location:list', 'location:item'])]
     private ?string $content;
 
     public function getContent(): ?string

@@ -96,7 +96,7 @@ class Picture extends AlbumElement
     public ?File $file = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['albumElement:list', 'albumElement:item', 'picture:read', 'picture:item', 'trip:item', 'album:list', 'album:item'])]
+    #[Groups(['albumElement:list', 'albumElement:item', 'picture:read', 'picture:item', 'trip:item', 'album:list', 'album:item', 'location:list', 'location:item'])]
     public ?string $filePath = null;
 
     public function getFilePath(): ?string
