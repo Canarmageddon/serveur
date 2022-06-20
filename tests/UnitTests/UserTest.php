@@ -150,7 +150,7 @@ class UserTest extends TestCase{
         self::assertTrue($this->user->getSteps()->contains($value2));
     }
 
-    public function testAlbumElements(): void
+    public function testGetAlbumElements(): void
     {
         $trip = new Trip();
         $value = new LogBookEntry();

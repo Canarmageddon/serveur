@@ -109,7 +109,7 @@ class LocationTest extends TestCase
         self::assertTrue($this->location->getSteps()->contains($value2));
     }
 
-    public function testAlbumElements(): void
+    public function testGetAlbumElements(): void
     {
         $trip = new Trip();
         $value = new LogBookEntry();
