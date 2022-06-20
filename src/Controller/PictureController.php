@@ -104,7 +104,14 @@ final class PictureController extends AbstractController
             /** @var Album $album */
             $album = $entityManager->getRepository(Album::class)->find($pictureInput->getAlbum());
 
-            $album?->addAlbumElement($picture);
+            if ($album != null) {
+                if ($picture->getAlbum() != null) {
+                    $picture->getAlbum()->getTrip()->removeAlbumElement($picture);
+                    $picture->getAlbum()->removeAlbumElement($picture);
+                }
+                $album->getTrip()->addAlbumElement($picture);
+                $album->addAlbumElement($picture);
+            }
 
             //Access control
             $this->denyAccessUnlessGranted('TRIP_EDIT', $picture);

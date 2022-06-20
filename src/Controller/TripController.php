@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Dto\TripDto\TripInput;
 use App\Dto\TripDto\UserInput;
+use App\Entity\Album;
 use App\Entity\LogBookEntry;
 use App\Entity\Picture;
 use App\Entity\Step;
@@ -186,6 +187,34 @@ class TripController extends AbstractController
         }
 
         return $this->json($tripsReturned, 200, [], ['groups' => 'trip:item']);
+    }
+
+    #[Route('/api/trips/{id}/albumElements/locations', name: 'album_elements_locations_by_trip', methods: 'GET')]
+    public function albumElementsLocations(EntityManagerInterface $entityManager, int $id): Response
+    {
+        /** @var Trip $trip */
+        $trip = $entityManager->getRepository(Trip::class)->find($id);
+        if ($trip != null) {
+            $album = $trip->getAlbum();
+            if ($album == null) {
+                return $this->json([
+                    'message' => 'Album null',
+                ], 400);
+            }
+            $locations = [];
+            $albumElements = $trip->getAlbumElements();
+            foreach ($albumElements as $albumElement) {
+                $location = $albumElement->getLocation();
+                if ($location != null) {
+                    $locations[] = $location;
+                }
+            }
+            return $this->json($locations, 200, [], ['groups' => 'location:list']);
+        } else {
+            return $this->json([
+                'message' => 'Trip ' . $id . ' not found',
+            ], 404);
+        }
     }
 
     #[Route('/api/trips', name: 'trip_new', methods: 'POST')]

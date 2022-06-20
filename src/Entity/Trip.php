@@ -107,6 +107,10 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
             'method' => 'GET',
             'route_name' => 'users_by_trip',
         ],
+        'albumElementsLocations' => [
+            'method' => 'GET',
+            'route_name' => 'album_elements_locations_by_trip',
+        ],
         'edit' => [
             'method' => 'PUT',
             'route_name' => 'trip_edit',
