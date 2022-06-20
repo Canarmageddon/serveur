@@ -21,7 +21,8 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
     collectionOperations: [
         'get' => [],
         'post' => [
-            'controller' => PictureController::class,
+            'method' => 'POST',
+            'route_name' => 'picture_new',
             'deserialize' => false,
             'validation_groups' => ['Default', 'picture'],
             'openapi_context' => [
@@ -75,6 +76,31 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
             'path' => '/pictures/file/{id}',
             'method' => 'GET',
             'read' => false
+        ],
+        'edit' => [
+            'method' => 'PUT',
+            'route_name' => 'picture_edit',
+            'openapi_context' => [
+                'summary'     => 'Edit a picture',
+                'security' => [['bearerAuth' => []]],
+                'description' => "Edit a picture",
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema'  => [
+                                'type' => 'object',
+                                'properties' =>
+                                    [
+                                        'album' => ['type' => 'int'],
+                                    ],
+                            ],
+                            'example' => [
+                                'album' => 1,
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ],
         'delete' => [
             "security" => "is_granted('TRIP_EDIT', object)",
