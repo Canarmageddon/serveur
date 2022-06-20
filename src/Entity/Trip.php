@@ -361,6 +361,9 @@ class Trip
     #[ORM\Column(type: 'string', length: 30, nullable: true)]
     private ?string $link = null;
 
+    #[ORM\Column(type: 'boolean')]
+    private ?bool $isEnded;
+
     public function __construct()
     {
         $this->album = new Album();
@@ -372,6 +375,7 @@ class Trip
         $this->travels = new ArrayCollection();
         $this->tripUsers = new ArrayCollection();
         $this->albumElements = new ArrayCollection();
+        $this->isEnded = false;
     }
 
     public function getId(): ?int
@@ -675,5 +679,17 @@ class Trip
         }
 
         $em->flush();
+    }
+
+    public function getIsEnded(): ?bool
+    {
+        return $this->isEnded;
+    }
+
+    public function setIsEnded(bool $isEnded): self
+    {
+        $this->isEnded = $isEnded;
+
+        return $this;
     }
 }

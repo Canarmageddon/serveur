@@ -178,10 +178,9 @@ class TripController extends AbstractController
     {
         $trips = $entityManager->getRepository(Trip::class)->findAll();
         $tripsReturned = [];
-        $now = new DateTime('now');
         /** @var Trip $trip */
         foreach ($trips as $trip) {
-            if ($trip->getSteps()->last()->getCreationDate() > $now == $isEnded) {
+            if ($trip->getIsEnded() == $isEnded) {
                 $tripsReturned[] = $trip;
             }
         }
