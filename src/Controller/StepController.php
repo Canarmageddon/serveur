@@ -168,6 +168,9 @@ class StepController extends AbstractController
             //Access control
             $this->denyAccessUnlessGranted('TRIP_EDIT', $step);
             $this->removeTravel($step, $entityManager);
+            foreach ($step->getPointsOfInterest() as $poi) {
+                $step->removePointsOfInterest($poi);
+            }
             $entityManager->remove($step);
             $entityManager->flush();
 

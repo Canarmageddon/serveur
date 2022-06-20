@@ -128,7 +128,7 @@ class PointOfInterest extends MapElement
     #[Groups(['pointOfInterest:list', 'pointOfInterest:item', 'trip:list', 'trip:item'])]
     private ?string $description;
 
-    #[ORM\ManyToOne(targetEntity: Step::class, inversedBy: 'pointsOfInterest')]
+    #[ORM\ManyToOne(targetEntity: Step::class, cascade: ['persist', 'remove'], inversedBy: 'pointsOfInterest')]
     #[Groups(['pointOfInterest:list', 'pointOfInterest:item', 'trip:list', 'trip:item'])]
     private ?Step $step;
 
