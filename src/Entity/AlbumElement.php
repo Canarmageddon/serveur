@@ -9,7 +9,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: AlbumElementRepository::class)]
 #[ORM\InheritanceType('JOINED')]
-#[ORM\DiscriminatorColumn(name:"type", type: "string")]
+#[ORM\DiscriminatorColumn(name: "type", type: "string")]
 #[ORM\DiscriminatorMap([
     "log_book_entry" => "LogBookEntry",
     "picture" => "Picture"
@@ -19,7 +19,7 @@ abstract class AlbumElement
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(['albumElement:list', 'albumElement:item', 'logBookEntry:list', 'logBookEntry:item','picture:list', 'picture:item', 'picture:read', 'trip:list', 'trip:item'])]
+    #[Groups(['albumElement:list', 'albumElement:item', 'logBookEntry:list', 'logBookEntry:item', 'picture:list', 'picture:item', 'picture:read', 'trip:list', 'trip:item', 'location:list', 'location:item'])]
     private ?int $id = null;
 
     private ?string $type;
@@ -29,7 +29,7 @@ abstract class AlbumElement
     private ?Album $album = null;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    #[Groups(['albumElement:list', 'albumElement:item', 'logBookEntry:list', 'logBookEntry:item', 'picture:list', 'picture:item', 'trip:list', 'trip:item'])]
+    #[Groups(['albumElement:list', 'albumElement:item', 'logBookEntry:list', 'logBookEntry:item', 'picture:list', 'picture:item', 'trip:list', 'trip:item', 'location:list', 'location:item'])]
     private ?DateTimeImmutable $creationDate;
 
     #[ORM\ManyToOne(targetEntity: Trip::class, inversedBy: 'albumElements')]
@@ -38,7 +38,7 @@ abstract class AlbumElement
     private ?Trip $trip;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'albumElements')]
-    #[Groups(['albumElement:list', 'albumElement:item', 'logBookEntry:list', 'logBookEntry:item', 'picture:list', 'picture:item', 'picture:read', 'trip:list', 'trip:item'])]
+    #[Groups(['albumElement:list', 'albumElement:item', 'logBookEntry:list', 'logBookEntry:item', 'picture:list', 'picture:item', 'picture:read', 'trip:list', 'trip:item', 'location:list', 'location:item'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $creator;
 
@@ -47,7 +47,7 @@ abstract class AlbumElement
     private ?Location $location;
 
     #[ORM\Column(type: 'string', length: 30)]
-    #[Groups(['albumElement:list', 'albumElement:item', 'logBookEntry:list', 'logBookEntry:item', 'picture:list', 'picture:item', 'picture:read', 'picture:write'])]
+    #[Groups(['albumElement:list', 'albumElement:item', 'logBookEntry:list', 'logBookEntry:item', 'picture:list', 'picture:item', 'picture:read', 'picture:write', 'location:list', 'location:item'])]
     private ?string $type2;
 
     public function getId(): ?int
