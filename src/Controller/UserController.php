@@ -57,7 +57,7 @@ class UserController extends AbstractController
             $now = new DateTime('now');
             /** @var Trip $trip */
             foreach ($trips as $trip) {
-                if ($trip->getSteps()->last()->getCreationDate() > $now == $isEnded) {
+                if ($trip->getSteps()->last() != null && $trip->getSteps()->last()->getCreationDate() > $now == $isEnded) {
                     $tripsReturned[] = $trip;
                 }
             }
