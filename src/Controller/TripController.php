@@ -368,8 +368,8 @@ class TripController extends AbstractController
     {
         try {
             $data = $request->getContent();
-            /** @var Trip $tripInput */
-            $tripInput = $serializer->deserialize($data, Trip::class, 'json');
+            /** @var TripInput $tripInput */
+            $tripInput = $serializer->deserialize($data, TripInput::class, 'json');
             /** @var Trip $trip */
             $trip = $entityManager->getRepository(Trip::class)->find($id);
             if ($trip == null) {
@@ -383,6 +383,10 @@ class TripController extends AbstractController
 
             if ($tripInput->getName() != null) {
                 $trip->setName($tripInput->getName());
+            }
+
+            if ($tripInput->getIsEnded() != null) {
+                $trip->setIsEnded($tripInput->getIsEnded());
             }
 
             $entityManager->persist($trip);

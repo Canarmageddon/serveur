@@ -126,10 +126,12 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
                                 'properties' =>
                                     [
                                         'name' => ['type' => 'string'],
+                                        'isEnded' => ['type' => 'bool']
                                     ],
                             ],
                             'example' => [
                                 'name' => "Vacances au soleil",
+                                'isEnded' => false,
                             ],
                         ],
                     ],
