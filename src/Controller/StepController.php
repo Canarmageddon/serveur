@@ -87,7 +87,9 @@ class StepController extends AbstractController
             $entityManager->persist($step);
             $entityManager->flush();
 
-            $this->createTravel($step, $start, $entityManager);
+            if ($start) {
+                $this->createTravel($step, $start, $entityManager);
+            }
 
             return $this->json($step, 201, [], ['groups' => 'step:item']);
         }
