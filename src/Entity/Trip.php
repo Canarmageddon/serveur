@@ -78,6 +78,10 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
             'method' => 'GET',
             'route_name' => 'costs_by_trip',
         ],
+        'link' => [
+            'method' => 'GET',
+            'route_name' => 'link_by_trip',
+        ],
         'log_book_entries' => [
             'method' => 'GET',
             'route_name' => 'log_book_entries_by_trip',
