@@ -12,7 +12,7 @@ class TaskInput
 
     private ?int $creator = null;
 
-    private ?DateTimeInterface $date = null;
+    private ?string $date = null;
 
     private ?int $toDoList = null;
 
@@ -69,17 +69,17 @@ class TaskInput
     }
 
     /**
-     * @return DateTimeInterface|null
+     * @return string|null
      */
-    public function getDate(): ?DateTimeInterface
+    public function getDate(): ?string
     {
         return $this->date;
     }
 
     /**
-     * @param DateTimeInterface|null $date
+     * @param string|null $date
      */
-    public function setDate(?DateTimeInterface $date): void
+    public function setDate(?string $date): void
     {
         $this->date = $date;
     }

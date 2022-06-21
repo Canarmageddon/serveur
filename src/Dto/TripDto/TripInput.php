@@ -8,6 +8,8 @@ class TripInput {
 
     private ?int $creator = null;
 
+    private ?bool $isEnded = null;
+
     public function getName(): ?string
     {
         return $this->name;
@@ -34,5 +36,21 @@ class TripInput {
     public function setCreator(?int $creator): void
     {
         $this->creator = $creator;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getIsEnded(): ?bool
+    {
+        return $this->isEnded;
+    }
+
+    /**
+     * @param bool|null $isEnded
+     */
+    public function setIsEnded(?bool $isEnded): void
+    {
+        $this->isEnded = $isEnded;
     }
 }

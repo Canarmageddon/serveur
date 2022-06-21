@@ -65,8 +65,8 @@ class StepController extends AbstractController
             $location->addStep($step);
             $entityManager->persist($location);
 
-            if ($stepInput->getDate() != null) {
-                $date = new DateTime($stepInput->getDate());
+            if ($stepInput->getDate() != null && $stepInput->getDate() != "") {
+                $date = DateTime::createFromFormat('d-m-Y', $stepInput->getDate());
                 $step->setDate($date);
             }
             $step->setDescription($stepInput->getDescription());
@@ -87,7 +87,9 @@ class StepController extends AbstractController
             $entityManager->persist($step);
             $entityManager->flush();
 
-            $this->createTravel($step, $start, $entityManager);
+            if ($start) {
+                $this->createTravel($step, $start, $entityManager);
+            }
 
             return $this->json($step, 201, [], ['groups' => 'step:item']);
         }
@@ -138,7 +140,7 @@ class StepController extends AbstractController
                 $step->setDescription($stepInput->getDescription());
             }
 
-            if ($stepInput->getDate() != null) {
+            if ($stepInput->getDate() != null && $stepInput->getDate() != "") {
                 $date = DateTime::createFromFormat('d-m-Y', $stepInput->getDate());
                 $step->setDate($date);
             }
@@ -166,6 +168,9 @@ class StepController extends AbstractController
             //Access control
             $this->denyAccessUnlessGranted('TRIP_EDIT', $step);
             $this->removeTravel($step, $entityManager);
+            foreach ($step->getPointsOfInterest() as $poi) {
+                $step->removePointsOfInterest($poi);
+            }
             $entityManager->remove($step);
             $entityManager->flush();
 

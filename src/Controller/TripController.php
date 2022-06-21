@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Dto\TripDto\TripInput;
 use App\Dto\TripDto\UserInput;
+use App\Entity\Album;
 use App\Entity\LogBookEntry;
 use App\Entity\Picture;
 use App\Entity\Step;
@@ -177,15 +178,42 @@ class TripController extends AbstractController
     {
         $trips = $entityManager->getRepository(Trip::class)->findAll();
         $tripsReturned = [];
-        $now = new DateTime('now');
         /** @var Trip $trip */
         foreach ($trips as $trip) {
-            if ($trip->getSteps()->last()->getCreationDate() > $now == $isEnded) {
+            if ($trip->getIsEnded() == $isEnded) {
                 $tripsReturned[] = $trip;
             }
         }
 
         return $this->json($tripsReturned, 200, [], ['groups' => 'trip:item']);
+    }
+
+    #[Route('/api/trips/{id}/albumElements/locations', name: 'album_elements_locations_by_trip', methods: 'GET')]
+    public function albumElementsLocations(EntityManagerInterface $entityManager, int $id): Response
+    {
+        /** @var Trip $trip */
+        $trip = $entityManager->getRepository(Trip::class)->find($id);
+        if ($trip != null) {
+            $album = $trip->getAlbum();
+            if ($album == null) {
+                return $this->json([
+                    'message' => 'Album null',
+                ], 400);
+            }
+            $locations = [];
+            $albumElements = $trip->getAlbumElements();
+            foreach ($albumElements as $albumElement) {
+                $location = $albumElement->getLocation();
+                if ($location != null) {
+                    $locations[] = $location;
+                }
+            }
+            return $this->json($locations, 200, [], ['groups' => 'location:list']);
+        } else {
+            return $this->json([
+                'message' => 'Trip ' . $id . ' not found',
+            ], 404);
+        }
     }
 
     #[Route('/api/trips', name: 'trip_new', methods: 'POST')]
@@ -340,8 +368,8 @@ class TripController extends AbstractController
     {
         try {
             $data = $request->getContent();
-            /** @var Trip $tripInput */
-            $tripInput = $serializer->deserialize($data, Trip::class, 'json');
+            /** @var TripInput $tripInput */
+            $tripInput = $serializer->deserialize($data, TripInput::class, 'json');
             /** @var Trip $trip */
             $trip = $entityManager->getRepository(Trip::class)->find($id);
             if ($trip == null) {
@@ -355,6 +383,10 @@ class TripController extends AbstractController
 
             if ($tripInput->getName() != null) {
                 $trip->setName($tripInput->getName());
+            }
+
+            if ($tripInput->getIsEnded() != null) {
+                $trip->setIsEnded($tripInput->getIsEnded());
             }
 
             $entityManager->persist($trip);
