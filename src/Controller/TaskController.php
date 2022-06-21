@@ -7,6 +7,7 @@ use App\Entity\MapElement;
 use App\Entity\Task;
 use App\Entity\ToDoList;
 use App\Entity\User;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,7 +30,10 @@ class TaskController extends AbstractController
             $task = new Task();
             $task->setDescription($taskInput->getDescription());
             $task->setName($taskInput->getName());
-            $task->setDate($taskInput->getDate());
+            if ($taskInput->getDate() != null && $taskInput->getDate() != "") {
+                $date = DateTime::createFromFormat('d-m-Y', $taskInput->getDate());
+                $task->setDate($date);
+            }
 
             /** @var ToDoList $toDoList */
             $toDoList = $entityManager->getRepository(ToDoList::class)->find($taskInput->getToDoList());
@@ -84,8 +88,9 @@ class TaskController extends AbstractController
             if ($taskInput->getDescription() != null) {
                 $task->setDescription($taskInput->getDescription());
             }
-            if ($taskInput->getDate() != null) {
-                $task->setDate($taskInput->getDate());
+            if ($taskInput->getDate() != null && $taskInput->getDate() != "") {
+                $date = DateTime::createFromFormat('d-m-Y', $taskInput->getDate());
+                $task->setDate($date);
             }
             if ($taskInput->getIsDone() != null) {
                 $task->setIsDone($taskInput->getIsDone());
