@@ -31,7 +31,7 @@ class TaskController extends AbstractController
             $task->setDescription($taskInput->getDescription());
             $task->setName($taskInput->getName());
             if ($taskInput->getDate() != null && $taskInput->getDate() != "") {
-                $date = DateTime::createFromFormat('d-m-Y', $taskInput->getDate());
+                $date = DateTime::createFromFormat('d-m-Y H:i', $taskInput->getDate());
                 $task->setDate($date);
             }
 
@@ -89,7 +89,7 @@ class TaskController extends AbstractController
                 $task->setDescription($taskInput->getDescription());
             }
             if ($taskInput->getDate() != null && $taskInput->getDate() != "") {
-                $date = DateTime::createFromFormat('d-m-Y', $taskInput->getDate());
+                $date = DateTime::createFromFormat('d-m-Y H:i', $taskInput->getDate());
                 $task->setDate($date);
             }
             if ($taskInput->getIsDone() != null) {
