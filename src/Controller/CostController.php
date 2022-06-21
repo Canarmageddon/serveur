@@ -6,6 +6,7 @@ use App\Dto\CostInput;
 use App\Dto\TripDto\UserInput;
 use App\Entity\Cost;
 use App\Entity\CostUser;
+use App\Entity\Guest;
 use App\Entity\Trip;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
@@ -104,9 +105,19 @@ class CostController extends AbstractController
             $data = $request->getContent();
             /** @var UserInput $userInput */
             $userInput = $serializer->deserialize($data, UserInput::class, 'json');
-            $emailUser = $userInput->getEmail();
-            /** @var User $user */
-            $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $emailUser]);
+            $userIdentifier = $userInput->getEmail();
+            $isGuest = false;
+            if ($userIdentifier == null) {
+                $userIdentifier = $userInput->getName();
+                $isGuest = true;
+            }
+            if ($isGuest) {
+                /** @var User $user */
+                $user = $entityManager->getRepository(Guest::class)->findOneBy(['name' => $userIdentifier]);
+            } else {
+                /** @var User $user */
+                $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $userIdentifier]);
+            }
             /** @var Cost $cost */
             $cost = $entityManager->getRepository(Cost::class)->find($id);
 
@@ -114,7 +125,7 @@ class CostController extends AbstractController
 
                 if (!$user->isMemberOf($cost->getTrip()->getId())) {
                     return $this->json([
-                        'message' => 'User ' . $emailUser . ' not member of Trip ' . $cost->getTrip()->getId(),
+                        'message' => 'User ' . $userIdentifier . ' not member of Trip ' . $cost->getTrip()->getId(),
                     ], 401);
                 }
 
@@ -129,23 +140,23 @@ class CostController extends AbstractController
                     $entityManager->persist($costUser);
                     $entityManager->flush();
                     return $this->json([
-                        'message' => 'User ' . $emailUser . ' added to Cost ' . $id,
+                        'message' => 'User ' . $userIdentifier . ' added to Cost ' . $id,
                     ], 202);
 
                 } else {
                     return $this->json([
-                        'message' => 'User ' . $emailUser . ' already beneficiary of Cost ' . $id,
+                        'message' => 'User ' . $userIdentifier . ' already beneficiary of Cost ' . $id,
                     ], 200);
                 }
 
             } elseif ($user == null && $cost == null) {
                 return $this->json([
-                    'message' => 'Cost ' . $id . ' and User ' . $emailUser . ' not found',
+                    'message' => 'Cost ' . $id . ' and User ' . $userIdentifier . ' not found',
                 ], 404);
 
             } elseif ($user == null) {
                 return $this->json([
-                    'message' => 'User ' . $emailUser . ' not found',
+                    'message' => 'User ' . $userIdentifier . ' not found',
                 ], 404);
 
             } else {
@@ -170,9 +181,19 @@ class CostController extends AbstractController
             $data = $request->getContent();
             /** @var UserInput $userInput */
             $userInput = $serializer->deserialize($data, UserInput::class, 'json');
-            $emailUser = $userInput->getEmail();
-            /** @var User $user */
-            $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $emailUser]);
+            $userIdentifier = $userInput->getEmail();
+            $isGuest = false;
+            if ($userIdentifier == null) {
+                $userIdentifier = $userInput->getName();
+                $isGuest = true;
+            }
+            if ($isGuest) {
+                /** @var User $user */
+                $user = $entityManager->getRepository(Guest::class)->findOneBy(['name' => $userIdentifier]);
+            } else {
+                /** @var User $user */
+                $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $userIdentifier]);
+            }
             /** @var Cost $cost */
             $cost = $entityManager->getRepository(Cost::class)->find($id);
 
@@ -180,7 +201,7 @@ class CostController extends AbstractController
 
                 if (!$user->isMemberOf($cost->getTrip()->getId())) {
                     return $this->json([
-                        'message' => 'User ' . $emailUser . ' not member of Trip ' . $cost->getTrip()->getId(),
+                        'message' => 'User ' . $userIdentifier . ' not member of Trip ' . $cost->getTrip()->getId(),
                     ], 401);
                 }
 
@@ -194,23 +215,23 @@ class CostController extends AbstractController
                     $entityManager->remove($costUser);
                     $entityManager->flush();
                     return $this->json([
-                        'message' => 'User ' . $emailUser . ' removed from Cost ' . $id,
+                        'message' => 'User ' . $userIdentifier . ' removed from Cost ' . $id,
                     ], 202);
 
                 } else {
                     return $this->json([
-                        'message' => 'User ' . $emailUser . ' already not beneficiary of Cost ' . $id,
+                        'message' => 'User ' . $userIdentifier . ' already not beneficiary of Cost ' . $id,
                     ]);
                 }
 
             } elseif ($user == null && $cost == null) {
                 return $this->json([
-                    'message' => 'Cost ' . $id . ' and User ' . $emailUser . ' not found',
+                    'message' => 'Cost ' . $id . ' and User ' . $userIdentifier . ' not found',
                 ], 404);
 
             } elseif ($user == null) {
                 return $this->json([
-                    'message' => 'User ' . $emailUser . ' not found',
+                    'message' => 'User ' . $userIdentifier . ' not found',
                 ], 404);
 
             } else {
