@@ -75,10 +75,10 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
                             'schema'  => [
                                 'type' => 'object',
                                 'properties' =>
-                                    [
-                                        'firstName' => ['type' => 'string'],
-                                        'lastName' => ['type' => 'string'],
-                                    ],
+                                [
+                                    'firstName' => ['type' => 'string'],
+                                    'lastName' => ['type' => 'string'],
+                                ],
                             ],
                             'example' => [
                                 'firstName' => "Prénom",
@@ -103,11 +103,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'cost:list', 'cost:item'])]
+    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'cost:list', 'cost:item', 'picture:list', 'picture:item'])]
     private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
-    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'user:item:read'])]
+    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'user:item:read', 'picture:list', 'picture:item'])]
     private ?string $email;
 
     #[ORM\Column(type: 'json')]
@@ -122,11 +122,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $plainPassword;
 
     #[ORM\Column(type: 'string', length: 50)]
-    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'picture:read', 'cost:list', 'cost:item', 'user:item:read'])]
+    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'picture:read', 'picture:list', 'picture:item', 'cost:list', 'cost:item', 'user:item:read'])]
     private ?string $firstName;
 
     #[ORM\Column(type: 'string', length: 50)]
-    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'picture:read', 'cost:list', 'cost:item', 'user:item:read'])]
+    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'picture:read', 'picture:list', 'picture:item', 'cost:list', 'cost:item', 'user:item:read'])]
     private ?string $lastName;
 
     #[ORM\Column(type: 'datetime_immutable')]
@@ -249,7 +249,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function eraseCredentials()
     {
         // If you store any temporary, sensitive data on the user, clear it here
-         $this->plainPassword = null;
+        $this->plainPassword = null;
     }
 
     public function getFirstName(): ?string
@@ -281,7 +281,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->creationDate;
     }
 
-    public function __construct(){
+    public function __construct()
+    {
         $this->creationDate = new DateTimeImmutable('now');
         $this->roles = ["ROLE_USER"];
         $this->pointOfInterests = new ArrayCollection();
@@ -452,7 +453,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getTrips(): array
     {
         $trips = [];
-        foreach($this->getTripUsers() as $tripUser) {
+        foreach ($this->getTripUsers() as $tripUser) {
             $trips[] = $tripUser->getTrip();
         }
         return $trips;
@@ -557,7 +558,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function isMemberOf(int $id): bool
     {
-        foreach($this->getTrips() as $trip) {
+        foreach ($this->getTrips() as $trip) {
             if ($trip->getId() == $id) {
                 return true;
             }
