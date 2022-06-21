@@ -152,7 +152,7 @@ class Step extends MapElement
     private ?string $title;
 
     #[ORM\Column(type: 'date', nullable: true)]
-    #[Groups(['step:list', 'step:item'])]
+    #[Groups(['step:list', 'step:item', 'trip:list', 'trip:item'])]
     private ?DateTimeInterface $date;
 
     public function getLocation(): ?Location
