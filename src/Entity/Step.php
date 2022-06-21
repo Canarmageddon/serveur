@@ -28,17 +28,17 @@ use Symfony\Component\Serializer\Annotation\Groups;
                             'schema'  => [
                                 'type' => 'object',
                                 'properties' =>
-                                    [
-                                        'latitude' => ['type' => 'float'],
-                                        'longitude' => ['type' => 'float'],
-                                        'name' => ['type' => 'string'],
-                                        'date' => ['type' => 'string'],
-                                        'type' => ['type' => 'string'],
-                                        'title' => ['type' => 'string'],
-                                        'description' => ['type' => 'string'],
-                                        'creator' => ['type' => 'int'],
-                                        'trip' => ['type' => 'int'],
-                                    ],
+                                [
+                                    'latitude' => ['type' => 'float'],
+                                    'longitude' => ['type' => 'float'],
+                                    'name' => ['type' => 'string'],
+                                    'date' => ['type' => 'string'],
+                                    'type' => ['type' => 'string'],
+                                    'title' => ['type' => 'string'],
+                                    'description' => ['type' => 'string'],
+                                    'creator' => ['type' => 'int'],
+                                    'trip' => ['type' => 'int'],
+                                ],
                             ],
                             'example' => [
                                 'latitude' => 48.123,
@@ -80,15 +80,15 @@ use Symfony\Component\Serializer\Annotation\Groups;
                             'schema'  => [
                                 'type' => 'object',
                                 'properties' =>
-                                    [
-                                        'latitude' => ['type' => 'float'],
-                                        'longitude' => ['type' => 'float'],
-                                        'name' => ['type' => 'string'],
-                                        'date' => ['type' => 'string'],
-                                        'type' => ['type' => 'string'],
-                                        'title' => ['type' => 'string'],
-                                        'description' => ['type' => 'string'],
-                                    ],
+                                [
+                                    'latitude' => ['type' => 'float'],
+                                    'longitude' => ['type' => 'float'],
+                                    'name' => ['type' => 'string'],
+                                    'date' => ['type' => 'string'],
+                                    'type' => ['type' => 'string'],
+                                    'title' => ['type' => 'string'],
+                                    'description' => ['type' => 'string'],
+                                ],
                             ],
                             'example' => [
                                 'latitude' => 48.123,
@@ -152,6 +152,7 @@ class Step extends MapElement
     private ?string $title;
 
     #[ORM\Column(type: 'date', nullable: true)]
+    #[Groups(['step:list', 'step:item'])]
     private ?DateTimeInterface $date;
 
     public function getLocation(): ?Location
@@ -207,7 +208,8 @@ class Step extends MapElement
         return $this;
     }
 
-    public function __construct(){
+    public function __construct()
+    {
         parent::__construct();
         $this->creationDate = new DateTimeImmutable('now');
         $this->pointsOfInterest = new ArrayCollection();
