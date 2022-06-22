@@ -3,12 +3,13 @@
 namespace App\Serializer;
 
 use App\Entity\Picture;
+use ArrayObject;
 use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
 use Vich\UploaderBundle\Storage\StorageInterface;
 
-final class PictureNormalizer implements ContextAwareNormalizerInterface, NormalizerAwareInterface
+final class MediaObjectNormalizer implements ContextAwareNormalizerInterface, NormalizerAwareInterface
 {
     use NormalizerAwareTrait;
 
@@ -18,7 +19,7 @@ final class PictureNormalizer implements ContextAwareNormalizerInterface, Normal
     {
     }
 
-    public function normalize($object, ?string $format = null, array $context = []): array|string|int|float|bool|\ArrayObject|null
+    public function normalize($object, ?string $format = null, array $context = []): array|string|int|float|bool|ArrayObject|null
     {
         $context[self::ALREADY_CALLED] = true;
 
