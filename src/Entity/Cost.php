@@ -98,7 +98,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
                                 ],
                             ],
                             'example' => [
-                                'email' => 1,
+                                'userId' => 1,
                             ],
                         ],
                     ],
