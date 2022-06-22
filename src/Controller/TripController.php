@@ -282,6 +282,11 @@ class TripController extends AbstractController
             if ($isGuest) {
                 /** @var User $user */
                 $user = $entityManager->getRepository(Guest::class)->findOneBy(['name' => $userIdentifier]);
+                if ($user == null) {
+                    $user = new Guest();
+                    $user->setName($userInput->getName());
+                    $entityManager->persist($user);
+                }
             } else {
                 /** @var User $user */
                 $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $userIdentifier]);
@@ -377,6 +382,9 @@ class TripController extends AbstractController
                     $trip->removeTripUser($tripUser);
                     $user->removeTripUser($tripUser);
                     $entityManager->remove($tripUser);
+                    if ($isGuest) {
+                        $entityManager->remove($user);
+                    }
                     $entityManager->flush();
                     return $this->json([
                         'message' => 'User ' . $userIdentifier . ' removed from Trip ' . $id,
