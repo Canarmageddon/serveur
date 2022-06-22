@@ -174,6 +174,7 @@ class AppFixtures extends Fixture
                     $pointOfInterest->setLocation($location);
                     $createdUsers[rand(0,3)]->addPointOfInterest($pointOfInterest);
                     $trip->addPointsOfInterest($pointOfInterest);
+                    $step->addPointsOfInterest($pointOfInterest);
                     $manager->persist($pointOfInterest);
                 }
             }
