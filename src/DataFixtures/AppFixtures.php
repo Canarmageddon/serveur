@@ -36,9 +36,9 @@ class AppFixtures extends Fixture
         $arrayLocation[] = ['Tellure', 'Tourisme', 48.2137384, 7.1373458];
         $locations = []; //Liste des objects Location
 
-        $tripNames = array('Grandes vacances 2022', 'Visite de l\'Alsace', 'On emmène Mémé balader');
-        $toDoListNames = array('Préparation du voyage', 'Choses à faire à la Montagne des Singes', 'A ne pas oublier de faire', 'Médicaments de Mémé');
-        $taskNames = array('Faire les courses', 'Nettoyer la voiture', 'Vérifier l\'huile', 'Vérifier la pression des pneus', 'Huiler le Youpala de Mémé');//5
+        $tripNames = array('Grandes vacances 2022', 'Route des vins', 'Visite de l\'Alsace');
+        $toDoListNames = array('Préparation du voyage', '', 'A ne pas oublier de faire');
+        $taskNames = array('Faire les courses', 'Nettoyer la voiture', 'Vérifier l\'huile', 'Vérifier la pression des pneus');
         $costNames = array('Dentifrice', 'Papier toilette', 'Restaurant samedi', 'Acrobranche', 'Alcool', 'Essence');//6
         $costCategories = array('Hygiène', 'Hygiène', 'Alimentaire', 'Loisir', 'Alimentaire/Loisir', 'Elevé');
 
