@@ -24,9 +24,7 @@ class AppFixtures extends Fixture
         #region Data
         $arrayLocation = [];
         $arrayLocation[] = ['Gare de Strasbourg', 'Gare', 48.5850678, 7.7345492];
-        $arrayLocation[] = ['Volerie des Aigles', 'Tourisme', 48.2561555, 7.3866297];
         $arrayLocation[] = ['Château du Haut-Koenigsbourg', 'Monument historique', 48.2494853, 7.3444831];
-        $arrayLocation[] = ['Le Frankenbourg', 'Restaurant', 48.2837524, 7.3028884];
         $arrayLocation[] = ['Tellure', 'Tourisme', 48.2137384, 7.1373458];
         $arrayLocation[] = ['Parc des expositions et des Congrès de Colmar', 'Evénementiel', 48.097131, 7.360646];
         $arrayLocation[] = ['Ecomusée', 'Evénementiel', 48.1769458, 7.0193129];
@@ -35,6 +33,13 @@ class AppFixtures extends Fixture
         $poiArray[] = ['Cathédrale de Strasbourg', 'Monument historique', 48.5818799, 7.7510348, 0];
         $poiArray[] = ['Parc des Expositions de Strasbourg', 'Evénementiel', 48.5957929, 7.7532966, 0];
         $poiArray[] = ['Montagne des Singes', 'Tourisme', 48.260464, 7.374915, 1];
+        $poiArray[] = ['Volerie des Aigles', 'Tourisme', 48.2561555, 7.3866297, 1];
+        $poiArray[] = ['Le Frankenbourg', 'Restaurant', 48.2837524, 7.3028884, 1];
+        $poiArray[] = ['Mine Saint-Louis', 'Tourisme', 48.2444239, 7.1809604, 2];
+        $poiArray[] = ['Savonnerie Argasol', 'Tourisme', 48.231467, 7.162677, 2];
+        $poiArray[] = ['Statue de la Liberté', 'Monument historique', 48.1083333, 7.3636111, 3];
+        $poiArray[] = ['Parc de Wesserling', 'Tourisme', 47.884641, 6.998293, 5];
+
 
         $locations = []; //Liste des objects Location
 
@@ -139,6 +144,7 @@ class AppFixtures extends Fixture
             foreach($locations as $location) {
                 $step = new Step();
                 $step->setLocation($location);
+                $step->setTitle($location->getName());
                 $step->setDescription($location->getName());
                 $createdUsers[rand(0,3)]->addStep($step);
                 $trip->addStep($step);

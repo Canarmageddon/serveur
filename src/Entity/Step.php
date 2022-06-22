@@ -133,7 +133,7 @@ class Step extends MapElement
     #[Groups(['step:list', 'step:item', 'trip:list', 'trip:item'])]
     private ?string $description;
 
-    #[ORM\OneToMany(mappedBy: 'step', targetEntity: PointOfInterest::class)]
+    #[ORM\OneToMany(mappedBy: 'step', targetEntity: PointOfInterest::class, cascade: ['persist', 'remove'])]
     #[Groups(['step:list', 'step:item'])]
     private Collection $pointsOfInterest;
 
