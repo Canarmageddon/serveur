@@ -32,7 +32,6 @@ abstract class SuperUser
     private Collection $costs;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: TripUser::class, orphanRemoval: true)]
-    #[Groups(['guest:list', 'guest:item', 'user:item'])]
     private Collection $tripUsers;
 
     /** Costs where the User is a beneficiary */

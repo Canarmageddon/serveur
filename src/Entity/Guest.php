@@ -85,7 +85,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Guest extends SuperUser
 {
     #[ORM\Column(type: 'string', length: 50)]
-    #[Groups(['guest:list', 'guest:item', 'user:list', 'user:item'])]
+    #[Groups(['guest:list', 'guest:item', 'user:list', 'user:item', 'trip:item', 'trip:list', 'cost:item'])]
     private ?string $name;
 
     public function getName(): ?string

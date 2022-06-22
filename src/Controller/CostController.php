@@ -35,8 +35,8 @@ class CostController extends AbstractController
             $cost->setCategory($costInput->getCategory());
             $beneficiaries = $costInput->getBeneficiaries();
 
-            /** @var User $creator */
-            $creator = $entityManager->getRepository(User::class)->find($costInput->getCreator());
+            /** @var SuperUser $creator */
+            $creator = $entityManager->getRepository(SuperUser::class)->find($costInput->getCreator());
             $creator?->addCost($cost);
 
             /** @var Trip $trip */
