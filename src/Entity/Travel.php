@@ -94,12 +94,12 @@ class Travel extends MapElement
     #[Groups(['travel:list', 'travel:item'])]
     private ?Trip $trip;
 
-    #[ORM\ManyToOne(targetEntity: Step::class, inversedBy: 'starts')]
+    #[ORM\ManyToOne(targetEntity: Step::class, cascade: ['persist', 'remove'], inversedBy: 'starts')]
     #[Groups(['travel:list', 'travel:item', 'trip:list', 'trip:item'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?Step $start;
 
-    #[ORM\ManyToOne(targetEntity: Step::class, inversedBy: 'ends')]
+    #[ORM\ManyToOne(targetEntity: Step::class, cascade: ['persist', 'remove'], inversedBy: 'ends')]
     #[Groups(['travel:list', 'travel:item', 'trip:list', 'trip:item'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?Step $end;

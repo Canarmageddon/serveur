@@ -154,8 +154,8 @@ class AppFixtures extends Fixture
 
             for($j = 0 ; $j < count($arrayLocation) - 1; $j++) {
                 $travel = new Travel();
-                $travel->setStart($steps[$j]);
-                $travel->setEnd($steps[$j + 1]);
+                $steps[$j]->addStart($travel);
+                $steps[$j + 1]->addEnd($travel);
                 $travel->setDuration(900 * rand(1,4));
                 $trip->addTravel($travel);
                 $manager->persist($travel);
