@@ -368,6 +368,7 @@ class Trip
     private Collection $albumElements;
 
     #[ORM\Column(type: 'string', length: 30, nullable: true)]
+    #[Groups(['trip:list', 'trip:item'])]
     private ?string $link = null;
 
     #[ORM\Column(type: 'boolean')]
