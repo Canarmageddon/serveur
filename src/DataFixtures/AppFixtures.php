@@ -24,16 +24,18 @@ class AppFixtures extends Fixture
         #region Data
         $arrayLocation = [];
         $arrayLocation[] = ['Gare de Strasbourg', 'Gare', 48.5850678, 7.7345492];
-        $arrayLocation[] = ['Cathédrale de Strasbourg', 'Monument historique', 48.5818799, 7.7510348];
-        $arrayLocation[] = ['Parc des Expositions de Strasbourg', 'Evénementiel', 48.5957929, 7.7532966];
         $arrayLocation[] = ['Volerie des Aigles', 'Tourisme', 48.2561555, 7.3866297];
-        $arrayLocation[] = ['Montagne des Singes', 'Tourisme', 48.260464, 7.374915];
         $arrayLocation[] = ['Château du Haut-Koenigsbourg', 'Monument historique', 48.2494853, 7.3444831];
         $arrayLocation[] = ['Le Frankenbourg', 'Restaurant', 48.2837524, 7.3028884];
         $arrayLocation[] = ['Tellure', 'Tourisme', 48.2137384, 7.1373458];
         $arrayLocation[] = ['Parc des expositions et des Congrès de Colmar', 'Evénementiel', 48.097131, 7.360646];
         $arrayLocation[] = ['Ecomusée', 'Evénementiel', 48.1769458, 7.0193129];
         $arrayLocation[] = ["Musée de l'automobile", 'Evénementiel', 47.7610702, 7.3284082];
+
+        $poiArray[] = ['Cathédrale de Strasbourg', 'Monument historique', 48.5818799, 7.7510348, 0];
+        $poiArray[] = ['Parc des Expositions de Strasbourg', 'Evénementiel', 48.5957929, 7.7532966, 0];
+        $poiArray[] = ['Montagne des Singes', 'Tourisme', 48.260464, 7.374915, 1];
+
         $locations = []; //Liste des objects Location
 
         $tripNames = array('Grandes vacances 2022', 'Route des vins', 'Visite de l\'Alsace');
@@ -153,30 +155,21 @@ class AppFixtures extends Fixture
                 $manager->persist($travel);
             }
 
-            foreach ($steps as $step) {
-                $number = rand(1,2);
-                for($i = 0; $i < $number; $i++) {
-                    $pointOfInterest = new PointOfInterest();
-                    $delta1 = rand(1,4);
-                    $sign = rand(0,1);
-                    if ($sign == 1) {
-                        $delta1 *= -1;
-                    }
-                    $delta2 = rand(1,4);
-                    $sign = rand(0,1);
-                    if ($sign == 1) {
-                        $delta2 *= -1;
-                    }
-                    $location = new Location();
-                    $location->setLatitude($step->getLocation()->getLatitude() + 0.05 * $delta1);
-                    $location->setLongitude($step->getLocation()->getLongitude() + 0.05 * $delta2);
-                    $manager->persist($location);
-                    $pointOfInterest->setLocation($location);
-                    $createdUsers[rand(0,3)]->addPointOfInterest($pointOfInterest);
-                    $trip->addPointsOfInterest($pointOfInterest);
-                    $step->addPointsOfInterest($pointOfInterest);
-                    $manager->persist($pointOfInterest);
-                }
+            foreach ($poiArray as $poiLine) {
+                $location = new Location();
+                $location->setName($poiLine[0]);
+                $location->setType($poiLine[1]);
+                $location->setLatitude($poiLine[2]);
+                $location->setLongitude($poiLine[3]);
+                $pointOfInterest = new PointOfInterest();
+                $pointOfInterest->setTitle($poiLine[0]);
+                $pointOfInterest->setDescription($poiLine[0]);
+                $location->addPointOfInterest($pointOfInterest);
+                $manager->persist($location);
+                $createdUsers[rand(0,3)]->addPointOfInterest($pointOfInterest);
+                $trip->addPointsOfInterest($pointOfInterest);
+                $steps[$poiLine[4]]->addPointsOfInterest($pointOfInterest);
+                $manager->persist($pointOfInterest);
             }
 
             $manager->persist($trip);
