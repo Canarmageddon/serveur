@@ -96,12 +96,12 @@ class Travel extends MapElement
 
     #[ORM\ManyToOne(targetEntity: Step::class, cascade: ['persist', 'remove'], inversedBy: 'starts')]
     #[Groups(['travel:list', 'travel:item', 'trip:list', 'trip:item'])]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(name:"start_id", referencedColumnName:"id", nullable:true, onDelete: "SET NULL")]
     private ?Step $start;
 
     #[ORM\ManyToOne(targetEntity: Step::class, cascade: ['persist', 'remove'], inversedBy: 'ends')]
     #[Groups(['travel:list', 'travel:item', 'trip:list', 'trip:item'])]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(name:"end_id", referencedColumnName:"id", nullable:true, onDelete: "SET NULL")]
     private ?Step $end;
 
     public function getDuration(): ?int
