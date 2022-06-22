@@ -33,6 +33,7 @@ class CostController extends AbstractController
             $cost->setValue($costInput->getValue());
             $cost->setLabel($costInput->getLabel());
             $cost->setCategory($costInput->getCategory());
+            $beneficiaries = $costInput->getBeneficiaries();
 
             /** @var User $creator */
             $creator = $entityManager->getRepository(User::class)->find($costInput->getCreator());
@@ -41,6 +42,23 @@ class CostController extends AbstractController
             /** @var Trip $trip */
             $trip = $entityManager->getRepository(Trip::class)->find($costInput->getTrip());
             $trip?->addCost($cost);
+            foreach($beneficiaries as $beneficiary) {
+                /** @var SuperUser $user */
+                $user = $entityManager->getRepository(SuperUser::class)->find($beneficiary);
+
+                if ($user != null && $cost->getTrip() != null && $user->isMemberOf($cost->getTrip()->getId())) {
+                    /** @var CostUser $costUser */
+                    $costUser = $entityManager->getRepository(CostUser::class)->findOneBy(['cost' => $cost->getId(), 'user' => $user->getId()]);
+
+                    //Vérifier si l'user est déjà dans le cost, sinon, l'ajouter et flush
+                    if ($costUser == null) {
+                        $costUser = new CostUser();
+                        $cost->addCostUser($costUser);
+                        $user->addCostUser($costUser);
+                        $entityManager->persist($costUser);
+                    }
+                }
+            }
             //Access control
             $this->denyAccessUnlessGranted('TRIP_EDIT', $cost);
 

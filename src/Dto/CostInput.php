@@ -14,6 +14,8 @@ class CostInput
 
     private ?string $category = null;
 
+    private ?array $beneficiaries = [];
+
     /**
      * @return int|null
      */
@@ -92,5 +94,21 @@ class CostInput
     public function setValue(?float $value): void
     {
         $this->value = $value;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getBeneficiaries(): ?array
+    {
+        return $this->beneficiaries;
+    }
+
+    /**
+     * @param array|null $beneficiaries
+     */
+    public function setBeneficiaries(?array $beneficiaries): void
+    {
+        $this->beneficiaries = $beneficiaries;
     }
 }
