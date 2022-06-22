@@ -118,7 +118,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Step extends MapElement
 {
     #[ORM\ManyToOne(targetEntity: Location::class, cascade: ['persist'], inversedBy: 'steps')]
-    #[Groups(['step:list', 'step:item', 'trip:list', 'trip:item'])]
+    #[Groups(['step:list', 'step:item', 'trip:list', 'trip:item', 'travel:item', 'travel:listok tr'])]
     private ?Location $location;
 
     #[ORM\Column(type: 'datetime_immutable')]

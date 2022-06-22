@@ -107,23 +107,23 @@ class Location
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(['location:list', 'location:item', 'trip:list', 'trip:item', 'travel:item', 'travel:list'])]
+    #[Groups(['location:list', 'location:item', 'trip:list', 'trip:item'])]
     private ?int $id = null;
 
     #[ORM\Column(type: 'float')]
-    #[Groups(['location:list', 'location:item', 'pointOfInterest:list', 'pointOfInterest:item', 'step:list', 'step:item', 'trip:list', 'trip:item', 'travel:item', 'travel:list', 'picture:read'])]
+    #[Groups(['location:list', 'location:item', 'pointOfInterest:list', 'pointOfInterest:item', 'step:list', 'step:item', 'trip:list', 'trip:item', 'picture:read', 'travel:item', 'travel:list'])]
     private ?float $latitude = null;
 
     #[ORM\Column(type: 'float')]
-    #[Groups(['location:list', 'location:item', 'pointOfInterest:list', 'pointOfInterest:item', 'step:list', 'step:item', 'trip:list', 'trip:item', 'travel:item', 'travel:list', 'picture:read'])]
+    #[Groups(['location:list', 'location:item', 'pointOfInterest:list', 'pointOfInterest:item', 'step:list', 'step:item', 'trip:list', 'trip:item', 'picture:read', 'travel:item', 'travel:list'])]
     private ?float $longitude = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(['location:list', 'location:item', 'pointOfInterest:list', 'pointOfInterest:item', 'trip:list', 'trip:item', 'travel:item', 'travel:list', 'picture:read'])]
+    #[Groups(['location:list', 'location:item', 'pointOfInterest:list', 'pointOfInterest:item', 'trip:list', 'trip:item', 'picture:read'])]
     private ?string $name = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(['location:list', 'location:item', 'travel:item', 'travel:list'])]
+    #[Groups(['location:list', 'location:item'])]
     private ?string $type = null;
 
     #[ORM\OneToMany(mappedBy: 'location', targetEntity: PointOfInterest::class, cascade: ['persist', 'remove'])]
