@@ -74,10 +74,10 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
                             'schema'  => [
                                 'type' => 'object',
                                 'properties' =>
-                                    [
-                                        'firstName' => ['type' => 'string'],
-                                        'lastName' => ['type' => 'string'],
-                                    ],
+                                [
+                                    'firstName' => ['type' => 'string'],
+                                    'lastName' => ['type' => 'string'],
+                                ],
                             ],
                             'example' => [
                                 'firstName' => "Prénom",
@@ -100,7 +100,7 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 class User extends SuperUser implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Column(type: 'string', length: 180, unique: true)]
-    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'user:item:read'])]
+    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'user:item:read', 'picture:list', 'picture:item'])]
     private ?string $email;
 
     #[ORM\Column(type: 'json')]
@@ -115,11 +115,11 @@ class User extends SuperUser implements UserInterface, PasswordAuthenticatedUser
     private ?string $plainPassword;
 
     #[ORM\Column(type: 'string', length: 50)]
-    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'picture:read', 'cost:list', 'cost:item', 'user:item:read'])]
+    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'picture:read', 'picture:list', 'picture:item', 'cost:list', 'cost:item', 'user:item:read'])]
     private ?string $firstName;
 
     #[ORM\Column(type: 'string', length: 50)]
-    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'picture:read', 'cost:list', 'cost:item', 'user:item:read'])]
+    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'picture:read', 'picture:list', 'picture:item', 'cost:list', 'cost:item', 'user:item:read'])]
     private ?string $lastName;
 
     #[ORM\Column(type: 'datetime_immutable')]
@@ -165,7 +165,7 @@ class User extends SuperUser implements UserInterface, PasswordAuthenticatedUser
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
+        return (string)$this->email;
     }
 
     /**
@@ -224,7 +224,7 @@ class User extends SuperUser implements UserInterface, PasswordAuthenticatedUser
     public function eraseCredentials()
     {
         // If you store any temporary, sensitive data on the user, clear it here
-         $this->plainPassword = null;
+        $this->plainPassword = null;
     }
 
     public function getFirstName(): ?string
@@ -256,7 +256,8 @@ class User extends SuperUser implements UserInterface, PasswordAuthenticatedUser
         return $this->creationDate;
     }
 
-    public function __construct(){
+    public function __construct()
+    {
         parent::__construct();
 
         $this->creationDate = new DateTimeImmutable('now');
