@@ -372,6 +372,7 @@ class Trip
     private ?string $link = null;
 
     #[ORM\Column(type: 'boolean')]
+    #[Groups(['trip:list', 'trip:item'])]
     private ?bool $isEnded;
 
     public function __construct()
