@@ -8,6 +8,8 @@ class UserInput {
 
     private ?string $name = null;
 
+    private ?int $userId = null;
+
     public function getEmail(): ?string
     {
         return $this->email;
@@ -34,5 +36,21 @@ class UserInput {
     public function setName(?string $name): void
     {
         $this->name = $name;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getUserId(): ?int
+    {
+        return $this->userId;
+    }
+
+    /**
+     * @param int|null $userId
+     */
+    public function setUserId(?int $userId): void
+    {
+        $this->userId = $userId;
     }
 }

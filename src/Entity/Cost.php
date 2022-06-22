@@ -94,13 +94,11 @@ use Symfony\Component\Serializer\Annotation\Groups;
                                 'type' => 'object',
                                 'properties' =>
                                 [
-                                    'email' => ['type' => 'string'],
-                                    'name' => ['type' => 'string'],
+                                    'userId' => ['type' => 'int'],
                                 ],
                             ],
                             'example' => [
-                                'email' => "root@root.fr",
-                                'name' => "Guest name",
+                                'email' => 1,
                             ],
                         ],
                     ],
@@ -121,13 +119,11 @@ use Symfony\Component\Serializer\Annotation\Groups;
                                 'type' => 'object',
                                 'properties' =>
                                 [
-                                    'email' => ['type' => 'string'],
-                                    'name' => ['type' => 'string'],
+                                    'userId' => ['type' => 'int'],
                                 ],
                             ],
                             'example' => [
-                                'email' => "root@root.fr",
-                                'name' => "Guest name",
+                                'userId' => 1,
                             ],
                         ],
                     ],

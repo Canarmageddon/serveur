@@ -50,6 +50,7 @@ class LogBookEntryController extends AbstractController
                 $location = new Location();
                 $location->setLatitude($logBookEntryInput->getLatitude());
                 $location->setLongitude($logBookEntryInput->getLongitude());
+                $location?->addAlbumElement($logBookEntry);
                 $entityManager->persist($location);
             }
 
