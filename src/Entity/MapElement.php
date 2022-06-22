@@ -59,6 +59,7 @@ abstract class MapElement
 
     /**
      * @param string|null $type
+     * @return MapElement
      */
     public function setType(?string $type): self
     {

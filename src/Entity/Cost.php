@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CostRepository::class)]
@@ -94,10 +95,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
                                 'properties' =>
                                 [
                                     'email' => ['type' => 'string'],
+                                    'name' => ['type' => 'string'],
                                 ],
                             ],
                             'example' => [
                                 'email' => "root@root.fr",
+                                'name' => "Guest name",
                             ],
                         ],
                     ],
@@ -119,10 +122,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
                                 'properties' =>
                                 [
                                     'email' => ['type' => 'string'],
+                                    'name' => ['type' => 'string'],
                                 ],
                             ],
                             'example' => [
                                 'email' => "root@root.fr",
+                                'name' => "Guest name",
                             ],
                         ],
                     ],
@@ -146,9 +151,9 @@ class Cost
     #[Groups(['cost:list', 'cost:item', 'trip:item'])]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'], inversedBy: 'costs')]
+    #[ORM\ManyToOne(targetEntity: SuperUser::class, cascade: ['persist'], inversedBy: 'costs')]
     #[Groups(['cost:list', 'cost:item', 'trip:item'])]
-    private ?User $creator;
+    private ?SuperUser $creator;
 
     #[ORM\Column(type: 'datetime_immutable')]
     #[Groups(['cost:list', 'cost:item', 'trip:item'])]
@@ -179,12 +184,12 @@ class Cost
         return $this->id;
     }
 
-    public function getCreator(): ?User
+    public function getCreator(): ?SuperUser
     {
         return $this->creator;
     }
 
-    public function setCreator(?User $creator): self
+    public function setCreator(?SuperUser $creator): self
     {
         $this->creator = $creator;
 
@@ -250,7 +255,7 @@ class Cost
         return $this;
     }
 
-    public function setCreationDate(\DateTimeImmutable $creationDate): self
+    public function setCreationDate(DateTimeImmutable $creationDate): self
     {
         $this->creationDate = $creationDate;
 
@@ -287,7 +292,7 @@ class Cost
         return $this;
     }
 
-    public function getBeneficiaries(): array
+    #[Pure] public function getBeneficiaries(): array
     {
         $beneficiaries = [];
         foreach ($this->getCostUsers() as $costUser) {

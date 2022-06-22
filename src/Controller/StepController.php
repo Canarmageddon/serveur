@@ -213,14 +213,14 @@ class StepController extends AbstractController
         if ($travel1 != null) {
             $start = $travel1->getStart();
             $start->removeStart($travel1);
-            $travel1->getEnd()->removeEnd($travel1);
+            $step->removeEnd($travel1);
             $entityManager->remove($travel1);
         }
 
         if ($travel2 != null) {
             $end = $travel2->getEnd();
-            $travel2->getStart()->removeStart($travel2);
-            $end->removeEnd($travel1);
+            $step->removeStart($travel2);
+            $end->removeEnd($travel2);
             $entityManager->remove($travel2);
         }
 

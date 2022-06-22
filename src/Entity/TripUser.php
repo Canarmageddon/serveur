@@ -35,10 +35,10 @@ class TripUser
     #[ORM\JoinColumn(nullable: false)]
     private ?Trip $trip;
 
-    #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'], inversedBy: 'tripUsers')]
+    #[ORM\ManyToOne(targetEntity: SuperUser::class, cascade: ['persist'], inversedBy: 'tripUsers')]
     #[Groups(['user:item'])]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $user;
+    private ?SuperUser $user;
 
     public function getId(): ?int
     {
@@ -57,12 +57,12 @@ class TripUser
         return $this;
     }
 
-    public function getUser(): ?User
+    public function getUser(): ?SuperUser
     {
         return $this->user;
     }
 
-    public function setUser(?User $user): self
+    public function setUser(?SuperUser $user): self
     {
         $this->user = $user;
 

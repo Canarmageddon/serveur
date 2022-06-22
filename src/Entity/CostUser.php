@@ -18,10 +18,10 @@ class CostUser
     #[ORM\JoinColumn(nullable: false)]
     private ?Cost $cost;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'costUsers')]
+    #[ORM\ManyToOne(targetEntity: SuperUser::class, inversedBy: 'costUsers')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['cost:list', 'cost:item'])]
-    private ?User $user;
+    private ?SuperUser $user;
 
     public function getId(): ?int
     {
@@ -40,12 +40,12 @@ class CostUser
         return $this;
     }
 
-    public function getUser(): ?User
+    public function getUser(): ?SuperUser
     {
         return $this->user;
     }
 
-    public function setUser(?User $user): self
+    public function setUser(?SuperUser $user): self
     {
         $this->user = $user;
 

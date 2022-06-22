@@ -12,7 +12,6 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\SerializedName;
-use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ApiResource(
@@ -98,14 +97,8 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
     ],
     paginationEnabled: false,
 )]
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+class User extends SuperUser implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'cost:list', 'cost:item', 'picture:list', 'picture:item'])]
-    private ?int $id = null;
-
     #[ORM\Column(type: 'string', length: 180, unique: true)]
     #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'user:item:read', 'picture:list', 'picture:item'])]
     private ?string $email;
@@ -153,24 +146,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user:list', 'user:item'])]
     private Collection $tasks;
 
-    /** Costs where the User is the Creator */
-    #[ORM\OneToMany(mappedBy: 'creator', targetEntity: Cost::class, cascade: ['persist', 'remove'])]
-    #[Groups(['user:list', 'user:item'])]
-    private Collection $costs;
-
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: TripUser::class, orphanRemoval: true)]
-    #[Groups(['user:item'])]
-    private Collection $tripUsers;
-
-    /** Costs where the User is a beneficiary */
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: CostUser::class, orphanRemoval: true)]
-    private Collection $costUsers;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
     public function getEmail(): ?string
     {
         return $this->email;
@@ -190,7 +165,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
+        return (string)$this->email;
     }
 
     /**
@@ -283,16 +258,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __construct()
     {
+        parent::__construct();
+
         $this->creationDate = new DateTimeImmutable('now');
         $this->roles = ["ROLE_USER"];
         $this->pointOfInterests = new ArrayCollection();
         $this->steps = new ArrayCollection();
         $this->albumElements = new ArrayCollection();
         $this->tasks = new ArrayCollection();
-        $this->costs = new ArrayCollection();
-        $this->tripUsers = new ArrayCollection();
         $this->documents = new ArrayCollection();
-        $this->costUsers = new ArrayCollection();
     }
 
     /**
@@ -385,78 +359,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Cost>
-     */
-    public function getCosts(): Collection
-    {
-        return $this->costs;
-    }
-
-    public function addCost(Cost $cost): self
-    {
-        if (!$this->costs->contains($cost)) {
-            $this->costs[] = $cost;
-            $cost->setCreator($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCost(Cost $cost): self
-    {
-        if ($this->costs->removeElement($cost)) {
-            // set the owning side to null (unless already changed)
-            if ($cost->getCreator() === $this) {
-                $cost->setCreator(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function __toString(): string
     {
         return $this->getFirstName() . ' ' . $this->getLastName();
-    }
-
-    /**
-     * @return Collection<int, TripUser>
-     */
-    public function getTripUsers(): Collection
-    {
-        return $this->tripUsers;
-    }
-
-    public function addTripUser(TripUser $tripUser): self
-    {
-        if (!$this->tripUsers->contains($tripUser)) {
-            $this->tripUsers[] = $tripUser;
-            $tripUser->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTripUser(TripUser $tripUser): self
-    {
-        if ($this->tripUsers->removeElement($tripUser)) {
-            // set the owning side to null (unless already changed)
-            if ($tripUser->getUser() === $this) {
-                $tripUser->setUser(null);
-            }
-        }
-
-        return $this;
-    }
-
-    public function getTrips(): array
-    {
-        $trips = [];
-        foreach ($this->getTripUsers() as $tripUser) {
-            $trips[] = $tripUser->getTrip();
-        }
-        return $trips;
     }
 
     /**
@@ -489,7 +394,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function setCreationDate(\DateTimeImmutable $creationDate): self
+    public function setCreationDate(DateTimeImmutable $creationDate): self
     {
         $this->creationDate = $creationDate;
 
@@ -524,46 +429,5 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
-    }
-
-    /**
-     * @return Collection<int, CostUser>
-     */
-    public function getCostUsers(): Collection
-    {
-        return $this->costUsers;
-    }
-
-    public function addCostUser(CostUser $costUser): self
-    {
-        if (!$this->costUsers->contains($costUser)) {
-            $this->costUsers[] = $costUser;
-            $costUser->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCostUser(CostUser $costUser): self
-    {
-        if ($this->costUsers->removeElement($costUser)) {
-            // set the owning side to null (unless already changed)
-            if ($costUser->getUser() === $this) {
-                $costUser->setUser(null);
-            }
-        }
-
-        return $this;
-    }
-
-    public function isMemberOf(int $id): bool
-    {
-        foreach ($this->getTrips() as $trip) {
-            if ($trip->getId() == $id) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }
