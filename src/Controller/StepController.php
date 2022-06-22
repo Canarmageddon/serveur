@@ -66,7 +66,7 @@ class StepController extends AbstractController
             $entityManager->persist($location);
 
             if ($stepInput->getDate() != null && $stepInput->getDate() != "") {
-                $date = DateTime::createFromFormat('Y-m-d', $stepInput->getDate());
+                $date = DateTime::createFromFormat('d-m-Y', $stepInput->getDate());
                 $step->setDate($date);
             }
             $step->setDescription($stepInput->getDescription());
@@ -141,7 +141,7 @@ class StepController extends AbstractController
             }
 
             if ($stepInput->getDate() != null && $stepInput->getDate() != "") {
-                $date = DateTime::createFromFormat('Y-m-d', $stepInput->getDate());
+                $date = DateTime::createFromFormat('d-m-Y', $stepInput->getDate());
                 $step->setDate($date);
             }
 
