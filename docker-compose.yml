@@ -15,7 +15,7 @@ services:
     tty: true
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.php.rule=Host(`vm-26.iutrs.unistra.fr`)"
+      - "traefik.http.routers.php.rule=Host(`${HOST}`)"
       - "traefik.docker.network=frontend_default"
       - "traefik.http.routers.php.entrypoints=web"
       - "traefik.http.services.php.loadbalancer.server.port=8000"
@@ -43,7 +43,7 @@ services:
     restart: always
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.pma.rule=Host(`vm-26.iutrs.unistra.fr`)"
+      - "traefik.http.routers.pma.rule=Host(`${HOST}`)"
       - "traefik.docker.network=frontend_default"
       - "traefik.http.routers.pma.entrypoints=entrypma"
       - "traefik.http.services.pma.loadbalancer.server.port=80"
