@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\Cost;
 use App\Entity\CostUser;
+use App\Entity\Guest;
 use App\Entity\Location;
 use App\Entity\PointOfInterest;
 use App\Entity\Step;
@@ -57,6 +58,8 @@ class AppFixtures extends Fixture
         $users[] = array('XxWumpa69CortexSlayerxX@gmail.com', 'Crash', 'Bandicoot', '$2y$13$UAilrJLf.FlNU7naMk0LnefUVowtMg0Q3ojpYpK.RX1tQdPsbOCXS', (array)'ROLE_USER');
         $users[] = array('Martial.artist@gmail.com', 'Tortue', 'Ninja', '$2y$13$UAilrJLf.FlNU7naMk0LnefUVowtMg0Q3ojpYpK.RX1tQdPsbOCXS', (array)'ROLE_USER');
 
+        $guestsName = array("Pierre", "Paul", "Jacques", "Michel", "Georges");
+
         #endregion
 
         #region Factory
@@ -87,6 +90,16 @@ class AppFixtures extends Fixture
         for($a = 0 ; $a < 3 ; $a++) {
             $trip = new Trip();
             $trip->setName($tripNames[$a]);
+
+            $guestNumber = rand(1,5);
+            for($g = 0; $g < $guestNumber; $g++) {
+                $guest = new Guest();
+                $guest->setName($guestsName[$g]);
+                $tripUser = new TripUser();
+                $trip->addTripUser($tripUser);
+                $guest->addTripUser($tripUser);
+                $manager->persist($tripUser);
+            }
 
             foreach($createdUsers as $traveler) {
                 $tripUser = new TripUser();
@@ -141,11 +154,16 @@ class AppFixtures extends Fixture
             /*********** MAP ELEMENTS ***********/
 
             $steps = [];
+            $dateIncrement = rand(10,100);
+            $i = 0;
             foreach($locations as $location) {
+                $date = (new DateTime('now'))->modify('+' . $dateIncrement + $i . ' days');
+                $i++;
                 $step = new Step();
                 $step->setLocation($location);
                 $step->setTitle($location->getName());
                 $step->setDescription($location->getName());
+                $step->setDate($date);
                 $createdUsers[rand(0,3)]->addStep($step);
                 $trip->addStep($step);
                 $manager->persist($step);
