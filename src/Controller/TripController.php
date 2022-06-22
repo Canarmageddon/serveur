@@ -315,7 +315,7 @@ class TripController extends AbstractController
                 } else {
                     return $this->json([
                         'message' => 'User ' . $userIdentifier . ' already member of Trip ' . $id,
-                    ]);
+                    ], 401);
                 }
             } elseif ($user == null && $trip == null) {
                 return $this->json([
