@@ -9,6 +9,7 @@ use App\Entity\CostUser;
 use App\Entity\Guest;
 use App\Entity\LogBookEntry;
 use App\Entity\Picture;
+use App\Entity\PointOfInterest;
 use App\Entity\Step;
 use App\Entity\Travel;
 use App\Entity\Trip;
@@ -622,6 +623,21 @@ class TripController extends AbstractController
                     $trip->addTravel($travel);
                     $entityManager->persist($travel);
                     $start = $end;
+                }
+
+                /** @var PointOfInterest $oldPoi */
+                foreach ($oldTrip->getPointsOfInterest() as $oldPoi) {
+                    $poi = new PointOfInterest();
+                    $poi->setTitle($oldPoi->getTitle());
+                    $poi->setDescription($oldPoi->getDescription());
+                    $creator?->addPointOfInterest($poi);
+                    $oldPoi->getLocation()?->addPointOfInterest($poi);
+                    $trip?->addPointsOfInterest($poi);
+                    $location = $oldPoi->getStep()->getLocation();
+                    /** @var Step $step */
+                    $step = $entityManager->getRepository(Step::class)->findOneBy(['trip' => $trip->getId(), 'location' => $location->getId()]);
+                    $step?->addPointsOfInterest($poi);
+                    $entityManager->persist($poi);
                 }
 
                 $entityManager->persist($trip);
