@@ -635,7 +635,7 @@ class TripController extends AbstractController
                     $trip?->addPointsOfInterest($poi);
                     $location = $oldPoi?->getStep()?->getLocation();
                     /** @var Step $step */
-                    $step = $entityManager->getRepository(Step::class)->findOneBy(['trip' => $trip->getId(), 'location' => $location->getId()]);
+                    $step = $entityManager->getRepository(Step::class)->findOneBy(['trip' => $trip->getId(), 'location' => $location?->getId()]);
                     $step?->addPointsOfInterest($poi);
                     $entityManager->persist($poi);
                 }
