@@ -115,11 +115,11 @@ class User extends SuperUser implements UserInterface, PasswordAuthenticatedUser
     private ?string $plainPassword;
 
     #[ORM\Column(type: 'string', length: 50)]
-    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'picture:read', 'picture:list', 'picture:item', 'cost:list', 'cost:item', 'user:item:read', 'albumElements:item', 'albumElements:list'])]
+    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'picture:read', 'picture:list', 'picture:item', 'cost:list', 'cost:item', 'user:item:read', 'albumElement:item', 'albumElement:list'])]
     private ?string $firstName;
 
     #[ORM\Column(type: 'string', length: 50)]
-    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'picture:read', 'picture:list', 'picture:item', 'cost:list', 'cost:item', 'user:item:read', 'albumElements:item', 'albumElements:list'])]
+    #[Groups(['user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'picture:read', 'picture:list', 'picture:item', 'cost:list', 'cost:item', 'user:item:read', 'albumElement:item', 'albumElement:list'])]
     private ?string $lastName;
 
     #[ORM\Column(type: 'datetime_immutable')]

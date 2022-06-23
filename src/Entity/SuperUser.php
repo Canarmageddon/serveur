@@ -21,7 +21,7 @@ abstract class SuperUser
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(['guest:list', 'guest:item', 'user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'cost:list', 'cost:item', 'picture:item'])]
+    #[Groups(['guest:list', 'guest:item', 'user:read', 'user:write', 'user:list', 'user:item', 'trip:item', 'cost:list', 'cost:item', 'picture:item', 'albumElement:item', 'albumElement:list'])]
     private ?int $id = null;
 
     private ?string $type;
