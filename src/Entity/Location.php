@@ -111,11 +111,11 @@ class Location
     private ?int $id = null;
 
     #[ORM\Column(type: 'float')]
-    #[Groups(['location:list', 'location:item', 'pointOfInterest:list', 'pointOfInterest:item', 'step:list', 'step:item', 'trip:list', 'trip:item', 'picture:read'])]
+    #[Groups(['location:list', 'location:item', 'pointOfInterest:list', 'pointOfInterest:item', 'step:list', 'step:item', 'trip:list', 'trip:item', 'picture:read', 'travel:item', 'travel:list'])]
     private ?float $latitude = null;
 
     #[ORM\Column(type: 'float')]
-    #[Groups(['location:list', 'location:item', 'pointOfInterest:list', 'pointOfInterest:item', 'step:list', 'step:item', 'trip:list', 'trip:item', 'picture:read'])]
+    #[Groups(['location:list', 'location:item', 'pointOfInterest:list', 'pointOfInterest:item', 'step:list', 'step:item', 'trip:list', 'trip:item', 'picture:read', 'travel:item', 'travel:list'])]
     private ?float $longitude = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]

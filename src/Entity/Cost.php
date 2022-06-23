@@ -34,6 +34,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
                                     'category' => ['type' => 'string'],
                                     'creator' => ['type' => 'int'],
                                     'trip' => ['type' => 'int'],
+                                    'beneficiaries' => ['type' => 'array'],
                                 ],
                             ],
                             'example' => [
@@ -42,6 +43,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
                                 'category' => "Hygiène",
                                 'creator' => 1,
                                 'trip' => 1,
+                                'beneficiaries' => [1,2,3],
                             ],
                         ],
                     ],
@@ -94,13 +96,11 @@ use Symfony\Component\Serializer\Annotation\Groups;
                                 'type' => 'object',
                                 'properties' =>
                                 [
-                                    'email' => ['type' => 'string'],
-                                    'name' => ['type' => 'string'],
+                                    'userId' => ['type' => 'int'],
                                 ],
                             ],
                             'example' => [
-                                'email' => "root@root.fr",
-                                'name' => "Guest name",
+                                'userId' => 1,
                             ],
                         ],
                     ],
@@ -121,13 +121,11 @@ use Symfony\Component\Serializer\Annotation\Groups;
                                 'type' => 'object',
                                 'properties' =>
                                 [
-                                    'email' => ['type' => 'string'],
-                                    'name' => ['type' => 'string'],
+                                    'userId' => ['type' => 'int'],
                                 ],
                             ],
                             'example' => [
-                                'email' => "root@root.fr",
-                                'name' => "Guest name",
+                                'userId' => 1,
                             ],
                         ],
                     ],

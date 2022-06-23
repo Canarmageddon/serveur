@@ -7,6 +7,7 @@ use App\Dto\TripDto\UserInput;
 use App\Entity\Cost;
 use App\Entity\CostUser;
 use App\Entity\Guest;
+use App\Entity\SuperUser;
 use App\Entity\Trip;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
@@ -32,14 +33,32 @@ class CostController extends AbstractController
             $cost->setValue($costInput->getValue());
             $cost->setLabel($costInput->getLabel());
             $cost->setCategory($costInput->getCategory());
+            $beneficiaries = $costInput->getBeneficiaries();
 
-            /** @var User $creator */
-            $creator = $entityManager->getRepository(User::class)->find($costInput->getCreator());
+            /** @var SuperUser $creator */
+            $creator = $entityManager->getRepository(SuperUser::class)->find($costInput->getCreator());
             $creator?->addCost($cost);
 
             /** @var Trip $trip */
             $trip = $entityManager->getRepository(Trip::class)->find($costInput->getTrip());
             $trip?->addCost($cost);
+            foreach($beneficiaries as $beneficiary) {
+                /** @var SuperUser $user */
+                $user = $entityManager->getRepository(SuperUser::class)->find($beneficiary);
+
+                if ($user != null && $cost->getTrip() != null && $user->isMemberOf($cost->getTrip()->getId())) {
+                    /** @var CostUser $costUser */
+                    $costUser = $entityManager->getRepository(CostUser::class)->findOneBy(['cost' => $cost->getId(), 'user' => $user->getId()]);
+
+                    //Vérifier si l'user est déjà dans le cost, sinon, l'ajouter et flush
+                    if ($costUser == null) {
+                        $costUser = new CostUser();
+                        $cost->addCostUser($costUser);
+                        $user->addCostUser($costUser);
+                        $entityManager->persist($costUser);
+                    }
+                }
+            }
             //Access control
             $this->denyAccessUnlessGranted('TRIP_EDIT', $cost);
 
@@ -105,23 +124,13 @@ class CostController extends AbstractController
             $data = $request->getContent();
             /** @var UserInput $userInput */
             $userInput = $serializer->deserialize($data, UserInput::class, 'json');
-            $userIdentifier = $userInput->getEmail();
-            $isGuest = false;
-            if ($userIdentifier == null) {
-                $userIdentifier = $userInput->getName();
-                $isGuest = true;
-            }
-            if ($isGuest) {
-                /** @var User $user */
-                $user = $entityManager->getRepository(Guest::class)->findOneBy(['name' => $userIdentifier]);
-            } else {
-                /** @var User $user */
-                $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $userIdentifier]);
-            }
+            $userIdentifier = $userInput->getUserId();
+            /** @var SuperUser $user */
+            $user = $entityManager->getRepository(SuperUser::class)->find($userIdentifier);
             /** @var Cost $cost */
             $cost = $entityManager->getRepository(Cost::class)->find($id);
 
-            if($user != null && $cost != null) {
+            if ($user != null && $cost != null) {
 
                 if (!$user->isMemberOf($cost->getTrip()->getId())) {
                     return $this->json([
@@ -181,19 +190,9 @@ class CostController extends AbstractController
             $data = $request->getContent();
             /** @var UserInput $userInput */
             $userInput = $serializer->deserialize($data, UserInput::class, 'json');
-            $userIdentifier = $userInput->getEmail();
-            $isGuest = false;
-            if ($userIdentifier == null) {
-                $userIdentifier = $userInput->getName();
-                $isGuest = true;
-            }
-            if ($isGuest) {
-                /** @var User $user */
-                $user = $entityManager->getRepository(Guest::class)->findOneBy(['name' => $userIdentifier]);
-            } else {
-                /** @var User $user */
-                $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $userIdentifier]);
-            }
+            $userIdentifier = $userInput->getUserId();
+            /** @var SuperUser $user */
+            $user = $entityManager->getRepository(SuperUser::class)->find($userIdentifier);
             /** @var Cost $cost */
             $cost = $entityManager->getRepository(Cost::class)->find($id);
 

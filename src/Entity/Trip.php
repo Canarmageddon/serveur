@@ -48,10 +48,10 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
                             'schema'  => [
                                 'type' => 'object',
                                 'properties' =>
-                                    [
-                                        'name' => ['type' => 'string'],
-                                        'creator' => ['type' => 'int']
-                                    ],
+                                [
+                                    'name' => ['type' => 'string'],
+                                    'creator' => ['type' => 'int']
+                                ],
                             ],
                             'example' => [
                                 'name' => "Vacances au soleil",
@@ -127,10 +127,10 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
                             'schema'  => [
                                 'type' => 'object',
                                 'properties' =>
-                                    [
-                                        'name' => ['type' => 'string'],
-                                        'isEnded' => ['type' => 'bool']
-                                    ],
+                                [
+                                    'name' => ['type' => 'string'],
+                                    'isEnded' => ['type' => 'bool']
+                                ],
                             ],
                             'example' => [
                                 'name' => "Vacances au soleil",
@@ -154,10 +154,10 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
                             'schema'  => [
                                 'type' => 'object',
                                 'properties' =>
-                                    [
-                                        'email' => ['type' => 'string'],
-                                        'name' => ['type' => 'string'],
-                                    ],
+                                [
+                                    'email' => ['type' => 'string'],
+                                    'name' => ['type' => 'string'],
+                                ],
                             ],
                             'example' => [
                                 'email' => "root@root.fr",
@@ -181,10 +181,10 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
                             'schema'  => [
                                 'type' => 'object',
                                 'properties' =>
-                                    [
-                                        'email' => ['type' => 'string'],
-                                        'name' => ['type' => 'string'],
-                                    ],
+                                [
+                                    'email' => ['type' => 'string'],
+                                    'name' => ['type' => 'string'],
+                                ],
                             ],
                             'example' => [
                                 'email' => "root@root.fr",
@@ -208,8 +208,7 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
                             'schema'  => [
                                 'type' => 'object',
                             ],
-                            'example' => [
-                            ],
+                            'example' => [],
                         ],
                     ],
                 ],
@@ -225,10 +224,8 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
                 'requestBody' => [
                     'content' => [
                         'application/json' => [
-                            'schema'  => [
-                            ],
-                            'example' => [
-                            ],
+                            'schema'  => [],
+                            'example' => [],
                         ],
                     ],
                 ],
@@ -258,10 +255,8 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
                 'requestBody' => [
                     'content' => [
                         'application/json' => [
-                            'schema'  => [
-                            ],
-                            'example' => [
-                            ],
+                            'schema'  => [],
+                            'example' => [],
                         ],
                     ],
                 ],
@@ -276,10 +271,8 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
                 'requestBody' => [
                     'content' => [
                         'application/json' => [
-                            'schema'  => [
-                            ],
-                            'example' => [
-                            ],
+                            'schema'  => [],
+                            'example' => [],
                         ],
                     ],
                 ],
@@ -297,10 +290,10 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
                             'schema'  => [
                                 'type' => 'object',
                                 'properties' =>
-                                    [
-                                        'name' => ['type' => 'string'],
-                                        'creator' => ['type' => 'int']
-                                    ],
+                                [
+                                    'name' => ['type' => 'string'],
+                                    'creator' => ['type' => 'int']
+                                ],
                             ],
                             'example' => [
                                 'name' => "Vacances au soleil",
@@ -368,6 +361,7 @@ class Trip
     private Collection $albumElements;
 
     #[ORM\Column(type: 'string', length: 30, nullable: true)]
+    #[Groups(['trip:list', 'trip:item'])]
     private ?string $link = null;
 
     #[ORM\Column(type: 'boolean')]
@@ -610,7 +604,7 @@ class Trip
     public function getUsers(): array
     {
         $travelers = [];
-        foreach($this->getTripUsers() as $tripUser) {
+        foreach ($this->getTripUsers() as $tripUser) {
             $travelers[] = $tripUser->getUser();
         }
         return $travelers;
@@ -661,7 +655,7 @@ class Trip
     public function generateLink(): void
     {
         $length = 12;
-        $this->setLink(substr(str_shuffle(str_repeat($x='0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil($length/strlen($x)) )),1,$length));
+        $this->setLink(substr(str_shuffle(str_repeat($x = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil($length / strlen($x)))), 1, $length));
     }
 
     public function emptyPointsOfInterest(EntityManagerInterface $em): void

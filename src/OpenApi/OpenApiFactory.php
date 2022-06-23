@@ -7,6 +7,7 @@ use ApiPlatform\Core\OpenApi\Model\Operation;
 use ApiPlatform\Core\OpenApi\Model\PathItem;
 use ApiPlatform\Core\OpenApi\Model\RequestBody;
 use ApiPlatform\Core\OpenApi\OpenApi;
+use ArrayObject;
 
 class OpenApiFactory implements OpenApiFactoryInterface
 {
@@ -25,14 +26,14 @@ class OpenApiFactory implements OpenApiFactoryInterface
         }
 
         $schemas = $openApi->getComponents()->getSecuritySchemes();
-        $schemas['bearerAuth'] = new \ArrayObject([
+        $schemas['bearerAuth'] = new ArrayObject([
             'type' => 'http',
             'scheme' => 'bearer',
             'bearerFormat' => 'JWT'
         ]);
 
         $schemas = $openApi->getComponents()->getSchemas();
-        $schemas['Credentials'] = new \ArrayObject([
+        $schemas['Credentials'] = new ArrayObject([
             'type' => 'object',
             'properties' => [
                 'email' => [
@@ -43,7 +44,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
                 ]
             ]
         ]);
-        $schemas['Token'] = new \ArrayObject([
+        $schemas['Token'] = new ArrayObject([
             'type' => 'object',
             'properties' => [
                 'token' => [
@@ -54,7 +55,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
                 ]
             ]
         ]);
-        $schemas['RefToken'] = new \ArrayObject([
+        $schemas['RefToken'] = new ArrayObject([
             'type' => 'object',
             'properties' => [
                 'refresh_token' => [
@@ -85,7 +86,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
                 summary: 'Login using credentials',
                 description: 'Login using credentials',
                 requestBody: new RequestBody(
-                    content: new \ArrayObject([
+                    content: new ArrayObject([
                         'application/json' => [
                             'schema' => [
                                 '$ref' => '#/components/schemas/Credentials'
@@ -142,7 +143,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
                 summary: 'Refresh access token using refresh_token',
                 description: 'Refresh access token using refresh_token',
                 requestBody: new RequestBody(
-                    content: new \ArrayObject([
+                    content: new ArrayObject([
                         'application/json' => [
                             'schema' => [
                                 '$ref' => '#/components/schemas/RefToken'
