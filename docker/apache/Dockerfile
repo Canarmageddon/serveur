@@ -15,8 +15,5 @@ RUN apt-get update && apt-get install -my \
     && mv /root/.symfony/bin/symfony /usr/local/bin/symfony \
     && docker-php-ext-install pdo_mysql
 
-RUN php bin/console d:d:c
-RUN php bin/console d:s:u -f
-RUN php bin/console lexik:jwt:generate-keypair
 
 ENTRYPOINT ["bash", "/startScript/server.sh"]
