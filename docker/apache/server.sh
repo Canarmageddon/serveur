@@ -2,7 +2,7 @@
 
 cd /server
 
-composer install && symfony server:start
+composer install --optimize-autoloader && symfony server:start
 
 tail -f /dev/null
 
